@@ -680,7 +680,7 @@ var Testact=(function(){
 	}
 	ret.start = function(){
 		//sky = Rastgl.loadTexture("sky.png");
-		var texes = ["tex1.jpg","tex2.jpg"];
+		var texes =[];// ["tex1.jpg","tex2.jpg"];
 		var select = document.getElementById("cTexture");
 		var option;
 		for(i=0;i<texes.length;i++){
@@ -696,7 +696,7 @@ var Testact=(function(){
 		}
 		document.getElementById("scene").selectedIndex=globalParam.scene;
 		Util.fireEvent(document.getElementById("scene"),"change");
-		texes = ["bump1.png"];
+		texes = [];//["bump1.png"];
 		select = document.getElementById("cBump");
 		for(i=0;i<texes.length;i++){
 			var texture = new O3o.Texture();
