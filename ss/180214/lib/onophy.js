@@ -1312,6 +1312,7 @@ var OnoPhy = (function(){
 			this.vel_damping = 0;//速度抵抗
 
 			this.restitution=0;//反発係数
+			this.friction=0.3;
 
 
 			for(var i=0;i<v;i++){
