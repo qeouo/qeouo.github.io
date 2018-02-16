@@ -535,7 +535,7 @@ ret.draw=function(ono3d,shadowTex,envtexes,camerap,frenel){
 		gl.uniform1i(args["uNormalmap"],2);
 		if(material.normalmap){
 			gl.bindTexture(gl.TEXTURE_2D,material.normalmap.gltexture);
-			gl.uniform1f(args["normalmappow"],material.normal*0.02);
+			gl.uniform1f(args["normalmappow"],material.normal*0.1);
 		}else{
 			gl.bindTexture(gl.TEXTURE_2D,Rastgl.dummyTexture);
 			gl.uniform1f(args["normalmappow"],-1);
