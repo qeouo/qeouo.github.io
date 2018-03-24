@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<!-- meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /-->
+
+<script type="text/javascript" src="../lib/inherits.js?11"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/geono.js"></script>
+<script type="text/javascript" src="../lib/sort.js"></script>
+<script type="text/javascript" src="../lib/collider.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<!-- script type="text/javascript" src="../lib/rastono.js"></script -->
+<!-- script type="text/javascript" src="../lib/rastc2d.js"></script -->
+<script type="text/javascript" src="../lib/ono3d.js"></script>
+<script type="text/javascript" src="../lib/onophy.js"></script>
+<script type="text/javascript" src="../lib/o3o.js"></script>
+<script type="text/javascript" src="../lib/objman.js"></script>
+<script type="text/javascript" src="../lib/rastgl.js"></script>
+<script type="text/javascript" src="../lib/slider.js"></script>
+<script type="text/javascript" src="../lib/colorpicker.js"></script>
+<script type="text/javascript" src="../lib/bdf.js"></script>
+<style type="text/css">
+html,body { height:100%;margin:0;font-size:small; }
+.js-slider{ width:50px;}
+input.colorpicker{width:50px;}
+</style>
+<script type="text/javascript">
+var handleFileSelect = function(evt) {
+    evt.stopPropagation();
+    evt.preventDefault();
+    var files
+	
+	if(evt.dataTransfer){
+    	files = evt.dataTransfer.files
+	}else{
+		files = evt.target.files
+	}
+//	if(files.length>3){
+//		alert("ファイル数が多いです。合計3ファイルまでにしてください。")
+//		return
+//	}
+	var allsize=0
+//    for (var i = 0, f; f = files[i]; i++) {
+//		allsize+=f.size
+//	}
+//	if(allsize>10000000){
+//		alert("ファイルサイズが大きいです。合計10MBくらいにしてください。")
+//		return
+//	}
+	globalParam.files=files
+	var str=""
+    for (var i = 0, f; f = files[i]; i++) {
+		allsize+=f.size
+		if(f.type.indexOf("image")==0){
+//			
+//			var reader = new FileReader()
+//			var name =f.name
+//				
+//			reader.onload =  function(e){
+//				var buf=e.target.result
+//				var image = new Image()
+//				image.onload=function(e){
+//					if(image.width>256 || image.height>256){
+//						alert("画像の縦横のサイズが256を超えています:"+name)
+//					}
+//				}
+//				image.src=buf
+//			}
+//			reader.readAsDataURL(f)
+		}else if(f.name.indexOf('.o3o')>=0){
+			globalParam.model = f.name;
+		}
+	}
+			Testact.loadModel();
+	Testact.start();
+}
+	var onl=function(){
+	document.getElementById('files').addEventListener('change', handleFileSelect, false);
+		Testact.loadModel();
+		Testact.start();
+	}
+
+</script>
+
+</head>
+<body onload="onl();" style="height:100%;overflow-y: hidden;">
+<div>
+<input type="file" id="files" name="upfile[]"  multiple  style="text-align:center;display:none;" />
+<div id="control" style="float:left;">
+<div style="float:left;margin-right:10px;">
+法線補間<input class="slider" id="smoothing"/><br />
+光源色1<input class="colorpicker" id="lightColor1" /><br />
+光源色2<input class="colorpicker" id="lightColor2" /><br />
+陰閾値1<input class="slider" id="lightThreshold1" /><br />
+陰閾値2<input class="slider" id="lightThreshold2" /><br />
+</div>
+<div style="float:left;margin-right:10px;">
+<label><input type="checkbox" id="shadow"/>影</label><br />
+<label><input type="checkbox" id="hdr"/>擬似HDR</label><br />
+輪郭線太さ<input class="slider" id="outlineWidth" max="4"/><br />
+輪郭線色<input class="colorpicker" id="outlineColor"/><br />
+立体度<input class="slider" id="stereoVolume" max="2"/><br />
+<label><input type="radio" id="notstereo" name="q1" value="0" onchange="globalParam.stereomode=parseFloat(this.value)">無効</label>
+<label><input type="radio" id="cross" name="q1" value="1" onchange="globalParam.stereomode=parseFloat(this.value)">交差</label>
+<label><input type="radio" id="parallel" name="q1" value="-1" onchange="globalParam.stereomode=parseFloat(this.value)">平行</label>
+</div>
+<div style="float:left;margin-right:10px;">
+<label><input type="checkbox" id="physics" />物理シミュ</label><br />
+step/frame<input class="slider" id="step" min="1" max="10" step="1"/><br />
+<div style="float:left;border:solid 1px black;display:none;"> 
+シーン<select id="scene"  onchange="globalParam.scene=parseInt(this.value);Testact.changeScene();">
+</select><br />
+フレネル反射<input class="slider" id="frenel"/><br />
+</div>
+</div>
+<div style="float:left;border:solid 1px black;display:none;"> 
+<label><input type="checkbox" id="cMaterial"/>カスタムマテリアル</label><br />
+<div style="float:left;margin-right:10px;">
+拡散色<input class="colorpicker" id="cColor"/><br />
+自己発光<input class="slider" max="2.0" id="cEmi"/><br />
+不透明度<input class="slider" id="cAlpha"/><br />
+</div>
+<div style="float:left;margin-right:10px;">
+屈折率<input class="slider" min ="1.0" max="2.0" id="cRefraction"/><br />
+反射率<input class="slider" id="cReflection"/><br />
+反射色<input class="colorpicker" id="cReflectionColor"/><br />
+</div>
+<div style="float:left;margin-right:10px;">
+粗さ<input class="slider" id="cRoughness"/><br />
+テクスチャ<select id="cTexture">
+<option value="-1">-</option>
+</select><br />
+バンプマップ<select id="cBump">
+<option value="-1">-</option>
+</select><br />
+影響度合<input class="slider"  max="10.0" id="cNormal"/><br />
+</div>
+
+</div>
+
+<div style="float:left;margin-right:10px;">
+<pre id="cons" ></pre><br />
+</div>
+</div>
+<div style="clear:both;left:0;right:0;margin:0 auto;width:720px;">
+<script type="text/javascript" src="./testact.js"> </script>
+</div>
+</body>
+</html>
+
