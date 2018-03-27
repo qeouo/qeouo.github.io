@@ -967,9 +967,9 @@ var Testact=(function(){
 			,"cTexture"
 			,"cBump"
 			,"cNormal"
-			//,"target"
-			//,"source"
-			//,"reference"
+			,"target"
+			,"source"
+			,"reference"
 			,"actionAlpha"
 
 
@@ -986,6 +986,9 @@ var Testact=(function(){
 				}else{
 					element.value=globalParam[tag];
 					element.addEventListener("change",function(evt){globalParam[tag] = parseFloat(this.value)},false);
+					if(!element.value){
+						return;
+					}
 				}
 				Util.fireEvent(element,"change");
 			})(tags[i]);
