@@ -1,0 +1,263 @@
+<style>
+input[type="number"]{
+width:48px;
+}
+</style>
+<body>
+	コリジョン数<input  type="number" id="num" value="50" /><br />
+	コリジョン最大サイズ<input type="number" id="size" value="50" /><br />
+	<input type="button" value="コリジョンリセット"	id="resetCol" /><br />
+	<input type="button" value="BVH生成"	id="resetBVH" /><br />
+	<span id="result" /></span><br />
+	<canvas width="800px" height="800px" id ="c">
+	</canvas>
+</body>
+<script>
+cvs = document.getElementById("c");
+ctx = cvs.getContext("2d");
+var WIDTH = cvs.width;
+var HEIGHT= cvs.height;
+var SIZEMAX=30;
+var DIMENSION=2;
+var AABB=function(){
+	this.min=[];
+	this.max=[];
+	for(var i=0;i<DIMENSION;i++){
+		this.min[i]=Math.random()*(WIDTH-(SIZEMAX+4))+10;
+		this.max[i]=Math.random()*SIZEMAX+this.min[i]+4;
+	}
+}
+var addAABB = function(a,b,c){
+	for(var i=0;i<DIMENSION;i++){
+		a.min[i] = Math.min(b.min[i],c.min[i]);
+		a.max[i] = Math.max(b.max[i],c.max[i]);
+	}
+}
+var checkAABB= function(a,b){
+	for(var i=0;i<DIMENSION;i++){
+		if(a.min[i]>b.max[i] || b.min[i]>a.max[i]){
+			return 0;
+		}
+	}
+	return 1;
+}
+var AABBnode=function(){
+	this.AABB = new AABB();
+	this.children = [];
+}
+var Container=function(){
+	this.element=null;
+	this.idx=0;
+}
+
+var AABBnodes = [];
+var containers=[];
+var sortLists=new Array(DIMENSION);
+var counter=[];
+
+var resetAABBnodes=function(num){
+	SIZEMAX = document.getElementById("size").valueAsNumber;
+	AABBnodes=[];
+	for(var i=0;i<num;i++){
+		AABBnodes.push( new AABBnode());
+	}
+	containers=[];
+	for(var i=0;i<AABBnodes.length;i++){
+		containers.push(new Container());
+	}
+	for(var i=0;i<sortLists.length;i++){
+		sortLists[i] = new Array(AABBnodes.length);
+	}
+	counter=new Array(1<<Math.ceil(Math.log2(containers.length,2)));
+}
+
+var createBVH=function(AABBs){
+	for(var i=0;i<AABBs.length;i++){
+		containers[i].element=AABBs[i];
+		containers[i].idx=0;
+	}
+
+	for(var i=0;i<DIMENSION;i++){
+		for(var j=0;j<AABBs.length;j++){
+			sortLists[i][j]=containers[j];
+		}
+		sortLists[i].sort(function(a,b){return a.element.AABB.min[i]-b.element.AABB.min[i];});
+	}
+
+	var n = Math.floor(Math.log2(AABBs.length));
+	var half = AABBs.length;
+	for(var i=0;i<n;i++){
+		var axis = i&1;
+		var sortList = sortLists[axis];
+		var half_=half>>1;
+
+		for(var j=0;j<counter.length;j++){
+			counter[j]=0;
+		}
+		for(var j=0;j<sortList.length;j++){
+			count = counter[sortList[j].idx];
+			if(count<half_){
+				counter[sortList[j].idx]++;
+			}else{
+				sortList[j].idx|=(1<<(n-1-i));
+			}
+		}
+		half=Math.ceil(half*0.5);
+	}
+
+	var nodes = new Array(Math.pow(2,n));
+	for(var i=0;i<AABBs.length;i++){
+		var idx = containers[i].idx;
+		if(!nodes[idx]){
+			nodes[idx] = containers[i].element;
+		}else{
+			var node = new AABBnode();
+			node.children.push(nodes[idx]);
+			node.children.push(containers[i].element);
+			addAABB(node.AABB,node.children[0].AABB,node.children[1].AABB);
+			nodes[idx] = node;
+		}
+	}
+	for(var i=0;i<n;i++){
+		var jmax= Math.pow(2,n-i-1);
+		for(var j=0;j<jmax;j++){
+			var node = new AABBnode();
+			node.children.push(nodes[j*2]);
+			node.children.push(nodes[j*2+1]);
+			addAABB(node.AABB,node.children[0].AABB,node.children[1].AABB);
+			nodes[j] = node;
+		}
+	}
+	return nodes[0];
+}
+
+
+var draw=function(){
+	var nest=0;
+	var nestmax=Math.log2(AABBnodes.length)|0;
+	var drawBVH=function(node,func){
+		if(node.children.length===0){
+			return;
+		}
+		var col="rgba(";
+		for(var i=0;i<3;i++){
+			col = col + (((nest>>i)&1)?"240":"32") + ",";
+		}
+		ctx.fillStyle=col+"0.3)";
+		ctx.strokeStyle=col+"1)";
+		var o= (nestmax-nest)*2;
+		var aabb = node.AABB;
+		ctx.fillRect(aabb.min[0]-o,aabb.min[1]-o
+			,aabb.max[0]-aabb.min[0]+o*2
+			,aabb.max[1]-aabb.min[1]+o*2);
+		ctx.strokeRect(aabb.min[0]-o,aabb.min[1]-o
+			,aabb.max[0]-aabb.min[0]+o*2
+			,aabb.max[1]-aabb.min[1]+o*2);
+		nest++;
+		for(var i=0;i<node.children.length;i++){
+			drawBVH(node.children[i]);
+		}
+		nest--;
+		
+	}
+	ctx.clearRect(0,0,cvs.width,cvs.height);
+	if(rootNode){
+		drawBVH(rootNode);
+	}
+	for(var i=0;i<AABBnodes.length;i++){
+		var aabb = AABBnodes[i].AABB;
+		ctx.fillStyle="rgba(0,0,0,0.7)";
+		ctx.fillRect(aabb.min[0],aabb.min[1]
+			,aabb.max[0]-aabb.min[0]
+			,aabb.max[1]-aabb.min[1]);
+	}
+	for(var i=0;i<hitResults.length;i++){
+		var hitResult = hitResults[i];
+		ctx.strokeStyle="rgba(255,0,0,0.7)";
+		ctx.beginPath();
+		var aabb = hitResult[0].AABB;
+		ctx.moveTo(aabb.min[0] + aabb.max[0]>>1
+			,aabb.min[1] + aabb.max[1]>>1);
+		aabb = hitResult[1].AABB;
+		ctx.lineTo(aabb.min[0] + aabb.max[0]>>1
+			,aabb.min[1] + aabb.max[1]>>1);
+		ctx.closePath();
+		ctx.stroke();
+	}
+
+}
+
+var checkCount=0;
+var hitResults=[];
+var hitCheck=function(node,node2){
+	if(!node2){
+		if(node.children.length!==0){
+			hitCheck(node.children[0]);
+			hitCheck(node.children[1]);
+			hitCheck(node.children[0],node.children[1]);
+		}
+		return;
+	}
+	checkCount++;
+	if(checkAABB(node.AABB,node2.AABB)){
+		if(node.children.length){
+			for(var i=0;i<node.children.length;i++){
+				hitCheck(node.children[i],node2);
+			}
+		}else if(node2.children.length){
+			for(var i=0;i<node2.children.length;i++){
+				hitCheck(node,node2.children[i]);
+			}
+		}else{
+			hitResults.push([node,node2]);
+		}
+	}
+}
+
+var sweepResults=new Array(3);
+var sweepAndPrune_=function(list,axis){
+	sweepResults[axis]=[];
+	for(var i=0;i<list.length;i++){
+		for(var j=i;j<list.length;j++){
+			checkCount++;
+			if(list[i].element.AABB.max[axis]<list[j].element.AABB.max[axis]){
+				break;
+			}
+		}
+	}
+}
+var sweepAndPrune=function(){
+	for(var i=0;i<DIMENSION;i++){
+		sweepAndPrune_(sortLists[i],i);
+	}
+}
+
+var resetCol = document.getElementById("resetCol").onclick= function(){
+	var num = document.getElementById("num").valueAsNumber;
+	resetAABBnodes(num);
+	rootNode=null;
+	hitResults=[];
+	draw();
+}
+var resetBVH = document.getElementById("resetBVH").onclick=function(){
+	var start = Date.now();
+	rootNode = createBVH(AABBnodes);
+	var result =  "BVH生成時間"+(Date.now()-start)+"ms";
+	var sou=AABBnodes.length*(AABBnodes.length-1)/2;
+	result +="<BR />総当りした場合のAABB判定回数 n*(n-1)/2="+sou;
+	checkCount=0;
+	stat=Date.now();
+	hitResults=[];
+	hitCheck(rootNode);
+	result +="<BR />BVH利用した場合のAABB判定回数 ="+checkCount+" ("+(checkCount/sou*100).toFixed(2)+"%)";
+	checkCount=0;
+	sweepAndPrune();
+	result +="<BR />(参考)軸別スイープ&プルーンした場合の総判定回数 ="+checkCount;
+	document.getElementById("result").innerHTML =result;
+	draw();
+}
+resetCol();
+resetBVH();
+
+</script>
+</body>
