@@ -65,6 +65,7 @@ void main(void){ \
 	vView = mat3(normalize(aSvec - dot(aNormal,aSvec)*aNormal) \
 		,normalize(aTvec - dot(aNormal,aTvec)*aNormal) \
 		,aNormal); \
+	gl_Position.z*=1.003; \
 } \
 " , " \
 precision lowp float; \
