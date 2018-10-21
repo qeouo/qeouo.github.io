@@ -303,8 +303,7 @@ ret.hex2rgb=function(rgb,hex){
 				e.relativeY = e.clientY - rect.top;
 			}
 		}
-		var relo = function(e){
-			var t = e.touches[0];
+		var relo = function(e,t){
 			e.pageX = t.pageX;
 			e.pageY = t.pageY;
 			e.layerX= t.layerX;
@@ -318,7 +317,7 @@ ret.hex2rgb=function(rgb,hex){
 			||navigator.userAgent.match(/iPod/i) 
 			||navigator.userAgent.match(/Android/i) ){
 				elem.addEventListener("touchmove",function(e) {
-					relo(e);
+					relo(e,e.touches[0]);
 					rela(e);
 					func(e);
 
@@ -339,7 +338,7 @@ ret.hex2rgb=function(rgb,hex){
 			||navigator.userAgent.match(/iPod/i) 
 			||navigator.userAgent.match(/Android/i) ){
 				elem.addEventListener("touchstart",function(e) {
-					relo(e);
+					relo(e,e.touches[0]);
 					rela(e);
 					e.button=0;
 					func(e);
@@ -359,7 +358,7 @@ ret.hex2rgb=function(rgb,hex){
 			||navigator.userAgent.match(/iPod/i) 
 			||navigator.userAgent.match(/Android/i) ){
 				elem.addEventListener("touchend",function(e) {
-					relo(e);
+					relo(e,e.changedTouches[0]);
 					rela(e);
 					e.button=0;
 					func(e);
