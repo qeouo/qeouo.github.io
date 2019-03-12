@@ -215,8 +215,8 @@ var Util=(function(){
 				if(callback){
 					callback(buf);
 				}
-				console.log("loadtext end",request);
 				loadingCount--;
+				console.log("loadtext end",loadingCount);
 			}
 			console.log("loadtext start",url);
 			loadingCount++;
