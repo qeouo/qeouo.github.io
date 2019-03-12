@@ -113,6 +113,7 @@ input.js-output{ \
   position:absolute; \
   width:15px; \
   height:20px; \
+  border-width:1px;
   display:block; \
 } ", stylesheet.cssRules.length);
 	Slider.init=function(){
