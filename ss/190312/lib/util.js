@@ -125,6 +125,7 @@ var Util=(function(){
 		if(assetList[url]){
 			//既にロードされている場合はそれを返す
 			image = assetList[url];
+			console.log("loaded",url);
 		}else{
 			//未ロード時はロードする
 			image = new Image();
@@ -156,10 +157,12 @@ var Util=(function(){
 				//エラーの場合減らす
 				loadingCount--
 			}
+			console.log("load start",url);
 		}
 			//読み込みが終わっていない場合はイベントリスナ登録
 			image.addEventListener("load",function(e) {
 				if(!image.pat){
+					console.log("load end",image);
 					//ロード処理(1回のみ)
 					//ロードカウンタを減らす
 					loadingCount--;
@@ -212,11 +215,13 @@ var Util=(function(){
 				if(callback){
 					callback(buf);
 				}
+				console.log("loadtext end",request);
 				loadingCount--;
 			}
+			console.log("loadtext start",url);
+			loadingCount++;
 			request.send("")
 		}
-		loadingCount++
 		return null;
 	}
 
