@@ -1,0 +1,155 @@
+<head>
+
+<script type="text/javascript">
+
+function inherits(childCtor, parentCtor) {
+    // ES6
+    if (Object.setPrototypeOf) {
+        Object.setPrototypeOf(childCtor.prototype, parentCtor.prototype);
+    }
+    // ES5
+    else if (Object.create) {
+        childCtor.prototype = Object.create(parentCtor.prototype);
+    }
+    // legacy platform
+    else {
+        function tempCtor() {};
+        tempCtor.prototype = parentCtor.prototype;
+        childCtor.superClass_ = parentCtor.prototype;
+        childCtor.prototype = new tempCtor();
+        childCtor.prototype.constructor = childCtor;
+    }
+};
+</script>
+<script type="text/javascript" src="../vector.js"></script>
+<script type="text/javascript" src="../geono.js"></script>
+<script type="text/javascript" src="../sort.js"></script>
+<script type="text/javascript" src="../collider.js"></script>
+<script type="text/javascript" src="../util.js"></script>
+<script type="text/javascript" src="../onophy.js"></script>
+</head>
+<body onload="onl();" style="height:100%;overflow-y: hidden;">
+	<div id="hoge"></div>
+	<canvas id="c" width=512 height=512 ></canvas>
+	<script>
+"use strict"
+
+	var onl=function(){
+
+ var ctx = document.getElementById("c").getContext("2d");
+var val = [0,0,100,-100,100,100];
+var triangle=new Collider.ConvexPolyhedron(4); 
+var triangle2=new Collider.Triangle(); 
+var cuboid=new Collider.Cuboid();
+for(var i=0;i<3;i++){
+  triangle.v[i][0]=val[i*2];
+  triangle.v[i][1]=val[i*2+1];
+  triangle.v[i][2]=0;
+
+  triangle2.v[i][0]=val[i*2];
+  triangle2.v[i][1]=val[i*2+1];
+  triangle2.v[i][2]=0.1;
+  Vec3.mul(triangle2.v[i],triangle2.v[i],0.2);
+ }
+triangle.v[3][0]=100;
+triangle.v[3][1]=0;	
+triangle.v[3][2]=100;
+var trns=function(v,v2){
+	v[0]=v2[0]+256;
+	v[1]=v2[1]+256;
+}
+	window.onmousemove =function(e){
+var td = new Vec3();
+ctx.clearRect(0,0,512,512);
+ctx.strokeStyle="red";
+ctx.beginPath();
+ctx.moveTo(0,256);
+ctx.lineTo(512,256);
+ctx.stroke();
+ctx.strokeStyle="green";
+ctx.beginPath();
+ctx.moveTo(256,0);
+ctx.lineTo(256,512);
+ctx.stroke();
+
+ctx.strokeStyle="black";
+
+ctx.beginPath();
+for(var i=0;i<4;i++){
+	Vec3.add(td,triangle.v[i],triangle.location);
+ trns(td,td);
+  if(i==0){
+  ctx.moveTo(td[0],td[1]);
+  }else{
+  ctx.lineTo(td[0],td[1]);
+  }
+}
+ctx.closePath();
+
+ctx.stroke();
+
+
+triangle2.location[0]=e.pageX-300;
+triangle2.location[1]=e.pageY-300;
+triangle2.location[2]=50;
+cuboid.location[0]=e.pageX-300;
+cuboid.location[1]=e.pageY-300;
+cuboid.location[2]=50;
+//cuboid.location[0]=46;
+//cuboid.location[1]=37;
+cuboid.size[0]=20;
+cuboid.size[1]=20;
+cuboid.size[2]=20;
+cuboid.matrix[0]=20;
+cuboid.matrix[5]=20;
+cuboid.matrix[10]=20;
+
+ctx.beginPath();
+//for(var i=0;i<3;i++){
+//	Vec3.add(td,triangle2.v[i],triangle2.location);
+// trns(td,td);
+//  if(i==0){
+//  ctx.moveTo(td[0],td[1]);
+//  }else{
+//  ctx.lineTo(td[0],td[1]);
+//  }
+//}
+//ctx.closePath();
+
+trns(td,cuboid.location);
+ctx.strokeRect(td[0]-cuboid.size[0],td[1]-cuboid.size[1],cuboid.size[0]*2,cuboid.size[1]*2);
+
+ctx.stroke();
+
+var ans1=new Vec3();
+var ans2=new Vec3();
+
+cuboid.calcPre();
+var a =Collider.calcClosest(ans1,ans2,triangle,cuboid);
+//var HOGE=new Vec3();
+//HOGE[0]=e.pageX-256;
+//HOGE[1]=e.pageY-256;
+//HOGE[2]=100;
+//var ps=[];
+//for(var i=0;i<3;i++){
+//	ps.push(new Vec3());
+//	Vec3.add(ps[i],triangle2.v[i],triangle2.location);
+//}
+//OnoPhy.conTRIANGLE_TRIANGLE(ans1,ans2,triangle.v[0],triangle.v[1],triangle.v[2],ps[0],ps[1],ps[2]);
+
+
+trns(td,ans1);
+if(a){
+	ctx.fillStyle="red";
+}else{
+	ctx.fillStyle="blue";
+}
+console.log(ans1,ans2,cuboid.location);
+ctx.fillRect(td[0]-2,td[1]-2,5,5);
+trns(td,ans2);
+ctx.fillStyle="black";
+ctx.fillRect(td[0]-1,td[1]-1,3,3);
+}
+
+	}
+    </script>
