@@ -994,10 +994,12 @@ var Testact=(function(){
 		
 	}
 	ret.start = function(){
+		console.log("start");
 
 		if(Util.getLoadingCount()>0){
 			//初期ロードが未完了の場合はメイン処理は開始しない
-			setTimeout(this.start,100);
+			setTimeout(this.start,1000);
+			console.log("HOGE");
 			return;
 		}
 
@@ -1085,6 +1087,7 @@ var Testact=(function(){
 		});
 
 		Util.setFps(globalParam.fps,mainloop);
+		console.log("setfps");
 		Util.fpsman();
 
 	}
