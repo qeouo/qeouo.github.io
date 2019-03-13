@@ -592,10 +592,12 @@ ret.hex2rgb=function(rgb,hex){
 //			return;
 //		}
 		
+		//端数処理
 		fpserror +=fpserrordelta;
 		if(dt>spf)dt=spf
 		if(dt<-spf)dt=-spf
 		if(fpserror>=fps){
+			//時間誤差が1msを超えたら次回1ms増やす
 			fpserror-=fps
 			dt+=1
 		}

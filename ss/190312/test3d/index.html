@@ -39,7 +39,12 @@ input.colorpicker{width:50px;}
 <script type="text/javascript">
 
 	var onl=function(){
-		Testact.start();
+		if(Util.getLoadingCount()>0){
+			//初期ロードが未完了の場合はメイン処理は開始しない
+			setTimeout(onl,100);
+		}else{
+			Testact.start();
+		}
 	}
 
 </script>

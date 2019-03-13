@@ -13,6 +13,7 @@ precision lowp float;
 varying lowp vec2 vUv;
 uniform sampler2D uSampler;
 
+float limit = 0.99;
 vec2 boxAngle2Uv(vec3 angle){
 	float x=angle.x;
 	float y=angle.y;
@@ -21,10 +22,10 @@ vec2 boxAngle2Uv(vec3 angle){
 	if(y*y>x*x && y*y>z*z){
 		x/=abs(y);
 		z/=abs(y);
-		if(x>0.99)x=0.99;
-		if(x<-0.99)x=-0.99;
-		if(z>0.99)z=0.99;
-		if(z<-0.99)z=-0.99;
+		if(x>limit)x=limit;
+		if(x<-limit)x=-limit;
+		if(z>limit)z=limit;
+		if(z<-limit)z=-limit;
 		if(y>0.0){
 			u=0.25+0.125-x*0.125;
 			v=0.5+0.25+z*0.25;
@@ -36,10 +37,10 @@ vec2 boxAngle2Uv(vec3 angle){
 		if(x*x>z*z){
 			z/=abs(x);
 			y/=abs(x);
-			if(y>0.99)y=0.99;
-			if(y<-0.99)y=-0.99;
-			if(z>0.99)z=0.99;
-			if(z<-0.99)z=-0.99;
+			if(y>limit)y=limit;
+			if(y<-limit)y=-limit;
+			if(z>limit)z=limit;
+			if(z<-limit)z=-limit;
 			if(x<0.0){
 				u=0.25+0.125-z*0.125;
 				v=0.25-y*0.25;
@@ -50,10 +51,10 @@ vec2 boxAngle2Uv(vec3 angle){
 		}else{
 			x/=abs(z);
 			y/=abs(z);
-			if(y>0.99)y=0.99;
-			if(y<-0.99)y=-0.99;
-			if(x>0.99)x=0.99;
-			if(x<-0.99)x=-0.99;
+			if(y>limit)y=limit;
+			if(y<-limit)y=-limit;
+			if(x>limit)x=limit;
+			if(x<-limit)x=-limit;
 			if(z>0.0){
 				u=0.125-x*0.125;
 				v=0.25-y*0.25;

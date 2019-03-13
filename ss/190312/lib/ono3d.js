@@ -218,7 +218,7 @@ var Ono3d = (function(){
 		,setAov:function(aov){
 			this.aov=aov;
 		}
-		,getProjectionMatrix(mat){
+		,getProjectionMatrix:function(mat){
 			var persx = this.aov;
 			var persy = this.aov * this.viewport[3]/this.viewport[2];
 			var zn=this.znear;
@@ -1403,44 +1403,50 @@ var calcST = function(s,t,p0,p1,p2,u0,v0,u1,v1,u2,v2){
 		Ono3d.postEffect(image,0,0 ,WIDTH/1024.0,HEIGHT/1024,addShader); 
 	}
 
-	ret.prototype.createEnv = function(x,y,z,func){
-		var tex =Ono3d.createTexture(256,256);
+	ret.prototype.createCubeMap= function(image,x,y,z,size,func){
+		gl.clearColor(0.0,0.0,0.0,1.0);
+		gl.clear(gl.DEPTH_BUFFER_BIT|gl.COLOR_BUFFER_BIT);
+		this.setAov(1.0);
+		//前、右
+		Mat44.set(this.viewMatrix,-1,0,0,0, 0,-1,0,0, 0,0,-1,0, -x,-y,-z,1);
+		func(0,0,size,size);
+		Mat44.set(this.viewMatrix,0,0,1,0, 0,-1,0,0, -1,0,0,0, -x,-y,-z,1);
+		func(size,0,size,size);
+		Ono3d.copyImage(image,0,0,0,0,size*2,size);
+
+		//後、左
+		Mat44.set(this.viewMatrix,1,0,0,0, 0,-1,0,0, 0,0,1,0, -x,-y,-z,1);
+		func(0,0,size,size);
+		Mat44.set(this.viewMatrix,0,0,-1,0, 0,-1,0,0, 1,0,0,0, -x,-y,-z,1);
+		func(size,0,size,size);
+		Ono3d.copyImage(image,512,0,0,0,size*2,size);
+
+		//下、上
+		Mat44.set(this.viewMatrix,-1,0,0,0, 0,0,1,0, 0,-1,0,0, -x,-y,-z,1);
+		func(0,0,size,size);
+		Mat44.set(this.viewMatrix,-1,0,0,0, 0,0,-1,0, 0,1,0,0, -x,-y,-z,1);
+		func(size,0,size,size);
+
+		Ono3d.copyImage(image,0,size,0,0,size*2,size);
+	}
+	ret.prototype.createEnv = function(tex,x,y,z,func){
+		var size = 256;
+		if(!tex){
+			tex =Ono3d.createTexture(size,size);
+		}
 		var envBuf = this.envbufTexture;
 
 		gl.bindTexture(gl.TEXTURE_2D, tex.glTexture);
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
 
-		gl.clearColor(0.0,0.0,0.0,1.0);
-		gl.clear(gl.DEPTH_BUFFER_BIT|gl.COLOR_BUFFER_BIT);
-		this.setAov(1.0);
-
-		//前、右
-		Mat44.set(this.viewMatrix,-1,0,0,0, 0,-1,0,0, 0,0,-1,0, -x,-y,-z,1);
-		func(0,0,256,256);
-		Mat44.set(this.viewMatrix,0,0,1,0, 0,-1,0,0, -1,0,0,0, -x,-y,-z,1);
-		func(256,0,256,256);
-		Ono3d.copyImage(envBuf,0,0,0,0,256*2,256);
-
-		//後、左
-		Mat44.set(this.viewMatrix,1,0,0,0, 0,-1,0,0, 0,0,1,0, -x,-y,-z,1);
-		func(0,0,256,256);
-		Mat44.set(this.viewMatrix,0,0,-1,0, 0,-1,0,0, 1,0,0,0, -x,-y,-z,1);
-		func(256,0,256,256);
-		Ono3d.copyImage(envBuf,512,0,0,0,256*2,256);
-
-		//下、上
-		Mat44.set(this.viewMatrix,-1,0,0,0, 0,0,1,0, 0,-1,0,0, -x,-y,-z,1);
-		func(0,0,256,256);
-		Mat44.set(this.viewMatrix,-1,0,0,0, 0,0,-1,0, 0,1,0,0, -x,-y,-z,1);
-		func(256,0,256,256);
-
-		Ono3d.copyImage(envBuf,0,256,0,0,256*2,256);
+		//キューブマップ作成
+		this.createCubeMap(envBuf,x,y,z,size,func);
 
 		//極座標化
 		gl.bindFramebuffer(gl.FRAMEBUFFER, Rastgl.frameBuffer);
-		this.setViewport(0,0,256,128);
+		this.setViewport(0,0,size,size*0.5);
 		Ono3d.postEffect(envBuf,0,0,1,1,shaders["cube2polar"]); 
-		Ono3d.copyImage(tex,0,0,0,0,256,128);
+		Ono3d.copyImage(tex,0,0,0,0,size,size*0.5);
 
 		var texsize=tex.width;
 		var width=texsize;
