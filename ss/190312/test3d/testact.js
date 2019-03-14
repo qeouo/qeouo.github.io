@@ -170,36 +170,36 @@ var Testact=(function(){
 		inherits(ret,defObj);
 		ret.prototype.init=function(){
 
-			bdf = Bdf.load("./k8x12.bdf",null,function(){
-				bdfimage = Bdf.render("aAbBcC",bdf,false);
-				bdfimage.glTexture = Rastgl.createTexture(bdfimage);//512x512
+			//bdf = Bdf.load("./k8x12.bdf",null,function(){
+			//	bdfimage = Bdf.render("aAbBcC",bdf,false);
+			//	bdfimage.glTexture = Rastgl.createTexture(bdfimage);//512x512
 
-				gl.bindTexture(gl.TEXTURE_2D,bdfimage.glTexture);
-				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-				gl.bindFramebuffer(gl.FRAMEBUFFER, Rastgl.frameBuffer);//1024x1024
-				ono3d.setViewport(0,0,1024,1024);
-				gl.clearColor(.8,0.2,0.6,0.0);
-				gl.clear(gl.DEPTH_BUFFER_BIT|gl.COLOR_BUFFER_BIT);
-				gl.enable(gl.BLEND);
-				gl.blendFuncSeparate(gl.ZERO,gl.ONE,gl.ONE,gl.ONE);
-				var scl=2;
-				var ss=1/512;
-				for(var i=0;i<3;i++){
-					for(var j=0;j<3;j++){
-					//	Rastgl.copyframe(bdfimage.glTexture,-ss*i,-ss*j,scl,scl);
-						Ono3d.drawCopy(bdfimage,-ss*i,-ss*j,scl,scl);
-					}
-				}
-				gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE);
-				gl.enable(gl.BLEND);
-				gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE);
+			//	gl.bindTexture(gl.TEXTURE_2D,bdfimage.glTexture);
+			//	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+			//	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+			//	gl.bindFramebuffer(gl.FRAMEBUFFER, Rastgl.frameBuffer);//1024x1024
+			//	ono3d.setViewport(0,0,1024,1024);
+			//	gl.clearColor(.8,0.2,0.6,0.0);
+			//	gl.clear(gl.DEPTH_BUFFER_BIT|gl.COLOR_BUFFER_BIT);
+			//	gl.enable(gl.BLEND);
+			//	gl.blendFuncSeparate(gl.ZERO,gl.ONE,gl.ONE,gl.ONE);
+			//	var scl=2;
+			//	var ss=1/512;
+			//	for(var i=0;i<3;i++){
+			//		for(var j=0;j<3;j++){
+			//		//	Rastgl.copyframe(bdfimage.glTexture,-ss*i,-ss*j,scl,scl);
+			//			Ono3d.drawCopy(bdfimage,-ss*i,-ss*j,scl,scl);
+			//		}
+			//	}
+			//	gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE);
+			//	gl.enable(gl.BLEND);
+			//	gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE);
 
-				//Rastgl.copyframe(bdfimage.glTexture,-1*ss,-1*ss,scl,scl);
-				Ono3d.drawCopy(bdfimage,-1*ss,-1*ss,scl,scl);
-				Ono3d.copyImage(bdfimage,0,0,0,0,512,512);
+			//	//Rastgl.copyframe(bdfimage.glTexture,-1*ss,-1*ss,scl,scl);
+			//	Ono3d.drawCopy(bdfimage,-1*ss,-1*ss,scl,scl);
+			//	Ono3d.copyImage(bdfimage,0,0,0,0,512,512);
 
-			});
+			//});
 
 			for(var i=objMan.objs.length;i--;){
 				if(this == objMan.objs[i])continue;
