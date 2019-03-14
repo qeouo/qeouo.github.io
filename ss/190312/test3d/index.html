@@ -41,7 +41,7 @@ input.colorpicker{width:50px;}
 	var onl=function(){
 		if(Util.getLoadingCount()>0){
 			//初期ロードが未完了の場合はメイン処理は開始しない
-			setTimeout(onl,100);
+			setTimeout(onl,1000);
 		}else{
 			Testact.start();
 		}
