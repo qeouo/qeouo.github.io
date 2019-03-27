@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<!--
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta http-equiv="Expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+-->
+
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/geono.js"></script>
+<script type="text/javascript" src="../lib/sort.js"></script>
+<script type="text/javascript" src="../lib/collider.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<!-- script type="text/javascript" src="../lib/rastono.js"></script -->
+<!-- script type="text/javascript" src="../lib/rastc2d.js"></script -->
+<script type="text/javascript" src="../lib/ono3d.js"></script>
+<script type="text/javascript" src="../lib/onophy.js"></script>
+<script type="text/javascript" src="../lib/o3o.js"></script>
+<script type="text/javascript" src="../lib/objman.js"></script>
+<script type="text/javascript" src="../lib/rastgl.js"></script>
+<script type="text/javascript" src="../lib/slider.js"></script>
+<script type="text/javascript" src="../lib/colorpicker.js"></script>
+<script type="text/javascript" src="../lib/bdf.js"></script>
+<style type="text/css">
+html,body { height:100%;margin:0;font-size:small; }
+.js-slider{ width:50px;}
+input.colorpicker{width:50px;}
+.hidden{display:none;}
+</style>
+<script type="text/javascript">
+
+	var onl=function(){
+		if(Util.getLoadingCount()>0){
+			//初期ロードが未完了の場合はメイン処理は開始しない
+			setTimeout(onl,1000);
+		}else{
+			Testact.start();
+		}
+	}
+
+</script>
+
+</head>
+<body onload="onl();" style="height:100%;overflow-y: hidden;">
+<input type="file" id="files" name="upfile[]"  multiple  style="text-align:center;display:none;" />
+<div id="control" style="float:left;">
+	<div style="float:left;margin-right:10px;">
+		<label><input type="checkbox" id="autoExposure"/>オート露光調整</label><br>
+		<div id="exposure_setting">
+		露光レベル?<input class="slider" id="exposure_level" max="5"/><br>
+		露光上限?<input class="slider" id="exposure_upper" min="0.1" max="5"/><br>
+		</div>
+		<br>
+		ブルーム?<input class="slider" id="exposure_bloom" max="1.0"/><br>
+	</div>
+	<div style="float:left;margin-right:10px;">
+		法線補間<input class="slider" id="smoothing"/><br>
+		光源色1<input class="colorpicker" id="lightColor1" /><br>
+		光源色2<input class="colorpicker" id="lightColor2" /><br>
+		陰閾値1<input class="slider" id="lightThreshold1" /><br>
+		陰閾値2<input class="slider" id="lightThreshold2" /><br>
+	</div>
+	<div style="float:left;margin-right:10px;">
+		<label><input type="checkbox" id="shadow"/>影</label><br>
+		輪郭線太さ<input class="slider" id="outline_bold" max="4"/><br>
+		輪郭線色<input class="colorpicker" id="outline_color"/><br>
+		立体度<input class="slider" id="stereoVolume" max="2"/><br>
+		<label><input type="radio" id="notstereo" name="stereomode" value="0" onchange="globalParam.stereomode=parseFloat(this.value)">無効</label>
+		<label><input type="radio" id="cross" name="stereomode" value="1" onchange="globalParam.stereomode=parseFloat(this.value)">交差</label>
+		<label><input type="radio" id="parallel" name="stereomode" value="-1" onchange="globalParam.stereomode=parseFloat(this.value)">平行</label>
+	</div>
+
+	<div style="float:left;margin-right:10px;">
+		<label><input type="checkbox" id="physics" />物理シミュ</label><br>
+		step/frame<input class="slider" id="step" min="1" max="10" step="1"/><br>
+		<!-- シーン<select id="scene"  onchange="globalParam.scene=parseInt(this.value);Testact.changeScene();"> 
+		</select><br> 
+		フレネル反射<input class="slider" id="frenel"/><br>
+		-->
+	</div>
+	<div style="float:left;margin-right:10px;">
+		<pre id="cons" ></pre><br>
+	</div>
+	<div style="clear:both;float:left;border:solid 1px black;">
+		<label><input type="checkbox" id="cMaterial"/>カスタムマテリアル</label><br>
+		<div style="float:left;margin-right:10px;">
+			拡散色<input class="colorpicker" id="baseColor"/><br>
+			自己発光<input class="slider" max="2.0" id="emi"/><br>
+			不透明度<input class="slider" id="opacity"/><br>
+		</div>
+		<div style="float:left;margin-right:10px;">
+			屈折率<input class="slider" min ="0.5" max="2.0" id="ior"/><br>
+			反射率<input class="slider" id="metallic"/><br>
+			反射色<input class="colorpicker" id="metalColor"/><br>
+		</div>
+		<div style="float:left;margin-right:10px;">
+			表面粗さ<input class="slider" id="roughness" value="0"/><br>
+			内部粗さ<input class="slider" id="subRoughness" value="1"/><br>
+			テクスチャ<select id="cTexture">
+			<option value="-1">-</option>
+			</select><br>
+			バンプマップ<select id="cBump">
+			<option value="-1">-</option>
+			</select><br>
+			影響度合<input class="slider"  max="10.0" id="cNormal"/><br>
+		</div>
+	</div>
+
+	<div class="hidden">
+	レンダリング方式<select id="shader">
+	<option value="0">普通の</option>
+	<option value="1">遅延</option>
+	</select><br>
+	</div>
+</div>
+
+
+<div id="aaa" style="clear:both;left:0;right:0;margin:0 auto;width:100%;height:100%;text-align:center;">
+	<script type="text/javascript" src="./testact.js"> </script>
+</div>
+</body>
+</html>
+
