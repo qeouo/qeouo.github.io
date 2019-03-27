@@ -542,10 +542,19 @@ var O3o=(function(){
 			material.baseColorMap = loadMap(material.baseColorMap,0);
 			material.pbrMap = loadMap(material.pbrMap,0);
 			material.hightMap = loadMap(material.hightMap,1);
-			if(material.lightMap !==""){
+			if(material.lightMap !=="" && material.shader===""){
 				material.shader="static";
 			}
 			material.lightMap = loadMap(material.lightMap,0);
+
+			if(material.shader !== ""){
+				if(ono3d.shaders[material.shader]){
+					continue;
+				}
+				var currentpath = Util.getCurrent();
+				var filename = material.shader;
+				ono3d.shaders[filename]=Ono3d.loadShader(currentdir +filename + ".shader");
+			}
 		}
 		
 

@@ -187,14 +187,17 @@ var Ono3d = (function(){
 			this.shaders=[];
 			shaders = this.shaders;
 
-			var filenames=["add","average","average2","average3","fill","glass","main","static","test","decode","shadow","plain","n1s","n2s"
-				,"cube2polar","rough","celestialsphere","envset","gauss","normal","cube2lightfield","cube2lightfield2","cube2lightfield3"];
+			var filenames=["main"
+				,"static","shadow","plain","fill","add"
+				,"average","average2","average3","decode"
+				,"rough","celestialsphere","envset","gauss","normal"
+				,"cube2polar","cube2lightfield","cube2lightfield2","cube2lightfield3"];
 			for(var i=0;i<filenames.length;i++){
 				var filename = filenames[i];
 		//		if(this.shaders[filename]){
 		//			continue;
 		//		}
-				this.shaders[filename]=(Ono3d.loadShader(currentpath+"shader/"+filename + ".shader"));
+				this.shaders[filename]=Ono3d.loadShader(currentpath+"shader/"+filename + ".shader");
 			}
 
 			mainshader= this.shaders["main"];

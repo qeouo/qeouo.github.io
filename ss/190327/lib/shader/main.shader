@@ -125,16 +125,11 @@ void main(void){
 	diffuse = (1.0-sign(lightz*0.5+0.5-0.01 -shadowmap.z))*0.5 * diffuse; 
 
 	/*拡散反射+環境光+自己発光*/ 
-	float x = min(max(vPos.x/0.5+64.0,0.0),127.0);
-	float y = min(max(vPos.y/0.5+4.0,0.0),8.0);
-	float z = min(max(vPos.z/0.5+64.0,0.0),127.0);
-	vec3 dd = vec3(fract(x),fract(y),fract(z));
-	refV.s = floor(x)*6.0;
-	refV.t = floor(z) + floor(y)*128.0;
-	vec2 unit = vec2(1.0/1024.0);
+	vec3 vColor2;
+
+	vec3 cell = min(max(vPos/0.5 + vec3(64.0,4.0,64.0),0.0),vec3(127.0,7.0,127.0));
 	float angx = abs(asin(nrm.y)*_PI)*2.0;
 	float angy = abs(abs(atan2(nrm.x,-nrm.z))*_PI*2.0-1.0);
-	vec3 vColor2 = vec3(0.0);
 
 	vec3 aaa[8];
 	aaa[0]=vec3(0.0,0.0,0.0);
@@ -145,33 +140,24 @@ void main(void){
 	aaa[5]=vec3(1.0,0.0,1.0);
 	aaa[6]=vec3(1.0,1.0,0.0);
 	aaa[7]=vec3(1.0,1.0,1.0);
-
-	vec3 sumcol=vec3(0.0);
-	vec2 unit2 = refV+vec2(1.0-sign(nrm.z) ,0.0);
 	for(int i=0;i<8;i++){
-		vec3 vvv = vec3(1.0) - aaa[i]- dd + 2.0 * aaa[i]*dd;
-		sumcol += (vvv.x*vvv.y*vvv.z)*
-			decode(texture2D(uLightMap,(unit2+vec2(aaa[i].x*6.0,aaa[i].z+aaa[i].y*128.0))*unit)).rgb;
-	}
-	vColor2 += sumcol * (1.0-angx) * angy ;
+		vec3 vvv = vec3(1.0) - aaa[i] + (2.0 * aaa[i] - 1.0)*fract(cell);
+		aaa[i] = aaa[i] + floor(cell);
 
-	sumcol=vec3(0.0);
-	unit2 = refV+vec2(1.0+sign(nrm.x)+1.0 ,0.0);
-	for(int i=0;i<8;i++){
-		vec3 vvv = vec3(1.0) - aaa[i]- dd + 2.0 * aaa[i]*dd;
-		sumcol += (vvv.x*vvv.y*vvv.z)*
-			decode(texture2D(uLightMap,(unit2+vec2(aaa[i].x*6.0,aaa[i].z+aaa[i].y*128.0))*unit)).rgb;
+		aaa[i].xy = vec2(aaa[i].x*6.0,aaa[i].z+aaa[i].y*128.0);
+		aaa[i].z= (vvv.x*vvv.y*vvv.z);
 	}
-	vColor2 += sumcol * (1.0-angx) * (1.0-angy) ;
 
-	sumcol=vec3(0.0);
-	unit2 = refV+vec2((sign(nrm.y)+1.0)*0.5+4.0 ,0.0);
+	mat3 sumcol=mat3(0.0);
+	vec2 zoff = vec2(1.0 - sign(nrm.z) ,0.0);
+	vec2 xoff = vec2(2.0 + sign(nrm.x) ,0.0);
+	vec2 yoff = vec2(4.0 + (sign(nrm.y)+1.0)*0.5,0.0);
 	for(int i=0;i<8;i++){
-		vec3 vvv = vec3(1.0) - aaa[i]- dd + 2.0 * aaa[i]*dd;
-		sumcol += (vvv.x*vvv.y*vvv.z)*
-			decode(texture2D(uLightMap,(unit2+vec2(aaa[i].x*6.0,aaa[i].z+aaa[i].y*128.0))*unit)).rgb;
+		sumcol[0] += aaa[i].z* decode(texture2D(uLightMap,(zoff+aaa[i].xy)/1024.0)).rgb;
+		sumcol[1] += aaa[i].z* decode(texture2D(uLightMap,(xoff+aaa[i].xy)/1024.0)).rgb;
+		sumcol[2] += aaa[i].z* decode(texture2D(uLightMap,(yoff+aaa[i].xy)/1024.0)).rgb;
 	}
-	vColor2 += sumcol * angx;
+	vColor2 = sumcol * vec3((1.0-angx)*angy,(1.0-angx)*(1.0-angy), angx);
 
 	vColor2 += diffuse*uLightColor + uEmi;
 	vColor2 = vColor2 * baseCol;
