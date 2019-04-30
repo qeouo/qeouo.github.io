@@ -2,7 +2,7 @@
 var Geono= (function(){
 	var ret=function(){}
 
-	ret.getCircle = function(ans,p0,p1,p2){
+	ret.getOuterCenter = function(ans,p0,p1,p2){
 		var a = Vec2.len2(p2,p1);
 		var b = Vec2.len2(p2,p0);
 		var c = Vec2.len2(p0,p1);
@@ -15,6 +15,27 @@ var Geono= (function(){
 		Vec2.madd(ans,ans,p1,B);
 		Vec2.madd(ans,ans,p2,C);
 		Vec2.mul(ans,ans,1/(A+B+C));
+	}
+
+	ret.getOuterCenter3 = function(ans,p0,p1,p2,p3){
+		var a = Vec3.len2(p2,p1);
+		var b = Vec3.len2(p2,p0);
+		var c = Vec3.len2(p0,p1);
+		var d = Vec3.len2(p0,p3);
+		var e = Vec3.len2(p1,p3);
+		var f = Vec3.len2(p2,p3);
+		
+		var K=a*d*(e+f-a) + b*e*(f+a-e) + c*f*(a+e-f) - 2*a*e*f;
+		var L=a*d*(b+f-d) + b*e*(f+d-b) + c*f*(d+b-f) - 2*d*b*f;
+		var M=a*d*(e+c-d) + b*e*(c+d-e) + c*f*(d+e-c) - 2*d*e*c;
+		var N=a*d*(b+c-a) + b*e*(c+a-b) + c*f*(a+b-c) - 2*a*b*c;
+
+		
+		Vec3.mul(ans,p0,K);
+		Vec3.madd(ans,ans,p1,L);
+		Vec3.madd(ans,ans,p2,M);
+		Vec3.madd(ans,ans,p3,N);
+		Vec3.mul(ans,ans,1/(K+L+M+N));
 	}
 
 	ret.LINE_POINT = function(ans,l1,l2,p1){

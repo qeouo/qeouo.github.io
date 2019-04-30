@@ -8,10 +8,10 @@
 <script type="text/javascript" src="../lib/geono.js"></script>
 </head>
 <body >
-<input type="text" value="12" id="num"></input>
+<input type="text" value="10" id="num"></input>
 <input type="button" value="点を生成(ランダム)" onclick="createPoint();draw();"></input>
 <input type="button" value="点を生成(格子状)" onclick="createPoint2();draw();"></input><br>
-<input type="button" value="ドロネー三角形生成" onclick="createTriangles();draw()"></input><br>
+<input type="button" value="ドロネー三角形作成" onclick="createTriangles();draw()"></input><br>
 	<canvas id="c" width=512 height=512 style="border:solid 1px black;"></canvas>
 </body>
 <script type="text/javascript">
@@ -34,10 +34,13 @@ function createPoint2(){
 	triangles=[];
 	var size=40;
 	var num=document.getElementById("num").value;
+	var c=Math.floor(Math.pow(num,1.0/2.0))+0.9999|0;
+	c=Math.max(c,2);
 	for(var i=0;i<num;i++){
 		var point = new Vec2();
-		point[0] = (i%8)*size+size;
-		point[1] = (i/8|0)*size+size;
+
+		point[0] = (i%c)*size+size;
+		point[1] = (i/c|0)*size+size;
 		points.push(point);
 	}
 }
@@ -78,7 +81,7 @@ function createTriangles(){
 	t.pIdx[0]=l-3;
 	t.pIdx[1]=l-2;
 	t.pIdx[2]=l-1;
-	Geono.getCircle(t.center,points[t.pIdx[0]],points[t.pIdx[1]],points[t.pIdx[2]]);
+	Geono.getOuterCenter(t.center,points[t.pIdx[0]],points[t.pIdx[1]],points[t.pIdx[2]]);
 	t.r=Vec2.len2(t.center,points[t.pIdx[0]]);
 	triangles.push(t);
 
@@ -98,7 +101,7 @@ function createTriangles(){
 		addlist=[];
 		for(var j=triangles.length;j--;){
 			var t=triangles[j];
-			if(Vec2.len2(t.center,points[i])<t.r){
+			if(Vec2.len2(t.center,points[i])<t.r-0.001){
 				var idx=[0,1,2,0];
 				for(var k=0;k<3;k++){
 					var n= new Triangle();
@@ -112,7 +115,7 @@ function createTriangles(){
 		}
 		for(var j=0;j<addlist.length;j++){
 			var t=addlist[j];
-			Geono.getCircle(t.center,points[t.pIdx[0]],points[t.pIdx[1]],points[t.pIdx[2]]);
+			Geono.getOuterCenter(t.center,points[t.pIdx[0]],points[t.pIdx[1]],points[t.pIdx[2]]);
 			t.r=Vec2.len2(t.center,points[t.pIdx[0]]);
 			triangles.push(t);
 		}
@@ -174,5 +177,6 @@ function draw(){
 createPoint();
 createTriangles();
 draw();
+
 
 </script>

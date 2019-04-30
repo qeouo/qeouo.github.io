@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<meta charset="utf-8">
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/geono.js"></script>
+</head>
+<body >
+<input type="text" value="10" id="num"></input>
+<input type="button" value="点を生成(ランダム)" onclick="createPoint();"></input>
+<input type="button" value="点を生成(格子状)" onclick="createPoint2();"></input><br>
+<input type="button" value="ドロネー四面体作成" onclick="createTriangles();"></input><br>
+	<canvas id="c" width=512 height=512 style="border:solid 1px black;"></canvas>
+</body>
+<script type="text/javascript">
+
+
+function createPoint(){
+	points=[];
+	ps=[];
+	triangles=[];
+	var num=document.getElementById("num").value;
+	for(var i=0;i<num;i++){
+		var point = new Vec3();
+		//a=Math.random()*Math.PI*2;
+		//b=(Math.random()-0.5)*Math.PI;
+		//point[1] = Math.sin(b);
+		//var r=Math.cos(b);
+		//point[0] = Math.sin(a)*r;
+		//point[2] = Math.cos(a)*r;
+		//Vec3.mul(point,point,Math.random()*64+64);
+		point[0]=Math.random()-0.5;
+		point[1]=Math.random()-0.5;
+		point[2]=Math.random()-0.5;
+		Vec3.mul(point,point,400);
+
+		points.push(point);
+
+		ps.push(new Vec3());
+	}
+
+}
+function createPoint2(){
+	points=[];
+	ps=[];
+	triangles=[];
+	var size=40;
+	var num=document.getElementById("num").value;
+	var point ;
+	var c=Math.floor(Math.pow(num,1.0/3.0))+0.9999|0;
+	c=Math.max(c,2);
+	var d=Math.ceil(Math.pow(num,1.0/3.0));
+	var size = 400/(d);
+
+	for(var i=0;i<num;i++){
+		point = new Vec3();
+		Vec3.set(point,i%c|0,(i/c|0)%c,i/c/c|0);
+		Vec3.mul(point,point,size);
+		point[0]-=100;
+		point[1]-=100;
+		point[2]-=100;
+		points.push(point);
+
+		ps.push(new Vec3());
+	}
+	
+}
+function createTriangles(){
+	var min = new Vec3();
+	var max = new Vec3();
+	Vec3.copy(min,points[0]);
+	Vec3.copy(max,points[0]);
+	for(var i=1;i<points.length;i++){
+		min[0]=Math.min(min[0],points[i][0]);
+		min[1]=Math.min(min[1],points[i][1]);
+		min[2]=Math.min(min[2],points[i][2]);
+		max[0]=Math.max(max[0],points[i][0]);
+		max[1]=Math.max(max[1],points[i][1]);
+		max[2]=Math.max(max[2],points[i][2]);
+	}
+	var ans = new Vec3();
+	Vec3.sub(ans,max,min);
+	var r = Vec3.scalar(ans)*10;
+	Vec3.madd(ans,min,ans,0.5);
+	point = new Vec3();
+	point[0]=ans[0]-r;
+	point[1]=ans[1]-r;
+	point[2]=ans[2]-r;
+	points.push(point);
+	point = new Vec3();
+	point[0]=ans[0]+r;
+	point[1]=ans[1]-r;
+	point[2]=ans[2]-r;
+	points.push(point);
+
+	point = new Vec3();
+	point[0]=ans[0];
+	point[1]=ans[1]+r;
+	point[2]=ans[2]-r;
+	points.push(point);
+
+	point = new Vec3();
+	point[0]=ans[0];
+	point[1]=ans[1];
+	point[2]=ans[2]+r;
+	points.push(point);
+
+
+	//最外三角作成
+	var t= new Triangle();
+	triangles=[];
+	var l=points.length;
+	t.pIdx[0]=l-4;
+	t.pIdx[1]=l-3;
+	t.pIdx[2]=l-2;
+	t.pIdx[3]=l-1;
+	Geono.getOuterCenter3(t.center,points[t.pIdx[0]],points[t.pIdx[1]],points[t.pIdx[2]],points[t.pIdx[3]]);
+	t.r=Vec3.len2(t.center,points[t.pIdx[0]]);
+	triangles.push(t);
+
+
+	var addlist;
+	var checkList= function(n){
+		for(var k=0;k<addlist.length;k++){
+			var e = addlist[k];
+			if(( e.pIdx[0]==n.pIdx[2] && e.pIdx[1]==n.pIdx[1] && e.pIdx[2]==n.pIdx[0])
+			|| ( e.pIdx[0]==n.pIdx[1] && e.pIdx[1]==n.pIdx[0] && e.pIdx[2]==n.pIdx[2])
+			|| ( e.pIdx[0]==n.pIdx[0] && e.pIdx[1]==n.pIdx[2] && e.pIdx[2]==n.pIdx[1])
+			|| ( e.pIdx[2]==n.pIdx[2] && e.pIdx[1]==n.pIdx[1] && e.pIdx[0]==n.pIdx[0])
+			|| ( e.pIdx[2]==n.pIdx[1] && e.pIdx[1]==n.pIdx[0] && e.pIdx[0]==n.pIdx[2])
+			|| ( e.pIdx[2]==n.pIdx[0] && e.pIdx[1]==n.pIdx[2] && e.pIdx[0]==n.pIdx[1])){
+				addlist.splice(k,1);
+				return;
+			};
+		}
+		addlist.push(n);
+	}
+	for(var i=0;i<points.length-3;i++){
+		addlist=[];
+		for(var j=triangles.length;j--;){
+			var t=triangles[j];
+			if(Vec3.len2(t.center,points[i])<t.r-0.001){
+				var idx=[0,1,2,3,0,1];
+				for(var k=0;k<4;k++){
+					var n= new Triangle();
+					n.pIdx[0]=t.pIdx[idx[k]];
+					n.pIdx[1]=t.pIdx[idx[k+1]];
+					n.pIdx[2]=t.pIdx[idx[k+2]];
+					n.pIdx[3]=i;
+					checkList(n);
+				}
+				triangles.splice(j,1);
+			}
+		}
+		for(var j=0;j<addlist.length;j++){
+			var t=addlist[j];
+			Geono.getOuterCenter3(t.center,points[t.pIdx[0]],points[t.pIdx[1]],points[t.pIdx[2]],points[t.pIdx[3]]);
+			t.r=Vec3.len2(t.center,points[t.pIdx[0]]);
+			triangles.push(t);
+		}
+	}
+
+	l=points.length-4;
+	for(var j=triangles.length;j--;){
+		var t=triangles[j];
+		if(t.pIdx[0]>=l || t.pIdx[1]>=l || t.pIdx[2]>=l|| t.pIdx[3]>=l){
+			triangles.splice(j,1);
+		}
+	}
+	points.splice(l,4);
+	
+	for(var j=triangles.length;j--;){
+		var t=triangles[j];
+		for(var i=points.length;i--;){
+			if(t.pIdx[0]==i || t.pIdx[1]==i || t.pIdx[2]==i || t.pIdx[3]==i){
+				continue;
+			}
+			point = points[i];
+			if(Vec3.len2(t.center,point)<t.r){
+				console.log("A");
+			}
+		}
+	}
+
+
+}
+
+var ps=[];
+var triangles=[];
+var Triangle=function(){
+	this.pIdx=[-1,-1,-1,-1];
+	this.center = new Vec3();
+	this.r=0;
+}
+
+var tim=0;
+function draw(){
+	var ctx=document.getElementById("c").getContext("2d");
+	ctx.clearRect(0,0,512,512);
+	var mat = new Mat33();
+
+	tim+=1;
+	Mat33.rotate(mat,tim*0.02,0,1,0);
+
+
+	for(var i=0;i<points.length;i++){
+		var p= points[i];
+		var p2=ps[i];
+
+		Mat33.dotVec3(p2,mat,p);
+
+
+		p2[2]=p2[2]+512;
+		
+		p2[0]=p2[0]*(400.0/p2[2])+256;
+		p2[1]=p2[1]*(400.0/p2[2])+256;
+	}
+//	ctx.strokeStyle="lightgray";
+//	for(var i=0;i<triangles.length;i++){
+//		var t=triangles[i];
+//	ctx.beginPath();
+//		ctx.arc(t.center[0], t.center[1], Math.sqrt(t.r), 0, Math.PI*2, false)
+//	ctx.stroke();
+//	ctx.closePath();
+//	}
+
+	ctx.strokeStyle="orange";
+	ctx.beginPath();
+	for(var i=0;i<triangles.length;i++){
+		var t=triangles[i];
+		ctx.moveTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		ctx.lineTo(ps[t.pIdx[1]][0],ps[t.pIdx[1]][1]);
+		ctx.lineTo(ps[t.pIdx[2]][0],ps[t.pIdx[2]][1]);
+		ctx.lineTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[1]][0],ps[t.pIdx[1]][1]);
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[2]][0],ps[t.pIdx[2]][1]);
+	}
+		ctx.stroke();
+	ctx.closePath();
+
+
+	for(var i=0;i<ps.length;i++){
+		var point=ps[i];
+		ctx.fillRect(point[0]-1,point[1]-1,3,3);
+	}
+	setTimeout(draw,33);
+}
+
+
+createPoint();
+createTriangles();
+draw();
+
+</script>
