@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<meta charset="utf-8">
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/sort.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/geono.js"></script>
+<script type="text/javascript" src="../lib/delaunay.js"></script>
+<script type="text/javascript" src="../lib/bsp.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+</head>
+<body >
+<input type="text" value="30" id="num"></input>
+<input type="button" value="生成(ランダム)" onclick="createPoint();createTriangles();"></input>
+<input type="button" value="生成(格子状)" onclick="createPoint2();createTriangles();"></input><br>
+<!--input type="button" value="ドロネー四面体作成" onclick="createTriangles();"></input><br -->
+<div id="output"></div>
+	<canvas id="c" width=512 height=512 style="border:solid 1px black;"></canvas>
+</body>
+<script type="text/javascript">
+
+
+function createPoint(){
+	points=[];
+	ps=[];
+	triangles=[];
+	hitTriangle=null;
+	var num=document.getElementById("num").value;
+	for(var i=0;i<num;i++){
+		var point = new Vec3();
+
+		point[0]=Math.random()-0.5;
+		point[1]=Math.random()-0.5;
+		point[2]=Math.random()-0.5;
+		Vec3.mul(point,point,400);
+
+		points.push(point);
+
+		ps.push(new Vec3());
+	}
+
+}
+function createPoint2(){
+	points=[];
+	ps=[];
+	triangles=[];
+	hitTriangle=null;
+	var size=40;
+	var num=document.getElementById("num").value;
+	var point ;
+	var c=Math.floor(Math.pow(num,1.0/3.0))+0.9999|0;
+	c=Math.max(c,2);
+	var d=Math.ceil(Math.pow(num,1.0/3.0));
+	var size = 400/(d);
+
+	for(var i=0;i<num;i++){
+		point = new Vec3();
+		Vec3.set(point,i%c|0,(i/c|0)%c,i/c/c|0);
+		Vec3.mul(point,point,size);
+		point[0]-=100;
+		point[1]-=100;
+		point[2]-=100;
+		points.push(point);
+
+		ps.push(new Vec3());
+	}
+	
+}
+var bspTree;
+var hitTriangle;
+	var targetp=new Vec3(0,0,0);
+function createTriangles(){
+	triangles = Delaunay.create(points);
+
+	bspTree=Bsp.createBspTree(triangles);
+
+	hitTriangle = bspTree.getItem(targetp);
+}
+
+var ps=[];
+var triangles=[];
+
+var tim=0;
+
+function trans(p2,mat,p){
+	Mat33.dotVec3(p2,mat,p);
+
+	p2[2]=p2[2]+512;
+	
+	p2[0]=p2[0]*(400.0/p2[2])+256;
+	p2[1]=p2[1]*(400.0/p2[2])+256;
+}
+function draw(){
+
+
+	var ctx=document.getElementById("c").getContext("2d");
+	var output=document.getElementById("output");
+	ctx.clearRect(0,0,512,512);
+	var mat = new Mat33();
+
+	tim+=1;
+	Mat33.rotate(mat,tim*0.02,0,1,0);
+
+
+	for(var i=0;i<points.length;i++){
+		var p= points[i];
+		var p2=ps[i];
+
+		Mat33.dotVec3(p2,mat,p);
+
+		p2[2]=p2[2]+512;
+		
+		p2[0]=p2[0]*(400.0/p2[2])+256;
+		p2[1]=p2[1]*(400.0/p2[2])+256;
+	}
+
+	ctx.strokeStyle="orange";
+	ctx.beginPath();
+	for(var i=0;i<triangles.length;i++){
+		var t=triangles[i];
+		ctx.moveTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		ctx.lineTo(ps[t.pIdx[1]][0],ps[t.pIdx[1]][1]);
+		ctx.lineTo(ps[t.pIdx[2]][0],ps[t.pIdx[2]][1]);
+		ctx.lineTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[1]][0],ps[t.pIdx[1]][1]);
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[2]][0],ps[t.pIdx[2]][1]);
+	}
+		ctx.stroke();
+	ctx.closePath();
+
+
+	ctx.fillStyle="black";
+	for(var i=0;i<ps.length;i++){
+		var point=ps[i];
+		ctx.fillRect(point[0]-1,point[1]-1,3,3);
+	}
+
+	if(hitTriangle){
+		ctx.strokeStyle="red";
+		var t=hitTriangle;
+		ctx.beginPath();
+		ctx.moveTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		ctx.lineTo(ps[t.pIdx[1]][0],ps[t.pIdx[1]][1]);
+		ctx.lineTo(ps[t.pIdx[2]][0],ps[t.pIdx[2]][1]);
+		ctx.lineTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[0]][0],ps[t.pIdx[0]][1]);
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[1]][0],ps[t.pIdx[1]][1]);
+		ctx.moveTo(ps[t.pIdx[3]][0],ps[t.pIdx[3]][1]);
+		ctx.lineTo(ps[t.pIdx[2]][0],ps[t.pIdx[2]][1]);
+		ctx.stroke();
+	ctx.closePath();
+	}
+
+	ctx.fillStyle="red";
+	trans(ps[0],mat,targetp);
+	ctx.fillRect(ps[0][0]-1,ps[0][1]-1,3,3);
+
+	Util.setText(output,"四面体総数:"+triangles.length
+		+"\n二分木ノード数("+triangles.length+"*2-1):"+bspTree.nodes.length
+		+"\nノード探索回数(理想はlog2("+triangles.length+")):"+bspTree.searchCount);
+	setTimeout(draw,33);
+}
+
+
+createPoint();
+createTriangles();
+draw();
+
+</script>
