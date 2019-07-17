@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<meta charset="utf-8">
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+</head>
+<style>
+*{
+	font-family:monospace;
+}
+</style>
+<body >
+<div>
+m=<input type="text" value="-2" onchange="createPoint()" id="m"></input><br>
+l=<input type="text" value="4" onchange="createPoint()" id="l"></input>
+</div>
+	<canvas id="c" width=512 height=512 style="border:solid 1px black;"></canvas>
+</body>
+<script type="text/javascript">
+
+var kaijo=function(n){
+	var result=1;
+	for(var i=0;i<n;i++){
+		result *= (i+1);
+	}
+	return result;
+
+}
+var kaijo2=function(n){
+	if(n<0){
+		return kaijo2(n+2)/(n+2);
+	}
+	var result=1;
+	for(var i=n;i>0;i-=2){
+		result *= i;
+	}
+	return result;
+
+}
+var K = function(m,l){
+	var a = (2*l+1)/(4*Math.PI);
+	var b = kaijo(l-Math.abs(m))/kaijo(l+Math.abs(m));
+	return Math.sqrt(a*b);
+}
+var spherical=function(m,l,theta,pi){
+	if(m>0){
+		return Math.sqrt(2)*K(m,l)*Math.cos(m*pi)*P(m,l,Math.cos(theta));
+	}else if(m<0){
+		return Math.sqrt(2)*K(m,l)*Math.sin(-m*pi)*P(-m,l,Math.cos(theta));
+	}else{
+		return K(0,l)*P(0,l,Math.cos(theta));
+	}
+}
+var P=function(m,l,x){
+	if(m===l){
+		return  Math.pow(-1,m)*kaijo2(2*m-1)*Math.pow(1-x*x,m/2);
+	}
+	if((m+1)===l){
+		return (2*m+1)*x*P(m,m,x);
+	}
+	return ((2*l-1)*x*P(m,l-1,x)-(l+m-1)*P(m,l-2,x))/(l-m);
+	
+}
+function createPoint(){
+	points=[];
+	ps=[];
+	var m= parseInt(document.getElementById("m").value);
+	var l= parseInt(document.getElementById("l").value);
+	if(Math.abs(m)>l){
+		return;
+	}
+	var num=32;
+	for(var i=0;i<num;i++){
+		var pi = Math.PI*2.0*(i/num);
+		for(var j=0;j<num;j++){
+			var theta = Math.PI*(j/num);
+			var point = new Vec4();
+			point[1]=Math.cos(theta);
+			var s = Math.sin(theta);
+			point[0]=Math.cos(pi)*s;
+			point[2]=Math.sin(pi)*s;
+			var r = spherical(m,l,theta,pi);
+			point[3]=r;
+			Vec3.mul(point,point,Math.abs(r));
+			points.push(point);
+			ps.push(new Vec4());
+		}
+	}
+}
+var ps=[];
+var tim=0;
+function trans(p2,mat,p){
+	Mat33.dotVec3(p2,mat,p);
+	p2[2]=p2[2]+2;
+	
+	var z = 256;
+	p2[0]=p2[0]*(z/p2[2])+256;
+	p2[1]=-p2[1]*(z/p2[2])+256;
+	p2[3]=p[3];
+}
+function draw(){
+	var l=Math.sin(tim*0.02)*100+20;
+	var ctx=document.getElementById("c").getContext("2d");
+	var mat = new Mat33();
+	var mat2 = new Mat33();
+	tim+=1;
+	Mat33.rotate(mat,tim*0.02,0,1,0);
+	Mat33.rotate(mat2,-0.2,1,0,0);
+	Mat33.dot(mat,mat2,mat);
+
+	for(var i=0;i<points.length;i++){
+		var p= points[i];
+		var p2=ps[i];
+		trans(p2,mat,p);
+	}
+
+	ctx.clearRect(0,0,512,512);
+	a=new Vec4();
+	var col=["red","green","blue"];
+	ctx.globalAlpha=0.5;
+	for(var i=0;i<3;i++){
+		ctx.strokeStyle=col[i];
+		ctx.beginPath();
+		Vec4.set(a,0,0,0,0);
+		a[i]=1;
+		trans(a,mat,a);
+		ctx.moveTo(a[0],a[1]);
+		Vec4.set(a,0,0,0,0);
+		a[i]=-1;
+		trans(a,mat,a);
+		ctx.lineTo(a[0],a[1]);
+		ctx.closePath();
+		ctx.stroke();
+	}
+
+
+	ps.sort( function(a, b) {
+	    return a[2] < b[2];
+	});
+
+	ctx.globalAlpha=1;
+	for(var i=0;i<ps.length;i++){
+		var point=ps[i];
+		if(point[3]<0){
+			ctx.fillStyle="red";
+		}else{
+			ctx.fillStyle="black";
+		}
+		ctx.fillRect(point[0]-1,point[1]-1,2,2);
+	}
+	setTimeout(draw,33);
+}
+createPoint();
+draw();
+console.log(P(0,2,0.1));
+</script>
