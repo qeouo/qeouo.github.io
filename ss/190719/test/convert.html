@@ -59,8 +59,8 @@ var convert=function(){
 		cs[i]=new Float64Array(3);
 	}
 	xx=0;yy=0;
-	document.getElementById("dstImg").src=null;
-	document.getElementById("dstImg2").src=null;
+	document.getElementById("dstImg").removeAttribute("src");
+	document.getElementById("dstImg2").removeAttribute("src");
 	var output =document.getElementById("output");
 	var func=function(){
 		var nowTime = Date.now();
