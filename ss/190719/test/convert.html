@@ -166,11 +166,10 @@ var convert=function(){
 
 					}
 				}
+				ctx.putImageData(dst,0,0,0,0,srcwidth,srcheight);
+				document.getElementById("dstImg2").src=canvas.toDataURL("image/png");
 			},10);
 
-			ctx.putImageData(dst,0,0,0,0,srcwidth,srcheight);
-			canvas.style.display='none';
-			document.getElementById("dstImg2").src=canvas.toDataURL("image/png");
 		}
 	}
 		
