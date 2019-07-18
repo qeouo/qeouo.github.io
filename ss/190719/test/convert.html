@@ -10,16 +10,6 @@
 var ctx,canvas;
 var onloadfunc=function(e){
 
-//	document.getElementById("selfile").addEventListener("change",function(evt){
-//		var file=evt.target.files;
-//		var reader=new FileReader();
-//		reader.readAsDataURL(file[0]);
-//		reader.onload=function(){
-//			var dataUrl = reader.result;
-//			document.getElementById("srcImg").src=dataUrl;
-////			convert();
-//		}
-//	});
  
 	canvas =  document.getElementById('c')
 }
@@ -192,7 +182,6 @@ canvas{
 </style>
 </head>
 <body onLoad="onloadfunc(event)">
-<input type="file" id="selfile" style="display:none">
 l&lt;=<input type="text" value="2"  id="l"></input><br>
 	<input type="button" value="convert" onclick="convert()"><br>
 <canvas id="c"></canvas><br />
