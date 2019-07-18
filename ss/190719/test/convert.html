@@ -1,0 +1,209 @@
+<html>
+<head>
+<title>skycube convert</title>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/sh.js"></script>
+<script type="text/javascript">
+"use strict"
+var ctx,canvas;
+var onloadfunc=function(e){
+
+//	document.getElementById("selfile").addEventListener("change",function(evt){
+//		var file=evt.target.files;
+//		var reader=new FileReader();
+//		reader.readAsDataURL(file[0]);
+//		reader.onload=function(){
+//			var dataUrl = reader.result;
+//			document.getElementById("srcImg").src=dataUrl;
+////			convert();
+//		}
+//	});
+ 
+	canvas =  document.getElementById('c')
+}
+var sqrt=Math.sqrt;
+var acos=Math.acos;
+var _255=1./256;
+var xx=0,yy=0;
+
+var convert=function(){
+	var srcImg = document.getElementById("srcImg");
+	canvas.width=srcImg.width;
+	canvas.height=srcImg.height;
+	ctx =  canvas.getContext('2d')
+	ctx.drawImage(srcImg,0,0,srcImg.width,srcImg.height,0,0,canvas.width,canvas.height);
+	//canvas.style.display='inline';
+
+	var srcimg=ctx.getImageData(0,0,canvas.width,canvas.height);
+	var srcwidth=srcimg.width;
+	var srcheight=srcimg.height;
+	var srcdata=srcimg.data;
+
+	canvas.width=srcwidth;
+	canvas.height=srcheight;
+	ctx =  canvas.getContext('2d')
+
+	var _srcwidth=1.0/srcwidth;
+	var _srcheight=1.0/srcheight;
+
+	var total=0;
+	for(var i=0;i<srcheight;i++){
+		total += srcwidth*Math.sin(Math.PI*(i*_srcheight))
+	}
+	total = 4*Math.PI/total;
+	var lmax= parseInt(document.getElementById("l").value)+1;
+	var cs=new Array(lmax*lmax);
+	for(var i=0;i<cs.length;i++){
+		cs[i]=new Float64Array(3);
+	}
+	xx=0;yy=0;
+	document.getElementById("dstImg").src=null;
+	document.getElementById("dstImg2").src=null;
+	var output =document.getElementById("output");
+	var func=function(){
+		var nowTime = Date.now();
+		var theta=Math.PI*yy*_srcheight;
+		var sintheta=Math.sin(theta);
+		while(1){
+			var pi=Math.PI*2*xx*_srcwidth;
+			
+			var idx=yy*srcwidth+xx<<2;
+			for(var i=0;i<lmax;i++){
+				for(var j=-i;j<=i;j++){
+					var a=SH.Y_2(i,j,theta,pi)*sintheta;
+					var c=cs[(i+1)*i+j];
+					c[0]+=a*srcdata[idx];
+					c[1]+=a*srcdata[idx+1];
+					c[2]+=a*srcdata[idx+2];
+				}
+			}
+			xx++;
+			if(xx>=srcwidth){
+				xx=0;
+				yy++;
+				theta=Math.PI*yy*_srcheight;
+				sintheta=Math.sin(theta);
+
+			}
+			
+			if(yy>=srcheight || (Date.now()-nowTime)>100){
+				var text="";
+				var format=function(a){
+					return ("          "+(a*total).toFixed(4)).substr(-10);
+				}
+				text="ŒW”ŒvZ’†... "+(100*(yy*srcwidth+xx)*_srcheight*_srcwidth).toFixed(2)+"% \n";
+				text+="«ŒW”« \n";
+				for(var i=0;i<lmax;i++){
+					for(var j=-i;j<=i;j++){
+						var c=cs[(i+1)*i+j];
+						text+="C("+ ("   "+ i).substr(-4)+","+("    "+j).substr(-4)+")" + "=["+format(c[0])+","+format(c[1])+","+format(c[2]) +"]\n";
+					}
+				}
+				Util.setText(output,text);
+				break;
+			}
+		}
+		if(yy<srcheight){
+			setTimeout(func,1);
+		}else{
+			var dst = ctx.createImageData(srcwidth,srcheight)
+			var dstdata=dst.data;
+			for(var i=0;i<lmax*lmax;i++){
+				cs[i][0]*=total;
+				cs[i][1]*=total;
+				cs[i][2]*=total;
+			}
+			for(var y=0;y<srcheight;y++){
+				var theta=Math.PI*y*_srcheight;
+				for(var x=0;x<srcwidth;x++){
+					var pi=Math.PI*2*x*_srcwidth;
+					var idx=y*srcwidth+x<<2;
+					var r=0,g=0,b=0;
+					for(var i=0;i<lmax;i++){
+						for(var j=-i;j<=i;j++){
+							var k=SH.Y_2(i,j,theta,pi);
+							var c=cs[(i+1)*i+j];
+							r+=c[0]*k;
+							g+=c[1]*k;
+							b+=c[2]*k;
+						}
+					}
+					dstdata[idx]=r;
+					dstdata[idx+1]=g;
+					dstdata[idx+2]=b;
+					dstdata[idx+3]=255;
+
+				}
+			}
+
+			ctx.putImageData(dst,0,0,0,0,srcwidth,srcheight);
+			canvas.style.display='none';
+			document.getElementById("dstImg").src=canvas.toDataURL("image/png");
+
+			window.setTimeout(function(){
+				for(var y=0;y<srcheight;y++){
+					var theta=Math.PI*y*_srcheight;
+					for(var x=0;x<srcwidth;x++){
+						var pi=Math.PI*2*x*_srcwidth;
+						var idx=y*srcwidth+x<<2;
+						var r=0,g=0,b=0;
+						for(var i=0;i<lmax;i++){
+							var A = SH.A(i)/Math.PI;
+							for(var j=-i;j<=i;j++){
+								var k=A*SH.Y_2(i,j,theta,pi);
+								var c=cs[(i+1)*i+j];
+								r+=c[0]*k;
+								g+=c[1]*k;
+								b+=c[2]*k;
+							}
+						}
+						dstdata[idx]=r;
+						dstdata[idx+1]=g;
+						dstdata[idx+2]=b;
+						dstdata[idx+3]=255;
+
+					}
+				}
+
+				ctx.putImageData(dst,0,0,0,0,srcwidth,srcheight);
+				canvas.style.display='none';
+				document.getElementById("dstImg2").src=canvas.toDataURL("image/png");
+			},10);
+		}
+	}
+		
+	func();
+	
+
+}
+</script>
+
+<style>
+img{
+	border:solid 1px;
+	min-width:50px;
+	min-height:50px;
+}
+canvas{
+	display:none;
+}
+</style>
+</head>
+<body onLoad="onloadfunc(event)">
+<input type="file" id="selfile" style="display:none">
+l&lt;=<input type="text" value="2"  id="l"></input><br>
+	<input type="button" value="convert" onclick="convert()"><br>
+<canvas id="c"></canvas><br />
+
+Source<img src="sky.png" id="srcImg"/><br>
+<br />
+‹ß—<img id="dstImg"><br>
+ŠgU”½ËŒõ(Æ“x)<img id="dstImg2"><br>
+	<pre id="output"></pre>
+</div>
+</body>
+</html>
+
+
