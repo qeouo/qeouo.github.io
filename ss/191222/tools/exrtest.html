@@ -37,7 +37,7 @@ input[type="text"]{
 }
 
 div.control > div {
-	white-space:nowrap;
+	white-space:pre;
 
 }
 div.control > div > div{
@@ -49,7 +49,7 @@ div.control > div > div{
 	
 div.control{
 overflow:hidden;
- padding:2px;
+padding:2px;
  height:300px;
  transition: all 300ms 0s ease;
   position:relative;z-index:10;
@@ -254,8 +254,8 @@ var outputimg=function(){
 
 	var data=obj.data;
 	var srcdata=srcimg.data;
-	var gumma = 1.0/2.2;
-	level = Math.pow(level,gumma);
+	var gamma = 1.0/2.2;
+	level = Math.pow(level,gamma);
 	for(var i=0;i<obj.width*obj.height;i++){
 		srcdata[i*4]=(data[i*3]*level) *255;
 		srcdata[i*4+1]=(data[i*3+1]*level)*255;
@@ -280,11 +280,11 @@ var onloadfunc=function(e){
 		var r = cindex["R"];
 		var g = cindex["G"];
 		var b = cindex["B"];
-		var gumma = 1.0/2.2;
+		var gamma = 1.0/2.2;
 		for(var i=0;i<obj.width*obj.height;i++){
-			data[i*3]=Math.pow(channels[r].data[i],gumma);
-			data[i*3+1]=Math.pow(channels[g].data[i],gumma);
-			data[i*3+2]=Math.pow(channels[b].data[i],gumma);
+			data[i*3]=Math.pow(channels[r].data[i],gamma);
+			data[i*3+1]=Math.pow(channels[g].data[i],gamma);
+			data[i*3+2]=Math.pow(channels[b].data[i],gamma);
 		}
 		outputimg(obj);
 	});
