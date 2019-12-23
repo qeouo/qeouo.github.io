@@ -1,0 +1,263 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<title>Deflatest</title>
+<style>
+</style>
+</head>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript">
+"use strict"
+var ctx,canvas;
+
+var encLZSS=function(utf8array){
+	var result=[];
+
+	for(var i=0;i<utf8array.length;i++){
+		var target = utf8array[i];
+		var kouho={};
+		var kmax=2;
+		for(var j=Math.max(0,i-65535);j<i;j++){
+			if(utf8array[i] === utf8array[j]){
+				for(var k=0;utf8array[i+k] === utf8array[j+k] && k<255;k++){
+				}
+				if(k>kmax){
+					kouho=i-j
+					kmax=k;
+				}
+			}
+		}
+		if(kmax>2){
+			result.push({p:kouho,len:kmax});
+			i+=kmax-1;
+		}else{
+			result.push(utf8array[i]);
+		}
+	}
+	return result;
+}
+var decLZSS=function(data){
+	var idx=0;
+	var decode=[];
+	for(var i=0;i<data.length;i++){
+		if(!isNaN(data[i])){
+			decode.push(data[i]);
+		}else{
+			idx=decode.length-data[i].p;
+			for(var j=0;j<data[i].len;j++){
+				decode.push(decode[idx+j]);
+			}
+		}
+	}
+	return decode;
+
+}
+
+var table=[];
+var dectable=[];
+var encHaffman=function(src){
+	var counts=[];
+	for(var i=0;i<src.length;i++){
+		if(isNaN(src[i])){
+			if(!counts[src[i].p]){
+				counts[src[i].p]={};
+				counts[src[i].p].num=0;
+				counts[src[i].p].value=src[i].p;
+			}
+			if(!counts[src[i].len]){
+				counts[src[i].len]={};
+				counts[src[i].len].num=0;
+				counts[src[i].len].value=src[i].len;
+			}
+			counts[src[i].p].num++;
+			counts[src[i].len].num++;
+		}else{
+			if(!counts[src[i]]){
+				counts[src[i]]={};
+				counts[src[i]].num=0;
+				counts[src[i]].value=src[i];
+			}
+			counts[src[i]].num++;
+		}
+	}
+	counts.sort(function(a,b){
+		if(a.num>b.num){
+			return -1;
+		}else if(a.num<b.num){
+			return 1;
+		}else{
+			return 0;
+		}
+	});
+
+	var nodes=[];
+	for(var k in counts){
+		nodes.push(counts[k]);
+	}
+	counts=nodes;
+	for(var i=0;i<counts.length;i++){
+		if(counts[i].num===0){
+			counts = counts.slice(0,i);
+		}
+	}
+	
+	while(counts.length>1){
+		var count = {};
+		var right = counts.pop();
+		var left = counts.pop();
+		count.left= left;
+		count.right= right;
+		count.num=left.num+right.num;
+		for(var i=0;i<counts.length;i++){
+			if(counts[i].num<count.num){
+				counts.splice(i-1,0,count);
+				break;
+			}
+		}
+		if(i==counts.length){
+			counts.push(count);
+		}
+		
+	}
+
+	table=[];
+	dectable=[];
+	var eda = function(branch,data){
+		if(branch.left){
+			eda(branch.left,(data<<1) + 0);
+			eda(branch.right,(data<<1)+1);
+		}else{
+			table[branch.value]=data;
+			dectable[data]=branch.value;
+		}
+	}
+	eda(counts[0],1);
+
+	var result=[];
+	for(var i=0;i<src.length;i++){
+		if(isNaN(src[i])){
+			var a={};
+			a.p=table[src[i].p];
+			a.len=table[src[i].len];
+			result.push(a);
+		}else{
+			result.push(table[src[i]]);
+		}
+	}
+
+	return result;
+}
+var decHaffman=function(src){
+	var decdata=[];
+	for(var i=0;i<src.length;i++){
+		if(isNaN(src[i])){
+			var a ={};
+			a.p=dectable[src[i].p];
+			a.len=dectable[src[i].len];
+			decdata.push(a);
+		}else{
+			decdata.push(dectable[src[i]]);
+		}
+	}
+	return decdata;
+
+}
+var format=function(src){
+	var result="";
+	for(var i=0;i<src.length;i++){
+		if(i!==0){
+			result+=",";
+		}
+
+		if(isNaN(src[i])){
+			result+="["+src[i].p.toString(16)+","+src[i].len.toString(16)+"]";
+		}else{
+			result+=src[i].toString(16);
+		}
+	}
+	return result;
+}
+var formatHaffman=function(src){
+	var result="";
+	for(var i=0;i<src.length;i++){
+		if(i!==0){
+			result+=",";
+		}
+		if(isNaN(src[i])){
+			result+="["+src[i].p.toString(2).substr(1)+","+src[i].len.toString(2).substr(1)+"]";
+		}else{
+			result+=src[i].toString(2);
+		}
+	}
+	return result;
+}
+var onloadfunc=function(e){
+	var src = document.getElementById("src");
+	var output= document.getElementById("output");
+
+	src.addEventListener("input",function(evt){
+		var output_str="";
+		var str = src.value;
+		if(str.length===0){
+			output.innerHTML="";
+			return;
+		}
+		var utf8array=[];
+		var utf8str = unescape(encodeURIComponent(str));
+		for(var i=0;i<utf8str.length;i++){
+			utf8array.push(utf8str.charCodeAt(i));
+		}
+		output_str+="\n\n↓エンコード\n"
+		output_str+="UTF8:"+format(utf8array)+"\n";
+
+		var result = encLZSS(utf8array);
+		output_str+="LZ77符号化:"+format(result)+"\n";
+
+		var haff = encHaffman(result);
+
+		output_str+="ハフマン符号化:"+formatHaffman(haff)+"\n";
+		output_str+="ハフマンテーブル:";
+		for(var key in table){
+			output_str+=","+table[key].toString(16) +"→"+Number(key).toString(2).substr(1);
+		}
+		output_str+="\n";
+
+
+		output_str+="\n\n↓こっからデコード\n"
+		result = decHaffman(haff);
+
+		output_str+="ハフマン復号化:"+format(result)+"\n";
+
+		var decode=decLZSS(result);
+		output_str+="LZ77復号化:"+format(decode)+"\n";
+
+		var aaa ="";
+		for(var i=0;i<decode.length;i++){
+	  		aaa+=String.fromCharCode(decode[i]);
+		}
+		var utf16str = decodeURIComponent(escape(aaa));	
+		output_str+="復号結果:"+utf16str+"\n";
+
+		output.innerHTML = output_str;
+
+
+	});
+
+	Util.fireEvent(src,"input");
+
+
+}
+
+</script>
+
+<body onLoad="onloadfunc(event)">
+
+元<input type="text" id ="src" size="128" value="うらにわにはにわにわにはにわにわとりがいる"><br>
+<div id="output" style="white-space:pre;"><div>
+</body>
+</html>
+
