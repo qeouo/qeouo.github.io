@@ -222,7 +222,7 @@ var onloadfunc=function(e){
 		output_str+="ハフマン符号化:"+formatHaffman(haff)+"\n";
 		output_str+="ハフマンテーブル:";
 		for(var key in table){
-			output_str+=","+table[key].toString(16) +"→"+Number(key).toString(2).substr(1);
+			output_str+=","+Number(key).toString(16) +"→"+Number(table[key]).toString(2).substr(1);
 		}
 		output_str+="\n";
 
