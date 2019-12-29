@@ -1,0 +1,186 @@
+<html>
+<head>
+<title>high dynamic range test</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<style>
+
+html,body { height:100%;margin:0;background-color:black; }
+.js-slider{ width:50px;}
+input.colorpicker{width:50px;}
+.hidden{display:none;}
+.js-slider div{
+	background-color:rgba(0,0,0,0);
+
+}
+.js-slider input{
+	background-color:rgba(255,255,255,0.5);
+
+}
+input.js-output{
+	text-align:right;
+}
+
+input[type="text"]{
+	background-color:rgba(0,0,0,0);
+  color: white;
+  font-family:monospace;
+  text-shadow: 0px 0px 1px black;
+ border:1px inset white;
+
+}
+
+div.control > div {
+	white-space:pre;
+
+}
+div.control > div > div{
+	margin-right:10px;
+	display:inline-block;
+	vertical-align:top;
+
+}
+	
+div.control{
+overflow:hidden;
+padding:2px;
+ height:300px;
+ transition: all 300ms 0s ease;
+  position:relative;z-index:10;
+  color: white;
+  font-family:monospace;
+  text-shadow:
+	  0px 0px 1px black;
+}
+</style>
+</head>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/slider.js"></script>
+<script type="text/javascript" src="../lib/openexr.js"></script>
+<script type="text/javascript">
+"use strict"
+var ctx,canvas;
+
+var outputimg=function(){
+	var obj = img;
+	var level = document.getElementById("exposure_level").value;
+	level = Math.pow(2.0,parseFloat(level));
+	canvas.width=obj.width;
+	canvas.height=obj.height;
+	var srcimg=ctx.getImageData(0,0,obj.width,obj.height);
+
+	var data=obj.data;
+	var srcdata=srcimg.data;
+	var gamma = 1.0/2.2;
+	level = Math.pow(level,gamma);
+	for(var i=0;i<obj.width*obj.height;i++){
+		srcdata[i*4]=(data[i*3]*level) *255;
+		srcdata[i*4+1]=(data[i*3+1]*level)*255;
+		srcdata[i*4+2]=(data[i*3+2]*level)*255;
+		srcdata[i*4+3]=255;
+	}
+
+	ctx.putImageData(srcimg,0,0,0,0,obj.width,obj.height);
+}
+
+var loadExr=function(url,callback){
+	var obj={};
+	Util.loadBinary(url,function(buffer){
+		OpenEXR.fromArrayBuffer(obj,buffer);
+		if(callback){
+			callback(obj);
+		}
+	});
+	return obj;
+}
+var img;
+var onloadfunc=function(e){
+
+	img = loadExr("test2.exr",function(obj){
+		var channels=obj.attributes.channels;
+		obj.data = new Array(obj.width*obj.height*3);
+		var data = obj.data;
+		var cindex={};
+		for(var i=0;i<channels.length;i++){
+			cindex[channels[i].name]=i;
+		}
+		var r = cindex["R"];
+		var g = cindex["G"];
+		var b = cindex["B"];
+		var gamma = 1.0/2.2;
+		for(var i=0;i<obj.width*obj.height;i++){
+			data[i*3]=Math.pow(channels[r].data[i],gamma);
+			data[i*3+1]=Math.pow(channels[g].data[i],gamma);
+			data[i*3+2]=Math.pow(channels[b].data[i],gamma);
+		}
+		outputimg(obj);
+	});
+
+	canvas =  document.getElementById('c')
+	ctx =  canvas.getContext('2d')
+
+
+	document.getElementsByTagName("body")[0].addEventListener("mousemove",function(e){
+		var data=img.data;
+
+		var x=e.offsetX;
+		var y=e.offsetY;
+		var width=e.target.width;
+		var height=e.target.height;
+		var clientRect = e.target.getBoundingClientRect();
+		width = clientRect.right- clientRect.left;
+		height = clientRect.bottom- clientRect.top;
+		var output = document.getElementsByTagName("span")[0];
+
+		if(x<0 || y<0 || x>=width || y>=height){return;}
+		x = (x*( img.width/width))|0;
+		y = (y*( img.height/height))|0;
+
+		var idx=(y*img.width+x)*3;
+		var r= data[idx];
+		var g= data[idx+1];
+		var b= data[idx+2];
+		r = Math.pow(r,2.2);
+		g = Math.pow(g,2.2);
+		b = Math.pow(b,2.2);
+
+		var str="position X:[x],Y:[y] \n value R:[r], G:[g], B:[b] ";
+		str=str.replace(/\[x\]/,x);
+		str=str.replace(/\[y\]/,y);
+		str=str.replace(/\[r\]/,r.toFixed(4));
+		str=str.replace(/\[g\]/,g.toFixed(4));
+		str=str.replace(/\[b\]/,b.toFixed(4));
+		Util.setText(output,str);
+
+	},false);
+
+	document.getElementById("exposure_level").addEventListener("change",function(e){
+		outputimg();
+	});
+
+}
+
+
+
+</script>
+
+<body onLoad="onloadfunc(event)">
+<div class="control">
+露光?<input class="slider" id="exposure_level" min="-5" max="5" value="0"/><br>
+<span></span>
+</div>
+
+<div id="aaa" class="" style="clear:both;left:0;top:0;margin:0 auto;width:100%;height:100%;text-align:center;position:absolute;z-index:0;">
+<canvas id="c" style="width:100%;height:100%;"></canvas><br />
+</div>
+</body>
+</html>
+
