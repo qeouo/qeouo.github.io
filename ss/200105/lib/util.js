@@ -3,7 +3,7 @@ var globalParam = {};
 var Util=(function(){
 	var myIE = document.all; //IEflg
 	var ua = window.navigator.userAgent.toLowerCase();
-	if(ua.indexOf("windows" !== -1)){
+	if(ua.indexOf("windows") !== -1){
 		globalParam.windows=1;
 	}
 

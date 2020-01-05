@@ -243,6 +243,7 @@ void main(void){
 /*[transmission]
 	/* フレネル */ 
 	specular +=  max(specular,1.0-opacity)*(1.0 - specular)*pow(1.0 + min(dot(eye,nrm),0.0),5.0); 
+	specular= clamp(specular,0.0,1.0); 
 [transmission]*/
 	/*全反射*/ 
 	angle = reflect(eye,nrm); 
@@ -253,7 +254,7 @@ void main(void){
 	vec3 refCol = textureTri(uEnvMap,vec2(256.0),refV,refx+refa) ;
 
 	/*全反射合成*/ 
-	vColor2 = mix(mix(vColor2,baseCol *refCol ,uMetallic),refCol,specular); 
+	vColor2 = mix(mix(vColor2,refCol,specular),vColor2*refCol,uMetallic); 
 [reflect]*/
 
 

@@ -1077,43 +1077,50 @@ ret.calcST = function(s,t,p0,p1,p2,u0,v0,u1,v1,u2,v2){
 		return s;
 	}
 
+
+	ret.createMainShader=function(num){
+		var shader;
+		try{
+			var options=["lightmap","transmission","reflect","height","pbr"];
+			var txt=Ono3d.main_shader_code;
+			for(var j=0;j<options.length;j++){
+				if(num&(1<<j)){
+					var re = new RegExp("/\\*\\[" + options[j] +"\\]","g");
+					txt=txt.replace(re,"");
+					re = new RegExp("\\[" + options[j] +"\\]\\*/","g");
+					txt=txt.replace(re,"");
+					
+				}else{
+					var re = new RegExp("/\\*\\[" + options[j] +"\\][\\s\\S]*?\\[" + options[j] +"\\]\\*/","g");
+
+					txt=txt.replace(re,"");
+				}
+			}
+			if(!(num&1)){
+				var re = new RegExp("/\\*\\[" + "lightprobe" +"\\]","g");
+				txt=txt.replace(re,"");
+				re = new RegExp("\\[" + "lightprobe" +"\\]\\*/","g");
+				txt=txt.replace(re,"");
+				
+			}else{
+				var re = new RegExp("/\\*\\[lightprobe\\][\\s\\S]*?\\[lightprobe\\]\\*/","g");
+				txt=txt.replace(re,"");
+			}
+			shader = Ono3d.createShader(txt);
+			shader.name = "main_"+ num;
+		}catch(e){
+			alert(path+"\n"+e.message);
+		}
+		return shader
+	}
 	ret.loadMainShader=function(){
 		var path=currentpath+"shader/main.shader?4"
 		Util.loadText(path,function(txt_org){
-			var options=["lightmap","transmission","reflect","height","pbr"];
 
-			try{
-				for(var i=0;i<(1<<options.length);i++){
-					var txt=txt_org;
-					for(var j=0;j<options.length;j++){
-						if(i&(1<<j)){
-							var re = new RegExp("/\\*\\[" + options[j] +"\\]","g");
-							txt=txt.replace(re,"");
-							re = new RegExp("\\[" + options[j] +"\\]\\*/","g");
-							txt=txt.replace(re,"");
-							
-						}else{
-							var re = new RegExp("/\\*\\[" + options[j] +"\\][\\s\\S]*?\\[" + options[j] +"\\]\\*/","g");
-
-							txt=txt.replace(re,"");
-						}
-					}
-					if(!(i&1)){
-						var re = new RegExp("/\\*\\[" + "lightprobe" +"\\]","g");
-						txt=txt.replace(re,"");
-						re = new RegExp("\\[" + "lightprobe" +"\\]\\*/","g");
-						txt=txt.replace(re,"");
-						
-					}else{
-						var re = new RegExp("/\\*\\[lightprobe\\][\\s\\S]*?\\[lightprobe\\]\\*/","g");
-						txt=txt.replace(re,"");
-					}
-					var shader = Ono3d.createShader(txt);
-					shader.name = "main_"+ i;
-					shaders[shader.name]=shader;
-				}
-			}catch(e){
-				alert(path+"\n"+e.message);
+			Ono3d.main_shader_code=txt_org;
+			for(var i=0;i<(1<<5);i++){
+				var shader = Ono3d.createMainShader(i);
+				shaders[shader.name]= shader;
 			}
 		});
 		return ;

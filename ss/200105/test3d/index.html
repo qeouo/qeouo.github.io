@@ -48,35 +48,6 @@ input.colorpicker{width:50px;}
 label{
 	position:relative;
 }
-/*
-input[type=checkbox],input[type=radio] {
-display: none;	
-}
-input[type=checkbox]+span:before{
-content:"";
-border:1px inset white;
-display:inline-block;
-width:10px;
-height:10px;
-}
-input[type=checkbox]:checked +span:before{
-	outline:1px solid white;
-outline-offset: -4px;
-}
-
-input[type=radio]+span:before{
-content:"";
-border:1px inset white;
-display:inline-block;
-width:10px;
-height:10px;
-	   border-radius:50%;
-}
-input[type=radio]:checked +span:before{
-	outline:1px solid white;
-    outline-offset: -4px;
-}
-*/
 
 input.colorpicker{
   font-family:monospace;
@@ -91,12 +62,6 @@ input[type="text"]{
   font-family:monospace;
   text-shadow:
 	  0px 0px 1px black;
-	  /*
-	  1px 1px 0 black, -1px -1px 0 black,
-              -1px 1px 0 black, 1px -1px 0 black,
-              0px 1px 0 black,  0-1px 0 black,
-              -1px 0 0 black, 1px 0 0 black;
-			  */
  border:1px inset white;
 
 }
@@ -113,24 +78,28 @@ div.control > div > div{
 }
 	
 div.control{
-overflow:hidden;
+	overflow:auto;
  height:300px;
  transition: all 300ms 0s ease;
   position:relative;z-index:10;
   color: white;
+ background-color:rgba(0,0,0,0.3);
   font-family:monospace;
   text-shadow:
 	  0px 0px 1px black;
 }
+/*
 *.nonepoint{
 	pointer-events:none;
 }
 *:not(.nonepoint) {
 	pointer-events:auto;
 }
+*/
 
 div.close{
 transform: translateY(-280px);
+	overflow:hidden;
 }
 
 div.control a{
@@ -196,11 +165,13 @@ display:none;
 		ブルーム?<input class="slider" id="exposure_bloom" max="1.0"/><br>
 	</div>
 	<div class="nonepoint">
+		<span style="display:none;">
 		法線補間<input class="slider" id="smoothing"/><br>
 		光源色1<input class="colorpicker" id="lightColor1" /><br>
 		光源色2<input class="colorpicker" id="lightColor2" /><br>
 		陰閾値1<input class="slider" id="lightThreshold1" /><br>
 		陰閾値2<input class="slider" id="lightThreshold2" /><br>
+		</span>
 	</div>
 	<div class="nonepoint">
 		<label><input type="checkbox" id="shadow"/><span>影</span></label><br>
@@ -239,6 +210,7 @@ display:none;
 		<div>
 			表面粗さ<input class="slider" id="roughness" value="0"/><br>
 			内部粗さ<input class="slider" id="subRoughness" value="1"/><br>
+		<span style="display:none;">
 			テクスチャ<select id="cTexture">
 			<option value="-1">-</option>
 			</select><br>
@@ -246,6 +218,7 @@ display:none;
 			<option value="-1">-</option>
 			</select><br>
 			影響度合<input class="slider"  max="10.0" id="cNormal"/><br>
+			</span>
 		</div>
 	</div>
 
