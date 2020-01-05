@@ -207,7 +207,13 @@ ret.Scene = (function(){
 			Util.hex2rgb(cMat.metalColor,globalParam.metalColor);
 			cMat.texture=globalParam.cTexture;
 
-			cMat.shader=Ono3d.calcMainShaderName(cMat);
+			cMat.hightMap=null;
+			cMat.hightMapPower=0.0;
+			cMat.baseColorMap =null;
+			cMat.pbrMap=null; 
+
+
+			cMat.shader="";//Ono3d.calcMainShaderName(cMat);
 			customMaterial=cMat;
 		}
 
