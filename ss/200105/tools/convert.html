@@ -1,0 +1,470 @@
+<html>
+<head>
+<title>skycube convert</title>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript">
+"use strict"
+var ctx,canvas;
+var onloadfunc=function(e){
+
+	document.getElementById("selfile").addEventListener("change",function(evt){
+		var file=evt.target.files;
+		var reader=new FileReader();
+		reader.readAsDataURL(file[0]);
+		reader.onload=function(){
+			var dataUrl = reader.result;
+			document.getElementById("srcImg").src=dataUrl;
+//			convert();
+		}
+	});
+	var fromSelect=document.getElementById("fromtype");
+	var toSelect=document.getElementById("totype");
+	var option = document.createElement('option');
+	option.setAttribute('value', -1);
+	option.innerHTML = "";
+	toSelect.appendChild(option);
+
+	for(var i=0;i<funcs.length;i++){
+		var func=funcs[i];
+		option = document.createElement('option');
+		option.setAttribute('value', i);
+		option.innerHTML = func.name;
+		fromSelect.appendChild(option);
+
+		option = document.createElement('option');
+		option.setAttribute('value', i);
+		option.innerHTML = func.name;
+		toSelect.appendChild(option);
+	}
+ 
+	canvas =  document.getElementById('c')
+}
+
+var randvec=function(v,vecn,vecs,vect,r){
+	//法線vecnを中心に角度rに一様に分布するランダムベクトルvを求める
+	var r2=Math.random()*Math.PI*2;
+	var sx,sy,sz,tx,ty,tz;
+	var n=Math.cos(r);
+	var s=Math.sin(r);
+	var t=s*Math.cos(r2);
+	s=s*Math.sin(r2);
+
+	
+	v[0]=n*vecn[0] + s*vecs[0] + t*vect[0];
+	v[1]=n*vecn[1] + s*vecs[1] + t*vect[1];
+	v[2]=n*vecn[2] + s*vecs[2] + t*vect[2];
+};
+var sqrt=Math.sqrt;
+var random=Math.random;
+var acos=Math.acos;
+var _255=1./256;
+var HtoL=function(src){
+	src*=_255;
+	return src*2
+}
+
+var LtoH=function(src){
+	return src*0.5;
+}
+var convert=function(){
+	var srcImg = document.getElementById("srcImg");
+	canvas.width=srcImg.width;
+	canvas.height=srcImg.height;
+	ctx =  canvas.getContext('2d')
+	ctx.drawImage(srcImg,0,0,srcImg.width,srcImg.height,0,0,canvas.width,canvas.height);
+	canvas.style.display='inline';
+	//document.getElementById("dstImg").style.display='none';
+
+	var srcimg=ctx.getImageData(0,0,canvas.width,canvas.height);
+	var srcwidth=srcimg.width;
+	var srcheight=srcimg.height;
+	var srcdata=srcimg.data;
+
+	var dstwidth=parseInt(document.getElementById("dstwidth").value);
+	var dstheight=parseInt(document.getElementById("dstheight").value);
+	var roughness=parseFloat(document.getElementById("roughness").value);
+	if(!dstwidth){
+		dstwidth=srcwidth;
+	}
+	if(!dstheight){
+		dstheight=srcheight;
+	}
+	var dst = ctx.createImageData(dstwidth,dstheight)
+	var dstdata=dst.data;
+
+	var loopmax=parseInt(document.getElementById("loopnum").value);
+
+	var uv=new Vec2();
+	var angle=new Vec3();
+	var vecs=new Vec3();
+	var vect=new Vec3();
+	var angledef=new Vec3();
+	var u,v,x,y,i;
+	var srcidx;
+
+	var toSelect= document.getElementById("totype");
+	var fromSelect= document.getElementById("fromtype");
+	var angle2uv=funcs[fromSelect.selectedIndex].angle2uv;
+	var uv2angle;
+	if(toSelect.value<0){
+		uv2angle=funcs[fromSelect.selectedIndex].uv2angle;
+	}else{
+		uv2angle=funcs[toSelect.value].uv2angle;
+	}
+	var srcImg=document.getElementById("srcImg");
+
+	var R,G,B,A;
+	var _dstwidth = 1/dstwidth;
+	var _dstheight = 1/dstheight;
+	if(roughness<=0){
+		loopmax=1;
+	}
+	var _loopmax = 1/loopmax;
+	var y=0,x=0;
+	var oldy=0;
+
+	canvas.width=dstwidth;
+	canvas.height=dstheight;
+	ctx =  canvas.getContext('2d')
+	var func=function(){
+		var nowTime = Date.now();
+		while(1){
+			
+			uv[0]=x*_dstwidth;
+			uv[1]=y*_dstheight;
+			R=0;G=0;B=0;A=0;
+			uv2angle(angledef,uv);
+			var rev=1.0/Math.sqrt(angledef[0]*angledef[0]+angledef[2]*angledef[2])
+			if(angledef[1]*angledef[1]>=1.0){
+				vecs[0]=1.0;
+				vecs[1]=0;
+				vecs[2]=0;
+			}else if(angledef[1]*angledef[1]>=0.7){
+				vecs[0]=angledef[2]*rev;
+				vecs[1]=0;
+				vecs[2]=-angledef[0]*rev;
+			}else{
+				rev=1.0/Math.sqrt(angledef[1]*angledef[1]+angledef[2]*angledef[2])
+				vecs[0]=0;
+				vecs[1]=-angledef[2]*rev;
+				vecs[2]=angledef[1]*rev;
+			}
+			Vec3.cross(vect,angledef,vecs);
+			for(i=0;i<loopmax;i++){
+				randvec(angle,angledef,vecs,vect,acos(sqrt(1-random()*roughness)));
+				angle2uv(uv,angle);
+
+				var u=uv[0]*srcwidth-0.5;
+				var v=uv[1]*srcheight-0.5;
+				var uu=u-(u|0);
+				var vv=v-(v|0);
+				var v1=((v|0)+1)
+				var u1=((u|0)+1)
+				if(v1>=srcheight)v1=0;
+				if(u1>=srcwidth)u1=0;
+				srcidx=(v1*srcwidth+u1)<<2;
+				var ratio=uu*vv;
+				R+=HtoL(srcdata[srcidx]) * ratio
+				G+=HtoL(srcdata[srcidx+1]) * ratio
+				B+=HtoL(srcdata[srcidx+2]) * ratio
+			//	A+=HtoL(srcdata[srcidx+3]) * ratio
+
+				srcidx=(((v|0))*srcwidth+u1)<<2;
+				ratio=uu*(1-vv);
+				R+=HtoL(srcdata[srcidx]) * ratio
+				G+=HtoL(srcdata[srcidx+1]) * ratio
+				B+=HtoL(srcdata[srcidx+2]) * ratio
+			//	A+=HtoL(srcdata[srcidx+3]) * ratio
+				srcidx=(v1*srcwidth+((u|0)))<<2;
+				ratio=(1-uu)*vv;
+				R+=HtoL(srcdata[srcidx]) * ratio
+				G+=HtoL(srcdata[srcidx+1]) * ratio
+				B+=HtoL(srcdata[srcidx+2]) * ratio
+			//	A+=HtoL(srcdata[srcidx+3]) * ratio
+				srcidx=(((v|0))*srcwidth+((u|0)))<<2;
+				ratio=(1-uu)*(1-vv);
+				R+=HtoL(srcdata[srcidx]) * ratio
+				G+=HtoL(srcdata[srcidx+1]) * ratio
+				B+=HtoL(srcdata[srcidx+2]) * ratio
+			//	A+=HtoL(srcdata[srcidx+3]) * ratio
+			}
+			var dstidx=(y*dstwidth+x)<<2;
+			dstdata[dstidx  ]=LtoH(R*_loopmax)*255;
+			dstdata[dstidx+1]=LtoH(G*_loopmax)*255;
+			dstdata[dstidx+2]=LtoH(B*_loopmax)*255;
+			dstdata[dstidx+3]=255;//A*_loopmax;
+			x++;
+
+			if(x>=dstwidth){
+				x=0;
+				y++;
+			}
+			if(y>=dstheight || (Date.now()-nowTime)>100){
+				break;
+			}
+		}
+		if(y<dstheight){
+			ctx.putImageData(dst,0,0,0,oldy,dstwidth,y-oldy+1);
+			oldy=y;
+			setTimeout(func,1);
+		}else{
+			//ctx.putImageData(dst,0,0,0,0,dstwidth,dstheight);
+			ctx.putImageData(dst,0,0,0,0,dstwidth,dstheight);
+			canvas.style.display='none';
+			document.getElementById("dstImg").src=canvas.toDataURL("image/png");
+			document.getElementById("dstImg").style.display='inline';
+		}
+	}
+		
+	func();
+	
+
+}
+var atan2=Math.atan2;
+var asin=Math.asin;
+var PI=Math.PI;
+var _PI = 1/PI;
+var _PI05=_PI*0.5;
+var sqrt=Math.sqrt;
+
+var Polar = (function()	{
+	//極座標表示
+	var ret={};
+	ret.name="Polar";
+	ret.angle2uv=function(uv,angle){
+		uv[0]=atan2(angle[2],angle[0])*_PI05+0.5;
+		uv[1]=-asin(angle[1])*_PI+0.5;
+	}
+	ret.uv2angle=function(angle,uv){
+		angle[1]=-Math.sin((uv[1]-0.5)*Math.PI)
+		var l=sqrt(1-angle[1]*angle[1])
+		var r=-uv[0]*Math.PI*2 - Math.PI*0.5;
+		angle[0]=Math.sin(r)*l
+		angle[2]=Math.cos(r)*l
+	}
+	return ret;
+})();
+var Sphere= (function(){
+	//半球x2
+	var ret={};
+	ret.name="Sphere";
+	ret.angle2uv= function(uv,angle){
+		uv[0]=angle[0]*0.5+0.5;
+		uv[1]=angle[2]*0.5+0.5;
+		uv[0]=(uv[0]+(((-angle[1]*(1<<30))>>30)&1))*0.5;
+	}
+	ret.uv2angle=function(angle,uv){
+		var u=uv[0];
+		var v=uv[1]
+		angle[2]=v*2-1;
+		if(u<0.5){
+			angle[0]=u*4-1;
+		}else{
+			angle[0]=(u-0.5)*4-1;
+		}
+		var l=1.//Math.pow(angle[0]*angle[0]+angle[2]*angle[2],1./4.);
+		angle[0]*=l;
+		angle[2]*=l;
+		
+		if(angle[0]*angle[0]+angle[2]*angle[2]>1){
+			angle[1]=0;
+			Vec3.norm(angle);
+		}else{
+			angle[1]=-sqrt(1-angle[0]*angle[0]-angle[2]*angle[2]);
+		}
+		if(u>0.5){
+			angle[1]*=-1;
+		}
+			Vec3.norm(angle);
+	}
+	return ret;
+})();
+var Cube = (function(){
+	//キューブマップ(前右後左\n下上)
+	var ret = {};
+	ret.name="Cube";
+	ret.angle2uv=function(uv,angle){
+		var x=angle[0];
+		var y=angle[1];
+		var z=angle[2];
+		var u,v;
+		if(y*y>x*x && y*y>z*z){
+			x/=Math.abs(y);
+			z/=Math.abs(y);
+			if(x>0.99)x=0.99;
+			if(x<-0.99)x=-0.99;
+			if(z>0.99)z=0.99;
+			if(z<-0.99)z=-0.99;
+			if(y>0){
+				u=0.25+0.125-x*0.125
+				v=0.5+0.25+z*0.25
+			}else{
+				u=0.125-x*0.125
+				v=0.5+0.25-z*0.25
+			}
+		}else{
+			if(x*x>z*z){
+				z/=Math.abs(x);
+				y/=Math.abs(x);
+			if(y>0.99)y=0.99;
+			if(y<-0.99)y=-0.99;
+			if(z>0.99)z=0.99;
+			if(z<-0.99)z=-0.99;
+				if(x<0){
+					u=0.25+0.125-z*0.125;
+					v=0.25-y*0.25;
+				}else{
+					u=0.25+0.5+0.125+z*0.125;
+					v=0.25-y*0.25;
+				}
+			}else{
+				x/=Math.abs(z);
+				y/=Math.abs(z);
+				if(y>0.99)y=0.99;
+				if(y<-0.99)y=-0.99;
+				if(x>0.99)x=0.99;
+				if(x<-0.99)x=-0.99;
+				if(z>0){
+					u=0.125-x*0.125;
+					v=0.25-y*0.25;
+				}else{
+					u=0.5+0.125+x*0.125;
+					v=0.25-y*0.25;
+				}
+			}
+		}
+		uv[0]=u;
+		uv[1]=v;
+	}
+	ret.uv2angle=function(angle,uv){
+		var xx=uv[0]*4;
+		var yy=uv[1]*2;
+		if(yy<1){
+			yy=-(yy*2-1);
+			angle[1]=yy;
+			if(xx<1){
+				angle[2]=1;
+				angle[0]=-(xx*2-1);
+			}else if(xx<2){
+				xx-=1;
+				angle[2]=-(xx*2-1);
+				angle[0]=-1;
+			}else if(xx<3){
+				xx-=2;
+				angle[2]=-1;
+				angle[0]=xx*2-1;
+			}else{
+				xx-=3;
+				angle[2]=(xx*2-1);
+				angle[0]=1;
+			}
+		}else{
+			yy-=1;
+			yy=-(yy*2-1);
+			if(xx<1){
+				angle[1]=-1;
+				angle[0]=-(xx*2-1);
+				angle[2]=yy;
+			}else if(xx<2){
+				xx-=1;
+				angle[1]=1;
+				angle[0]=-(xx*2-1);
+				angle[2]=-yy;
+			}else{
+				angle[1]=1;
+				angle[0]=1;
+				angle[2]=1;
+			}
+		}
+		Vec3.norm(angle);
+	}
+	return ret;
+})();
+
+
+var funcs=[
+	Polar
+	,Cube
+	,Sphere
+];
+
+var legendre=function(l,m,theta,pi){
+	
+}
+
+var kaijo=function(n){
+	var result=1;
+	for(var i=0;i<n;i++){
+		result *= (i+1);
+	}
+	return result;
+
+}
+var kaijo2=function(n){
+	var result=1;
+	for(var i=n;i>0;i-=2){
+		result *= i;
+	}
+	return result;
+
+}
+
+var K = function(m,l){
+	var a = (2*l+1)/(4*Math.PI);
+	var b = kaijo(l-Math.abs(m))/kaijo(l+Math.abs(m));
+	return Math.sqrt(a*b);
+}
+var spherical=function(m,l,theta,pi){
+	if(m>0){
+		return Math.sqrt(2)*K(m,l)*Math.cos(m*pi)*legendre(m,l,Math.cos(theta));
+	}else if(m<0){
+		return Math.sqrt(2)*K(m,l)*Math.sin(-m*pi)*legendre(-m,l,Math.cos(theta));
+	}else{
+		return K(0,l)*legendre(0,l,Math.cos(theta));
+	}
+}
+var legendre=function(m,n,x){
+	if(m===n){
+		return  Math.pow(-1,m)*kaijo2(2*m-1)*Math.pow(1-x*x,m/2);
+	}
+	if((m+1)===n){
+		return (2*m+1)*x*legendre(m,m,x);
+	}
+	return (2*n-1)*legendre(m,n-1,x)-(n+m-1)*legendre(m,n-2,x);
+	
+}
+
+</script>
+
+<style>
+img{
+	border:solid 1px;
+	min-width:50px;
+	min-height:50px;
+}
+canvas{
+	display:none;
+}
+</style>
+</head>
+<body onLoad="onloadfunc(event)">
+<input type="file" id="selfile">
+From:<select id="fromtype"></select><br />
+To:<select id="totype"></select>
+
+	x<input type="number" id="dstwidth" min="0" step="1" style="width:50px;">
+	y<input type="number" id="dstheight" min="0" step="1" style="width:50px;">
+	roughness<input type="number" id="roughness" max="1" min="0" value="0" step="0.1" style="width:50px;">
+	loop<input type="number" id="loopnum" max="2000" min="0" step="1" value="100" style="width:50px;">
+	<input type="button" value="convert" onclick="convert()"><br>
+<canvas id="c"></canvas><br />
+
+Source<img src="" id="srcImg"/><br />
+<br />
+Output<img id="dstImg">
+</div>
+</body>
+</html>
+

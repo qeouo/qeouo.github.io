@@ -1,0 +1,157 @@
+<html>
+<head>
+<title>skybox convert</title>
+</head>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript">
+"use strict"
+var ctx,canvas;
+var onloadfunc=function(e){
+
+	document.getElementById("selfile").addEventListener("change",function(evt){
+		var file=evt.target.files;
+		var reader=new FileReader();
+		reader.readAsDataURL(file[0]);
+		reader.onload=function(){
+			var dataUrl = reader.result;
+			document.getElementById("srcImg").src=dataUrl;
+
+//			convert();
+		}
+	});
+ 
+	canvas =  document.getElementById('c')
+}
+var abs =Math.abs;
+var sqrt=Math.sqrt;
+var min=Math.min;
+var max=Math.max;
+var getlen = function(srcx,srcy,srcdata,width,height){
+	//半径1ドットずつ増やして走査
+	var l=128*128;
+	var current=0x80;
+	
+	if(srcdata[(srcx+srcy*width)*4] & 0x80){
+		var current=0x0;
+	}
+
+	for(var r =1;r<128;r++){
+		var ymax=min(srcy+r,height);
+		for(var y=max(srcy-r,0);y<ymax;y++){
+			var dy=abs(y-srcy);
+			var xmin=0;
+
+			xmin=sqrt((r-1)*(r-1)-dy*dy)|0;
+
+			var xmax=sqrt(r*r-dy*dy)|0;
+			var idx=srcx+y*width;
+
+			for(var dx=xmin;dx<xmax;dx++){
+				if(srcx-dx>=0){
+					if((srcdata[(idx-dx)*4] & 0x80) == current){
+						if(l>(dx*dx+dy*dy)){
+							l=(dx*dx+dy*dy);
+							break;
+						}
+					}
+				}
+				if( srcx+dx<width){
+					if((srcdata[(idx+dx)*4] & 0x80) == current){
+						if(l>(dx*dx+dy*dy)){
+							l=(dx*dx+dy*dy);
+							break;
+						}
+					}
+				}
+			}
+		}
+		if(l<128*128)break;
+	}
+	l=sqrt(l);
+
+	if(!current){
+		l=1-l;
+
+	}
+	return l;
+}
+
+var convert=function(){
+	var srcImg = document.getElementById("srcImg");
+	canvas.width=srcImg.width;
+	canvas.height=srcImg.height;
+	ctx =  canvas.getContext('2d')
+	ctx.drawImage(srcImg,0,0,srcImg.width,srcImg.height,0,0,canvas.width,canvas.height);
+	canvas.style.display='inline';
+	document.getElementById("dstImg").style.display='none';
+
+	var srcimg=ctx.getImageData(0,0,canvas.width,canvas.height);
+	var srcwidth=srcimg.width;
+	var srcheight=srcimg.height;
+	var srcdata=srcimg.data;
+
+	var dstwidth=parseInt(document.getElementById("dstwidth").value);
+	var dstheight=parseInt(document.getElementById("dstheight").value);
+	if(!dstwidth){
+		dstwidth=srcwidth;
+	}
+	if(!dstheight){
+		dstheight=srcheight;
+	}
+	var dst = ctx.createImageData(dstwidth,dstheight)
+	var dstdata=dst.data;
+
+
+	var _dstwidth = 1/dstwidth;
+	var _dstheight = 1/dstheight;
+
+	canvas.width=dstwidth;
+	canvas.height=dstheight;
+	ctx =  canvas.getContext('2d')
+
+	var maxlen=parseInt(document.getElementById("maxlen").value);
+
+	var _maxlen= 1.0/maxlen;
+	
+	for(var i=0;i<dstwidth;i++){
+		for(var j=0;j<dstheight;j++){
+			var dstidx = (i+j*dstwidth)*4
+			var srcidx = ((i*_dstwidth*srcwidth|0) + (j*_dstheight*srcheight|0)*srcwidth)*4;
+
+			var l = getlen((i*_dstwidth*srcwidth|0), (j*_dstheight*srcheight|0),srcdata,srcwidth,srcheight);
+			l=max(min(l*_maxlen,1.0),-1.0);
+			l = l*128+128;
+
+			dstdata[dstidx] = l;
+			dstdata[dstidx+1] = l;
+			dstdata[dstidx+2] = l;
+			dstdata[dstidx+3] = 255;
+
+		}
+	}
+	ctx.putImageData(dst,0,0,0,0,dstwidth,dstheight);
+	canvas.style.display='none';
+	document.getElementById("dstImg").src=canvas.toDataURL("image/png");
+	document.getElementById("dstImg").style.display='inline';
+
+}
+</script>
+
+<body onLoad="onloadfunc(event)">
+<input type="file" id="selfile">
+
+	x<input type="number" id="dstwidth" min="0" step="1" style="width:50px;">
+	y<input type="number" id="dstheight" min="0" step="1" style="width:50px;">
+	maxlen<input type="number" id="maxlen" min="0" step="1" style="width:50px;">
+	<input type="button" value="convert" onclick="convert()"><br>
+
+<img src="" id="srcImg"/><br />
+<canvas id="c" style="border:solid 1px;"></canvas><br />
+<br />
+<img id="dstImg">
+</div>
+</body>
+</html>
+

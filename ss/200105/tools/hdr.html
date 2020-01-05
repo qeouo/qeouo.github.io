@@ -1,0 +1,375 @@
+<html>
+<head>
+<title>hdr</title>
+<style>
+.hoge div{
+display:inline-block;
+border:2px ridge;
+padding:2px;
+vertical-align:top;
+}
+canvas{
+display:none;
+}
+</style>
+</head>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/openexr.js"></script>
+<script type="text/javascript">
+"use strict"
+var ctx,canvas;
+
+var srcA,srcB,dst;
+
+
+//計算
+var calc=function(dst,srcA,srcB){
+	if(srcA && srcB){
+
+		for(var i=0;i<dst.data.length;i+=4){
+			for(var j=0;j<3;j++){
+				dst.data[i+j]=srcA.data[i+j]+srcB.data[i+j];
+			}
+			dst.data[i+3]=255;
+		}
+	}else if(srcA){
+		for(var i=0;i<dst.data.length;i++){
+			dst.data[i]=srcA.data[i];
+		}
+	}else if(srcB){
+		for(var i=0;i<dst.data.length;i++){
+			dst.data[i]=srcB.data[i];
+		}
+	}
+}
+
+//RGBEエンコード
+var enc=function(dst,src){
+	var srcdata=src.data;
+	var dstdata=dst.data;
+	for(var i=0;i<srcdata.length;i+=4){
+		var m = Math.max(Math.max(srcdata[i],srcdata[i+1]),srcdata[i+2]);
+		if(m===0){
+			e=-128;
+		}else{
+			m = Math.max(m,0.00001);
+			var e = Math.ceil(Math.log2(m));
+			e = Math.min(Math.max(e,-128),127);
+		}
+		var d=1.0/Math.pow(2,e);
+		for(var j=0;j<3;j++){
+			dstdata[i+j]=srcdata[i+j]*255.0*d;
+		}
+		dstdata[i+3]=e+128;
+	}
+
+}
+
+var cbloadHdr = function(obj,arrayBuffer){
+	var idx=0;
+	var dv = new DataView(arrayBuffer);
+
+	//空行までスキップ
+	while(idx<dv.byteLength){
+		var c=dv.getUint8(idx++);
+		if(c==10 || c==13){
+			c=dv.getUint8(idx++);
+			if(c==10 || c==13){
+				break;
+			}
+		}
+	}
+	//画像サイズ
+	var str = "";
+
+	while((c=dv.getUint8(idx++)) != 10){
+		str+=String.fromCharCode(c);
+	}
+	var strs =str.split(" ");
+	var height =parseInt(strs[1]);
+	var width=parseInt(strs[3]);
+	obj.width=width;
+	obj.height=height;
+
+	canvas.width=width;
+	canvas.height=height;
+	var data=new Array(width*height*4);
+			
+
+	var x,y=0;
+	for(y=0;y<height;y++){
+		idx+=4;
+		for(var rgbe=0;rgbe<4;rgbe++){
+			x=0;
+			var offset=y*4*width + rgbe;
+			while(x<width){
+				var c=dv.getUint8(idx++);
+				if(c>128){
+					var size=c-128;
+					c=dv.getUint8(idx++);
+					for(var i=0;i<size;i++){
+						data[x*4+offset]=c;
+						x++;
+					}
+				}else{
+					var size=c;
+					for(var i=0;i<size;i++){
+						c=dv.getUint8(idx++);
+						data[x*4+offset]=c;
+						x++;
+					}
+				}
+			}
+		}
+	}
+	obj.data=data;
+	return data;
+	
+
+}
+var loadHdr=function(url,callback){
+	var obj={};
+	Util.loadBinary(url,function(buffer){
+
+		cbloadHdr(obj,buffer);
+		callback(obj);
+
+	});
+	return obj;
+}
+
+
+
+
+var loadExr=function(url,callback){
+	var obj={};
+	Util.loadBinary(url,function(buffer){
+		OpenEXR.fromArrayBuffer(obj,buffer);
+		if(callback){
+			callback(obj);
+		}
+	});
+	return obj;
+}
+
+var outputimg=function(img,obj){
+	canvas.width=obj.width;
+	canvas.height=obj.height;
+	var srcimg=ctx.getImageData(0,0,obj.width,obj.height);
+
+	var data=obj.data;
+	var srcdata=srcimg.data;
+	for(var i=0;i<data.length;i+=4){
+		srcdata[i]=data[i]*255;
+		srcdata[i+1]=data[i+1]*255;
+		srcdata[i+2]=data[i+2]*255;
+		srcdata[i+3]=data[i+3]*255;
+	}
+
+	ctx.putImageData(srcimg,0,0,0,0,obj.width,obj.height);
+	img.src=canvas.toDataURL("image/png");
+}
+var outputimg255=function(img,obj){
+	canvas.width=obj.width;
+	canvas.height=obj.height;
+	var srcimg=ctx.getImageData(0,0,obj.width,obj.height);
+
+	var data=obj.data;
+	var srcdata=srcimg.data;
+	for(var i=0;i<data.length;i+=4){
+		srcdata[i]=data[i];
+		srcdata[i+1]=data[i+1];
+		srcdata[i+2]=data[i+2];
+		srcdata[i+3]=data[i+3];
+	}
+
+	ctx.putImageData(srcimg,0,0,0,0,obj.width,obj.height);
+	img.src=canvas.toDataURL("image/png");
+}
+
+var onloadfunc=function(e){
+
+	var objs = document.getElementsByTagName("input");
+	for(var i=0;i<objs.length;i++){
+		objs[i].addEventListener("change",function(evt){
+			var file=evt.target.files[0];
+			var img = this.parentNode.getElementsByTagName("img")[0];
+			var id=img.parentNode.getAttribute("id");
+			if(/\.(hdr|exr)$/.test(file.name)){
+
+				var reader=new FileReader();
+				reader.onload=function(e){
+					if(/\.hdr/.test(file.name)){
+						var obj=loadHdr(e.target.result,function(obj){
+							var data=obj.data;
+							for(var i=0;i<data.length;i+=4){
+								var e = Math.pow(2.0,data[i+3]-128);
+								data[i]*=e/255.0;
+								data[i+1]*=e/255.0;
+								data[i+2]*=e/255.0;
+								data[i+3]=1.0;
+
+							}
+
+							outputimg(img,obj);
+
+
+							dst={};
+							dst.data=new Array(obj.data.length);
+							dst.width=obj.width;
+							dst.height=obj.height;
+							calc(dst,srcA,srcB);
+							var imga = document.getElementById("dstimg");
+							outputimg(imga,dst);
+
+							var encobj={};
+							encobj.data=new Array(dst.data.length);
+							encobj.width=dst.width;
+							encobj.height=dst.height;
+							enc(encobj,dst);
+							imga = document.getElementById("rgbe");
+							outputimg(imga,encobj);
+							
+						});
+					}else if(/\.exr/.test(file.name)){
+						var obj=loadExr(e.target.result,function(obj){
+							var channels=obj.attributes.channels;
+							obj.data = new Array(obj.width*obj.height*4);
+							var data = obj.data;
+							var cindex={};
+							for(var i=0;i<channels.length;i++){
+								cindex[channels[i].name]=i;
+							}
+							var r = cindex["R"];
+							var g = cindex["G"];
+							var b = cindex["B"];
+							for(var i=0;i<data.length;i+=4){
+								data[i]=channels[r].data[i>>2];
+								data[i+1]=channels[g].data[i>>2];
+								data[i+2]=channels[b].data[i>>2];
+								data[i+3]=1.0;
+
+							}
+
+
+							outputimg(img,obj);
+
+
+							dst={};
+							dst.data=new Array(obj.data.length);
+							dst.width=obj.width;
+							dst.height=obj.height;
+							calc(dst,srcA,srcB);
+							var imga = document.getElementById("dstimg");
+							outputimg(imga,dst);
+
+							var encobj={};
+							encobj.data=new Array(dst.data.length);
+							encobj.width=dst.width;
+							encobj.height=dst.height;
+							enc(encobj,dst);
+							imga = document.getElementById("rgbe");
+							outputimg255(imga,encobj);
+							
+						});
+					}
+					
+					if(id=="srcA"){
+						srcA=obj;
+					}
+					if(id=="srcB"){
+						srcB=obj;
+					}
+					if(id=="dst"){
+						dst=obj;
+					}
+
+				}
+				reader.readAsDataURL(file);
+			}
+		});
+
+	}
+
+	var objs = document.getElementsByTagName("img");
+	for(var i=0;i<objs.length;i++){
+		objs[i].addEventListener("mousemove",function(e){
+			var img = this.parentNode.getElementsByTagName("img")[0];
+			var o=[srcA,srcB,dst];
+			var id=img.parentNode.getAttribute("id");
+			var data=null;
+			if(id=="srcA"){
+				data=srcA.data;
+			}else if(id=="srcB"){
+				data=srcB.data;
+			}else{
+				data=dst.data;
+			}
+			if(!data){
+				return;
+			}
+
+
+			var x=e.offsetX;
+			var y=e.offsetY;
+			var width=e.target.width;
+			var height=e.target.height;
+			var output = this.parentNode.getElementsByTagName("span")[0];
+
+			if(x<0 || y<0 || x>=width || y>=height){return;}
+
+			var idx=(y*canvas.width+x)*4;
+			var r= data[idx];
+			var g= data[idx+1];
+			var b= data[idx+2];
+			var e= data[idx+3];
+
+			var str="position X:[x],Y:[y] \n value R:[r], G:[g], B:[b] ";
+			str=str.replace(/\[x\]/,x);
+			str=str.replace(/\[y\]/,y);
+			str=str.replace(/\[r\]/,(r).toFixed(4));
+			str=str.replace(/\[g\]/,(g).toFixed(4));
+			str=str.replace(/\[b\]/,(b).toFixed(4));
+			Util.setText(output,str);
+
+		},false);
+	}
+ 
+	canvas =  document.getElementById('c')
+	ctx =  canvas.getContext('2d')
+}
+
+
+
+</script>
+
+<body onLoad="onloadfunc(event)">
+
+<div class="hoge">
+	<div id="srcA">
+	<input type="file">
+		srcA<br>
+		<img />
+		<br><span></span>
+	</div>
+
+	<div id="srcB">
+		<input type="file">
+		srcB<br>
+		<img/>
+		<br><span></span>
+	</div>
+	<div id="dst">
+	dst = srcA+srcB<br>
+	<img id="dstimg"/>
+	<br><span></span>
+	<canvas id="c" ></canvas><br />
+	enc<br />
+	<img id="rgbe">
+</div>
+</div>
+</body>
+</html>
+

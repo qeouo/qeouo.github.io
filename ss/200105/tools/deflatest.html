@@ -1,0 +1,127 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<title>Deflatest</title>
+<style>
+</style>
+</head>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/deflate.js"></script>
+<script type="text/javascript">
+"use strict"
+var ctx,canvas;
+
+var demo=function(){
+	var output_str="";
+	var str = src.value;
+
+	if(str.length===0){
+		//なんも入力されてなかったらなんもしない
+		output.innerHTML=output_str;
+		return;
+	}
+	output_str+="↓エンコード\n"
+
+	//入力文字列をUTF-8に変換
+	var utf8array=[];
+	var utf8str = unescape(encodeURIComponent(str));
+	for(var i=0;i<utf8str.length;i++){
+		utf8array.push(utf8str.charCodeAt(i));
+	}
+	output_str+="UTF8("+utf8array.length+"byte):"+format(utf8array)+"\n";
+
+	//deflate圧縮を行う
+	Deflate.output_str="";
+	var encoded =Deflate.compress(utf8array,0,utf8array.length);
+
+	output_str+=Deflate.output_str;
+	Deflate.output_str="";
+	output_str+="全部合わせた最終結果("+ (encoded.byteLength)+"byte):\n"+formatBinary(encoded)+"\n";
+
+	//deflate伸長を行う
+	output_str+="\n\n↓こっからデコード\n"
+   	var decode = Deflate.expand(encoded);
+
+	output_str+=Deflate.output_str;
+
+	var str ="";
+	for(var i=0;i<decode.length;i++){
+		str +=String.fromCharCode(decode[i]);
+	}
+	var utf16str = decodeURIComponent(escape(str));	
+	output_str+="復号結果:"+utf16str+"\n";
+
+	output.innerHTML = output_str;
+}
+var onloadfunc=function(e){
+	var src = document.getElementById("src");
+	var output= document.getElementById("output");
+
+	src.addEventListener("input",function(evt){
+		demo();
+	});
+	document.getElementById("comp_mode").addEventListener("change",function(evt){
+		demo();
+	});
+
+	demo();
+}
+
+var format=function(src){
+	//
+	var result="";
+	for(var i=0;i<src.length;i++){
+		if(i!==0){
+			result+=",";
+		}
+
+		if(isNaN(src[i])){
+	 		result+="&lt;"+src[i].len.toString(10)+","+src[i].dist.toString(10)+"&gt;";
+		}else{
+			result+=src[i].toString(10);
+		}
+	}
+	return result;
+}
+var formatBinary=function(array_buffer){
+	var src = new Uint8Array(array_buffer);
+	var result="";
+	for(var i=0;i<src.length;i++){
+		if(i!==0){
+			result+=",";
+		}
+		result+=('00000000' +src[i].toString(2)).slice(-8);
+	}
+	return result;
+}
+var formatHuffmans=function(huffmans){
+	var result="";
+	for(var i=0;i<huffmans.length && i<3 ;i++){
+		if(i!==0){
+			result+=",";
+		}
+		result+=('0000000000' +huffmans[i].Code.toString(2)).slice(-huffmans[i].Len);
+	}
+	return result;
+}
+
+
+
+</script>
+
+<body onLoad="onloadfunc(event)">
+
+元テキスト<input type="text" id ="src" size="128" value="うらにわにはにわにわにはにわにわとりがいる🐔🐔🐔🐊🐔🐊🐔🐊🐔🐊"><br>
+圧縮モード<select id="comp_mode">
+<option value="0">無圧縮</option>
+<option value="1" >固定ハフマン符号</option>
+<option value="2" selected>カスタムハフマン符号</option>
+<select>
+<div id="output" style="white-space:pre;"><div>
+</body>
+</html>
+
