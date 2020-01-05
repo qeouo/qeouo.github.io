@@ -401,6 +401,9 @@ var Ono3d = (function(){
 				}
 			}
 		}
+		if(!shaders["main_"+num]){
+			shaders["main_"+num]=Ono3d.createMainShader(num);
+		}
 		return "main_"+num;
 	}
 	ret.prototype.render = function(camerap){
@@ -1119,8 +1122,9 @@ ret.calcST = function(s,t,p0,p1,p2,u0,v0,u1,v1,u2,v2){
 
 			Ono3d.main_shader_code=txt_org;
 			for(var i=0;i<(1<<5);i++){
-				var shader = Ono3d.createMainShader(i);
-				shaders[shader.name]= shader;
+				//var shader = Ono3d.createMainShader(i);
+			//	shaders[shader.name]= shader;
+				shaders["main_"+i]= null;
 			}
 		});
 		return ;
