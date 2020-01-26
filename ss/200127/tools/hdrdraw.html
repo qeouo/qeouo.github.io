@@ -1,0 +1,990 @@
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<title>hdrdraw</title>
+<style>
+body{
+	background-color:gray;
+}
+.hoge{
+border:solid;
+overflow:scroll;
+width:600px;
+height:600px;
+}
+
+.layers{
+border:solid;
+overflow:scroll;
+width:300px;
+height:600px;
+}
+.layer{
+border:solid;
+width:100%;
+height:64px;
+font-size:small;
+line-height:1;
+background-color:white;
+}
+.layer .name{
+	background-color:lightgray;
+	border-color:black;
+
+}
+.layer .thumbnail{
+	max-width:64px;
+	max-height:64px;
+}
+
+.active_layer{
+background-color:#FFBF00;
+}
+.disable_layer{
+	border-style:dotted;
+}
+.js-output{
+	text-align:right;
+}
+#color_R
+,#color_G
+,#color_B 
+,#color_A{
+width:64px;
+}
+#color_R + .js-slider
+,#color_G + .js-slider
+,#color_B + .js-slider{
+width:256px;
+}
+
+</style>
+</head>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/openexr.js"></script>
+<script type="text/javascript" src="../lib/slider.js"></script>
+<script type="text/javascript" src="../lib/colorpicker.js"></script>
+<script type="text/javascript">
+"use strict"
+var Img = (function(){
+//イメージ
+	var Img = function(x,y){
+		if(!x){
+			x=0;
+			y=0;
+		}
+		this.width=x;
+		this.height=y;
+		this.data=null;
+		if(this.width){
+			this.data=new Float32Array(this.width*this.height*4);
+		}
+
+	};
+	var ret = Img;
+
+	return ret;
+})();
+var layerValues=["name","blendfunc","alpha","power"];
+var Layer=(function(){
+//レイヤ
+	var Layer = function(){
+		this.name="";
+		this.display = true;
+		this.power=1.0;
+		this.alpha=1.0;
+		this.blendfunc="normal";
+		this.div=null;
+		this.img;
+	};
+	var ret = Layer;
+	return ret;
+})();
+var draw_col=new Vec4();
+var ctx,canvas,ctx_imagedata;
+var preview,preview_ctx;
+var thumbnail_ctx,thumbnail_canvas;
+var layers=[];
+var selectedLayer = -1;
+var layers_container;
+var refreshoff=0;
+var inputs=[];
+var shaders=[];
+var gl;
+
+
+var main_img=null;
+var gauss_img=null;
+var sub_img=null;
+
+var funcs=[];
+funcs["normal"] = function(dst,dst_idx,src,src_idx,alpha,power){
+	var alpha=src[src_idx+3]*alpha;
+	var dst_alpha = dst[dst_idx+3];
+	var dst_r = dst_alpha*(1-alpha);
+	var src_r = power*alpha;
+
+	dst[dst_idx+0]=dst[dst_idx+0] * dst_r +  src[src_idx+0]*src_r;
+	dst[dst_idx+1]=dst[dst_idx+1] * dst_r +  src[src_idx+1]*src_r;
+	dst[dst_idx+2]=dst[dst_idx+2] * dst_r +  src[src_idx+2]*src_r;
+	dst[dst_idx+3]=dst_r+alpha;
+}
+funcs["mul"] = function(dst,dst_idx,src,src_idx,alpha,power){
+	var alpha=src[src_idx+3]*alpha;
+	var dst_alpha = dst[dst_idx+3];
+	var dst_r = dst_alpha*(1-alpha);
+	var src_r = power*alpha;
+
+	dst[dst_idx+0]=dst[dst_idx+0] * (dst_r +  src[src_idx+0]*src_r);
+	dst[dst_idx+1]=dst[dst_idx+1] * (dst_r +  src[src_idx+1]*src_r);
+	dst[dst_idx+2]=dst[dst_idx+2] * (dst_r +  src[src_idx+2]*src_r);
+	dst[dst_idx+3]=dst_r+alpha;
+}
+funcs["add"] = function(dst,dst_idx,src,src_idx,alpha,power){
+	var alpha=src[src_idx+3]*alpha;
+	var dst_alpha = dst[dst_idx+3];
+	var dst_r = dst_alpha*(1-alpha);
+	var src_r = power*alpha;
+
+	dst[dst_idx+3]=dst_r+alpha;
+	dst_r = dst_r + alpha;
+	dst[dst_idx+0]=dst[dst_idx+0] * dst_r + src[src_idx+0]*src_r;
+	dst[dst_idx+1]=dst[dst_idx+1] * dst_r + src[src_idx+1]*src_r;
+	dst[dst_idx+2]=dst[dst_idx+2] * dst_r + src[src_idx+2]*src_r;
+}
+var refreshMain=function(x,y,w,h){
+	if(refreshoff){
+		return;
+	}
+
+	if(!x){
+		//引数無しの場合、全域更新
+		x=0;
+		y=0;
+		w=main_img.width;
+		h=main_img.height;
+	}
+	var top = y;
+	var bottom = y+h;
+	var left = x;
+	var right = x+w;
+	var main_img_data = main_img.data;
+	var main_img_width = main_img.width;
+
+	//0で初期化
+	for(var yi=top;yi<bottom;yi++){
+		var idx = yi * main_img_width + left << 2;
+		var max = yi * main_img_width + right << 2;
+		for(;idx<max;idx+=4){
+			main_img_data[idx+0]=0;
+			main_img_data[idx+1]=0;
+			main_img_data[idx+2]=0;
+			main_img_data[idx+3]=0;
+		}
+	}
+
+	//レイヤ合成
+	for(var li=0;li<layers.length;li++){
+		var layer = layers[li];
+		if(!layer.display){
+			continue;
+		}
+		var layer_img_data = layer.img.data;
+		var layer_alpha=layer.alpha;
+		var layer_power=layer.power;
+		var layer_img_width = layer.img.width;
+
+		left = Math.min(x,0);
+		top= Math.min(y,0);
+		right = Math.min(layer.img.width,w+x);
+		bottom = Math.min(layer.img.height,h+y);
+
+		var width = right-left;
+		var func = funcs[layer.blendfunc];
+		for(var yi=top;yi<bottom;yi++){
+			var idx = yi * main_img_width + left << 2;
+			var max = idx + (width<< 2);
+			var idx2 = yi * layer_img_width + left << 2;
+			for(;idx<max;idx+=4){
+				func(main_img_data,idx,layer_img_data,idx2,layer_alpha,layer_power);
+				idx2+=4;
+			}
+		}
+		
+	}
+
+	var bloom = parseFloat(inputs["bloom"].value);
+	for(var yi=y;yi<y+h;yi++){
+		for(var xi=x;xi<x+w;xi++){
+			var idx = yi * main_img_width + xi<< 2;
+			gauss_img.data[idx]=main_img_data[idx];
+			gauss_img.data[idx+1]=main_img_data[idx+1];
+			gauss_img.data[idx+2]=main_img_data[idx+2];
+			gauss_img.data[idx+3]=main_img_data[idx+3];
+		}
+	}
+	if(inputs["ch_bloom"].checked && bloom>0){
+		gauss(100,bloom,x,y,w,h);
+	}
+
+	var ctx_imagedata_data = ctx_imagedata.data;
+	var ev = parseFloat(inputs["ev"].value);
+	var gamma = 1.0/parseFloat(inputs["gamma"].value);
+	var r = Math.pow(2,-ev)*255;
+
+	main_img_data = gauss_img.data;
+
+	if(inputs["ch_gamma"].checked){
+		for(var yi=0;yi<h;yi++){
+			var idx = (yi+ y) * main_img_width + x << 2;
+			var max = idx + (w << 2);
+			for(;idx<max;idx+=4){
+				ctx_imagedata_data[idx+0]=Math.pow(main_img_data[idx+0],gamma)*r;
+				ctx_imagedata_data[idx+1]=Math.pow(main_img_data[idx+1],gamma)*r;
+				ctx_imagedata_data[idx+2]=Math.pow(main_img_data[idx+2],gamma)*r;
+				ctx_imagedata_data[idx+3]=main_img_data[idx+3]*255;
+			}
+		}
+	}else{
+		for(var yi=0;yi<h;yi++){
+			var idx = (yi+ y) * main_img_width + x << 2;
+			var max = idx + (w << 2);
+			for(;idx<max;idx+=4){
+				ctx_imagedata_data[idx+0]=main_img_data[idx+0]*r;
+				ctx_imagedata_data[idx+1]=main_img_data[idx+1]*r;
+				ctx_imagedata_data[idx+2]=main_img_data[idx+2]*r;
+				ctx_imagedata_data[idx+3]=main_img_data[idx+3]*255;
+			}
+		}
+	}
+	preview_ctx.putImageData(ctx_imagedata,0,0,x,y,w,h);
+
+	
+}
+
+var refreshLayer = function(layer,thumb){
+
+
+	//レイヤサムネイル更新
+
+	if(thumb){
+		var img = layer.img;
+		var img_data=img.data;
+		for(var yi=0;yi<img.height;yi++){
+			for(var xi=0;xi<img.width;xi++){
+				var idx=yi*img.width + xi<<2;
+				var idx2=yi*canvas.width + xi<<2;
+				for(var ii=0;ii<4;ii++){
+					ctx_imagedata.data[idx2+ii]=img_data[idx+ii]*255.0;
+				}
+			}
+		}
+			
+		ctx.putImageData(ctx_imagedata,0,0);
+		thumbnail_ctx.clearRect(0,0,thumbnail_canvas.width,thumbnail_canvas.height);
+		thumbnail_ctx.drawImage(canvas,0,0,img.width,img.height,0,0,thumbnail_canvas.width,thumbnail_canvas.height);
+		var layer_img=layer.div.getElementsByTagName("img")[0];
+		layer_img.src=thumbnail_canvas.toDataURL("image/png");
+	}
+
+	var div= layer.div.getElementsByTagName("div")[0];
+	div.innerHTML=layer.name;
+	var span = layer.div.getElementsByTagName("span")[0];
+	var txt="";
+	for(var i=1;i<layerValues.length;i++){
+		var member = layerValues[i];
+		txt +=  member +": ";
+		if(!isNaN(layer[member])){
+			txt += parseFloat(layer[member]).toFixed(4);
+		}else{
+			txt += layer[member];
+		}
+	 	txt+="<br>" ;
+	}
+	 if(!layer.display){
+		layer.div.classList.add("disable_layer");
+	 }else{
+		layer.div.classList.remove("disable_layer");
+	 }
+
+	span.innerHTML = txt;
+}
+
+
+var createExr=function(img){
+	var obj={};
+	obj.width =img.width;
+	obj.height=img.height;
+	
+	obj.attributes=[];
+	obj.attributes["compression"]=0;
+	obj.attributes["dataWindow"]={xMin:0,yMin:0,xMax:img.width-1,yMax:img.height-1};
+	obj.attributes["displayWindow"]={xMin:0,yMin:0,xMax:img.width-1,yMax:img.height-1};
+	obj.attributes["lineOrder"]=0;
+	obj.attributes["pixelAspectRatio"]=1;
+	obj.attributes["screenWindowCenter"]=[0,0];
+	obj.attributes["screenWindowWidth"]=1;
+
+	var size = img.width*img.height;
+	var channels=[];
+	for(var i=0;i<4;i++){
+		var channel={};
+		channel.data=new Float32Array(size);
+		channel.pixel_type=1;
+		channel.pLiner=0;
+		channel.reserved=0;
+		channel.xSampling=1;
+		channel.ySampling=1;
+		channels.push(channel);
+	}
+	channels[0].name="A";
+	channels[1].name="B";
+	channels[2].name="G";
+	channels[3].name="R";
+
+	var img_data = img.data;
+	for(var i=0;i<size;i++){
+		var idx=i<<2;
+		channels[0].data[i]=img_data[idx+3];
+		channels[1].data[i]=img_data[idx+2];
+		channels[2].data[i]=img_data[idx+1];
+		channels[3].data[i]=img_data[idx+0];
+	}
+	obj.attributes.channels=channels;
+
+
+	return OpenEXR.toArrayBuffer(obj);
+}
+var loadExr=function(url,callback){
+	var img = new Img();
+	Util.loadBinary(url,function(buffer){
+		var obj={};
+		OpenEXR.fromArrayBuffer(obj,buffer);
+
+		img.width =obj.width;
+		img.height=obj.height;
+		img.data=new Float32Array(img.width*img.height*4);
+	 
+		//RGBAチャンネルの情報をdataにセットする
+		var channels=obj.attributes.channels;
+		var data = img.data;
+		var cindex={};
+		for(var i=0;i<channels.length;i++){
+			cindex[channels[i].name]=i;
+		}
+		var r = cindex["R"];
+		var g = cindex["G"];
+		var b = cindex["B"];
+		var size = img.width*img.height*4;
+		for(var i=0;i<size;i+=4){
+			data[i]=channels[r].data[i>>2];
+			data[i+1]=channels[g].data[i>>2];
+			data[i+2]=channels[b].data[i>>2];
+		}
+		var a = cindex["A"];
+		if(a){
+			for(var i=0;i<size;i+=4){
+				data[i+3]=channels[a].data[i>>2];
+			}
+		}else{
+			for(var i=0;i<size;i+=4){
+				data[i+3]=1;
+			}
+		}
+		if(callback){
+			callback(obj);
+		}
+	});
+	return img;
+}
+
+var loadImg=function(url,func){
+	var image = new Image();
+	image.src=url;
+	var img=new Img();
+	image.onload=function(e){
+		img.width=image.width;
+		img.height=image.height;
+
+		if(canvas.width<img.width || canvas.height<img.height){
+			//開いた画像がキャンバスより大きい場合は広げる
+			if(canvas.width<img.width){
+				canvas.width=img.width;
+				preview.width=img.width;
+			}
+			if(canvas.height<img.height){
+				canvas.height=img.height;
+				preview.height=img.height;
+			}
+			ctx_imagedata=ctx.createImageData(canvas.width,canvas.height);
+			main_img = new Img(canvas.width,canvas.height);
+			sub_img = new Img(canvas.width,canvas.height);
+			gauss_img = new Img(canvas.width,canvas.height);
+
+		}
+
+
+		//ピクセルメモリ確保
+		img.data=new Float32Array(img.width*img.height*4);
+
+		//ピクセルデータ取得
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+		ctx.drawImage(image,0,0);
+		var data=ctx.getImageData(0,0,img.width,img.height).data;
+		var r = 1.0/255.0;
+		for(var di=0;di<img.width*img.height*4;di++){
+			img.data[di]=data[di] * r;
+		}
+
+		if(func){
+			func(img);
+		}
+	}
+	return img;
+}
+
+
+var layerSelect= function(e){
+//レイヤー一覧クリック時、クリックされたものをアクティブ化する
+	for(var li=0;li<layers.length;li++){
+	  var layer=layers[li];
+	  if(this === layers[li].div){
+		//パラメータ変更による再描画を一時的に無効にする
+		refreshoff=true;
+
+	  	selectedLayer=li;
+	var layer_inputs = Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("input"));
+	layer_inputs = layer_inputs.concat(Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("select")));
+		for(var i=0;i<layer_inputs.length;i++){
+			var input = layer_inputs[i];
+			var member = input.id.replace("layer_","");
+			if(member in layer){
+	  			if(input.getAttribute("type")==="checkbox"){
+	  				input.checked=layer[member];
+				}else{
+					input.value=layer[member];
+				}
+				Util.fireEvent(input,"change");
+	   		}
+		}
+
+		layers[li].div.classList.add("active_layer");
+		refreshoff=false;
+	  }else{
+		layers[li].div.classList.remove("active_layer");
+	  }
+	}
+
+}
+
+
+var gauss=function(d,power){
+	var MAX = 10;
+	var src= main_img;
+	var dst= sub_img;
+
+	//係数作成
+	var weight = new Array(MAX);
+	var t = 0.0;
+	for(var i = 0; i < weight.length; i++){
+		var r = 1.0 + 2.0 * i;
+		var we = Math.exp(-0.5 * (r * r) / d);
+		weight[i] = we;
+		if(i > 0){we *= 2.0;}
+		t += we;
+	}
+	for(i = 0; i < weight.length; i++){
+		weight[i] /= t;
+	}
+
+	var h = src.height;
+	var w = src.width;
+	var data = src.data;
+	var dstdata = dst.data;
+	//横ぼかし
+	for(var y=0;y<h;y++){
+		for(var x=0;x<MAX;x++){
+	 		var idx= y * w + x <<2;
+			dstdata[idx+0]=data[idx+0]*weight[0];
+			dstdata[idx+1]=data[idx+1]*weight[0];
+			dstdata[idx+2]=data[idx+2]*weight[0];
+			for(var i=1;i<MAX;i++){
+	 			var idx2= y * w + Math.max(x -i,0) <<2;
+	 			var idx3= y * w + Math.min(x +i,0) <<2;
+				var r = weight[Math.abs(i)];
+				dstdata[idx+0]+=(data[idx2+0] +data[idx3+0])*r;
+				dstdata[idx+1]+=(data[idx2+1] +data[idx3+1])*r;
+				dstdata[idx+2]+=(data[idx2+2] +data[idx3+2])*r;
+			}
+		}
+		for(var x=w-MAX;x<w;x++){
+	 		var idx= y * w + x <<2;
+			dstdata[idx+0]=data[idx+0]*weight[0];
+			dstdata[idx+1]=data[idx+1]*weight[0];
+			dstdata[idx+2]=data[idx+2]*weight[0];
+			for(var i=1;i<MAX;i++){
+	 			var idx2= y * w + Math.max(x -i,0) <<2;
+	 			var idx3= y * w + Math.min(x +i,0) <<2;
+				var r = weight[Math.abs(i)];
+				dstdata[idx+0]+=(data[idx2+0] +data[idx3+0])*r;
+				dstdata[idx+1]+=(data[idx2+1] +data[idx3+1])*r;
+				dstdata[idx+2]+=(data[idx2+2] +data[idx3+2])*r;
+			}
+		}
+	 }
+	for(var yi=0;yi<h;yi++){
+		var idx = (yi) * w+ MAX << 2;
+		var max = idx + (w-(MAX*2) << 2);
+		for(;idx<max;idx+=4){
+			dstdata[idx+0]=data[idx+0]*weight[0];
+			dstdata[idx+1]=data[idx+1]*weight[0];
+			dstdata[idx+2]=data[idx+2]*weight[0];
+	  		for(var i=1;i<MAX;i++){
+				dstdata[idx+0]+=(data[idx+0+(i<<2)] + data[idx+0-(i<<2)])*weight[i];
+				dstdata[idx+1]+=(data[idx+1+(i<<2)] + data[idx+1-(i<<2)])*weight[i];
+				dstdata[idx+2]+=(data[idx+2+(i<<2)] + data[idx+2-(i<<2)])*weight[i];
+			}
+		}
+	}
+
+	//縦ぼかし
+	data = dst.data;
+	dstdata = gauss_img.data;
+	for(var i=0;i<MAX;i++){
+		weight[i]*=power;
+	}
+
+	for(var y=0;y<MAX;y++){
+		for(var x=0;x<w;x++){
+	 		var idx= y * w + x <<2;
+			for(var i=-MAX+1;i<MAX;i++){
+	 			var idx2= Math.max(y+i,0) * w + x  <<2;
+				var r = weight[Math.abs(i)];
+				dstdata[idx+0]+=data[idx2+0] *r;
+				dstdata[idx+1]+=data[idx2+1] *r;
+				dstdata[idx+2]+=data[idx2+2] *r;
+			}
+
+	 		idx= (h-y-1) * w + x <<2;
+			for(var i=-MAX+1;i<MAX;i++){
+	 			var idx2= Math.min((h-y-1) +i,h-1) * w + x <<2;
+				var r = weight[Math.abs(i)];
+				dstdata[idx+0]+=data[idx2+0] *r;
+				dstdata[idx+1]+=data[idx2+1] *r;
+				dstdata[idx+2]+=data[idx2+2] *r;
+			}
+		}
+	 }
+	for(var yi=MAX;yi<h-MAX;yi++){
+		var idx = (yi) * w << 2;
+		var max = idx + (w << 2);
+		for(;idx<max;idx+=4){
+			dstdata[idx+0]+=data[idx+0]*weight[0];
+			dstdata[idx+1]+=data[idx+1]*weight[0];
+			dstdata[idx+2]+=data[idx+2]*weight[0];
+	  		for(var i=1;i<MAX;i++){
+	 			var idx2 = idx + (i*w<<2);
+	 			var idx3 = idx - (i*w<<2);
+				dstdata[idx+0]+=(data[idx2+0] + data[idx3+0])*weight[i];
+				dstdata[idx+1]+=(data[idx2+1] + data[idx3+1])*weight[i];
+				dstdata[idx+2]+=(data[idx2+2] + data[idx3+2])*weight[i];
+			}
+		}
+	}
+
+}
+
+var save_hdr= function(e){
+	var a = e.target;
+	//var url=preview.toDataURL("image/png");
+	var buffer = createExr(main_img);
+    var blob = new Blob([buffer], {type: "application/octet-stream"});
+    var url = window.URL.createObjectURL(blob);
+
+    a.href = url;
+    a.target = '_blank';
+    a.download = "preview_hdr.exr";
+    //a.click();
+}
+var save_ldr= function(e){
+	var a = e.target;
+	var url=preview.toDataURL("image/png");
+    //var blob = new Blob([b], {type: "application/octet-stream"});
+    //var url = window.URL.createObjectURL(blob);
+
+    a.href = url;
+    a.target = '_blank';
+    a.download = "preview_ldr.png";
+    //a.click();
+}
+
+var createNewLayer=function(e){
+	var width=document.getElementById("width").value;
+	var height=document.getElementById("height").value;
+
+
+	var layer_template= document.getElementById("layer_template");
+	var layer = new Layer();
+	var layer_div = layer_template.children[0].cloneNode(true);
+	layer_div.addEventListener("click",layerSelect);
+	layer.div=layer_div;
+
+	layers.push(layer);
+	
+	var layers_container = document.getElementById("layers_container");
+	layers_container.insertBefore(layer_div,layers_container.firstChild);
+
+	var img= new Img(parseInt(width),parseInt(height));
+	layer.img=img;
+
+	if(canvas.width<img.width || canvas.height<img.height){
+		//開いた画像がキャンバスより大きい場合は広げる
+		if(canvas.width<img.width){
+			canvas.width=img.width;
+			preview.width=img.width;
+		}
+		if(canvas.height<img.height){
+			canvas.height=img.height;
+			preview.height=img.height;
+		}
+		ctx_imagedata=ctx.createImageData(canvas.width,canvas.height);
+		main_img = new Img(canvas.width,canvas.height);
+		sub_img = new Img(canvas.width,canvas.height);
+		gauss_img= new Img(canvas.width,canvas.height);
+
+	}
+	layer.name ="new_layer";
+
+	var img_data=img.data;
+	if(selectedLayer<0){
+		for(var i=0;i<width*height*4;i++){
+			img_data[i]=1;
+		}
+
+		Util.fireEvent(layer_div,"click");
+	}
+
+	refreshLayer(layer,true);
+	refreshMain();
+
+}
+var onloadfunc=function(e){
+	preview=  document.getElementById('preview');
+	preview_ctx =  preview.getContext('2d')
+	canvas =  document.getElementById('c')
+	ctx =  canvas.getContext('2d')
+	ctx_imagedata=ctx.createImageData(canvas.width,canvas.height);
+
+
+
+	main_img = new Img(canvas.width,canvas.height);
+	sub_img = new Img(canvas.width,canvas.height);
+	gauss_img = new Img(canvas.width,canvas.height);
+	thumbnail_canvas =  document.createElement('canvas');
+	thumbnail_canvas.width=64;
+	thumbnail_canvas.height=64;
+	thumbnail_ctx =  thumbnail_canvas.getContext('2d')
+
+	var file=document.getElementById("f");
+	file.addEventListener("change",function(evt){
+		var reader=new FileReader();
+		var file=evt.target.files[0];
+		reader.onload=function(e){
+
+			var layer_template= document.getElementById("layer_template");
+			var layer = new Layer();
+			var layer_div = layer_template.children[0].cloneNode(true);
+			layer_div.addEventListener("click",layerSelect);
+			layer.div=layer_div;
+
+			layers.push(layer);
+			
+			var layers_container = document.getElementById("layers_container");
+			layers_container.insertBefore(layer_div,layers_container.firstChild);
+
+			var img=null;
+			var fu =function(d){
+	 			var img = d;
+	 			layer.width=img.width;
+	 			layer.height=img.height;
+
+				if(canvas.width<img.width || canvas.height<img.height){
+					//開いた画像がキャンバスより大きい場合は広げる
+					if(canvas.width<img.width){
+						canvas.width=img.width;
+						preview.width=img.width;
+					}
+					if(canvas.height<img.height){
+						canvas.height=img.height;
+						preview.height=img.height;
+					}
+					ctx_imagedata=ctx.createImageData(canvas.width,canvas.height);
+					main_img = new Img(canvas.width,canvas.height);
+					sub_img = new Img(canvas.width,canvas.height);
+					gauss_img = new Img(canvas.width,canvas.height);
+
+				}
+
+				refreshLayer(layer,true);
+				refreshMain();
+			}
+	 		if(/.*\.exr$/.test(file.name)){
+				img=loadExr(e.target.result,fu);
+	 		} else if(/.*\.(png|jpg|jpeg)$/.test(file.name)){
+				img=loadImg(e.target.result,fu);
+	 		}
+			layer.img=img;
+			layer.name = file.name;
+
+			if(selectedLayer<0){
+				Util.fireEvent(layer_div,"click");
+			}
+		}
+		reader.readAsDataURL(file);
+		
+	});
+
+
+	var press=0;
+	preview.addEventListener("mousedown",function(e){
+		press=1;
+	});
+	preview.addEventListener("mouseup",function(e){
+		press=0;
+	});
+	var bold=4;
+	preview.addEventListener("mousemove",function(e){
+		if(press && selectedLayer>=0){
+			var layer = layers[selectedLayer];
+			var img= layer.img;
+			var data = layer.img.data;
+			var x = e.offsetX;
+			var y = e.offsetY;
+			var left = Math.max(x-bold,0);
+			var right= Math.min(x+bold-1,img.width-1);
+			var top= Math.max(y-bold,0);
+			var bottom=Math.min(y+bold-1,img.height-1);
+			for(var dy=top;dy<=bottom;dy++){
+				for(var dx=left;dx<=right;dx++){
+					var idx = dy*layer.img.width+ dx<<2;
+					data[idx+0]=draw_col[0];
+					data[idx+1]=draw_col[1];
+					data[idx+2]=draw_col[2];
+					data[idx+3]=draw_col[3];
+				}
+			}
+
+			if(right-left>=0 && bottom-top>=0){
+
+				var bloomsize=0;
+				var bloom = parseFloat(inputs["bloom"].value);
+				if(inputs["ch_bloom"].checked && bloom>0){
+					bloomsize = 10;
+					left=Math.max(left-bloomsize,0);
+					right=Math.min(right+bloomsize,img.width-1);
+					top=Math.max(top-bloomsize,0);
+					bottom=Math.min(bottom+bloomsize,img.height-1);
+				}
+				refreshMain(left,top,right-left+1,bottom-top+1);
+			}
+			//refreshMain();
+
+			
+		}
+		//カーソル下情報表示
+		var data = main_img.data;
+
+		var x=e.offsetX;
+		var y=e.offsetY;
+		var width=main_img.width;
+		var height=main_img.height;
+		var output = document.getElementById("status");
+
+		if(x<0 || y<0 || x>=width || y>=height){return;}
+
+		var idx=(y*canvas.width+x)*4;
+		var r= data[idx];
+		var g= data[idx+1];
+		var b= data[idx+2];
+		var a= data[idx+3];
+
+		var str="position X:[x],Y:[y] \n value R:[r], G:[g], B:[b], A:[a] ";
+		str=str.replace(/\[x\]/,x);
+		str=str.replace(/\[y\]/,y);
+		str=str.replace(/\[r\]/,(r).toFixed(4));
+		str=str.replace(/\[g\]/,(g).toFixed(4));
+		str=str.replace(/\[b\]/,(b).toFixed(4));
+		str=str.replace(/\[a\]/,(a).toFixed(4));
+		Util.setText(output,str);
+
+	},false);
+	
+
+
+	//レイヤパラメータコントロール変更時反映
+	var layer_inputs = Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("input"));
+	layer_inputs = layer_inputs.concat(Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("select")));
+	for(var i=0;i<layer_inputs.length;i++){
+		var input = layer_inputs[i];
+		var f = function(e){
+			if(selectedLayer<0){
+	  			return;
+	  		}
+			var layer = layers[selectedLayer];
+			var member = e.target.id.replace("layer_","");
+			if(e.target.getAttribute("type")==="checkbox"){
+	  			layer[member]=e.target.checked;
+			  }else{
+				layer[member]=e.target.value;
+			}
+			refreshLayer(layer);
+			refreshMain();
+		}
+
+		input.addEventListener("change",f);
+	}
+
+
+
+	var color_base =document.getElementById("color_base");
+	var color_lumi=document.getElementById("color_lumi");
+	var color_R=document.getElementById("color_R");
+	var color_G=document.getElementById("color_G");
+	var color_B=document.getElementById("color_B");
+	var color_A=document.getElementById("color_A");
+	var color_sample=document.getElementById("color_sample");
+
+	var createRGBA=function(){
+		var base = new Vec3();
+		var lumi = parseFloat(color_lumi.value);
+		Util.hex2rgb(base ,color_base.value);
+
+		color_R.value = base[0]*lumi;
+		color_G.value = base[1]*lumi;
+		color_B.value = base[2]*lumi;
+
+		Util.fireEvent(color_R,"change");
+		Util.fireEvent(color_G,"change");
+		Util.fireEvent(color_B,"change");
+		
+	}
+	var refreshColor=function(){
+		var col=new Vec4();
+		Vec4.set(col,color_R.value,color_G.value,color_B.value,color_A.value);
+		Vec4.copy(draw_col,col);
+
+		var gamma = 1.0/parseFloat(inputs["gamma"].value);
+		var ev = parseFloat(inputs["ev"].value);
+		var r = Math.pow(2,-ev)*255;
+
+		if(inputs["ch_gamma"].checked){
+			col[0]=Math.pow(col[0],gamma)*r;
+			col[1]=Math.pow(col[1],gamma)*r;
+			col[2]=Math.pow(col[2],gamma)*r;
+		}else{
+			col[0]*=r;
+			col[1]*=r;
+			col[2]*=r;
+		}
+		col[3]=col[3]*255;
+		color_sample.style.backgroundColor=Util.rgba(col[0],col[1],col[2],col[3]);
+	}
+	color_base.addEventListener("change",createRGBA);
+	color_lumi.addEventListener("change",createRGBA);
+	color_R.addEventListener("change",refreshColor);
+	color_G.addEventListener("change",refreshColor);
+	color_B.addEventListener("change",refreshColor);
+	color_A.addEventListener("change",refreshColor);
+	
+
+	var input_tags = document.getElementById("div_view").getElementsByTagName("input");
+	for(var i=0;i<input_tags.length;i++){
+		var id= input_tags[i].getAttribute("id");
+		inputs[id]= input_tags[i];
+		inputs[id].addEventListener("change",function(){
+
+				refreshColor();
+				refreshMain()
+				});
+	}
+
+    var a = document.getElementById("save_ldr");
+	a.addEventListener("contextmenu",save_ldr);
+	a.addEventListener("click",save_ldr);
+
+    var a = document.getElementById("save_hdr");
+	a.addEventListener("contextmenu",save_hdr);
+	a.addEventListener("click",save_hdr);
+	
+    var a = document.getElementById("new");
+	a.addEventListener("click",createNewLayer);
+}
+</script>
+
+<body onLoad="onloadfunc(event)">
+
+<div  style="float:left;">
+<div id="div_view" >
+ビュー<br>
+<input type="checkbox" id="ch_gamma">γ<input class="slider" id="gamma" max="4" value="2.2"/><br>
+EV<input class="slider" id="ev" min="-5" max="5" value="0"/><br>
+<input type="checkbox" id="ch_bloom">bloom<input class="slider" id="bloom" max="1" value="0"/><br>
+</div>
+	<div class="hoge">
+		<canvas width="512" height="512" id="preview" ></canvas><br />
+		<canvas width="1" height="1" id="c"  style="display:none;"></canvas>
+	</div>
+	<span id="status"></span><br>
+	
+	basecol<input class="colorpicker" id="color_base" value="ffffff"/>
+	lumi<input class="slider" id="color_lumi" max="100" value="1"><br>
+	<div id="color_sample" style="">
+	R<input class="slider" id="color_R" max="100"/><br>
+	G<input class="slider" id="color_G" max="100"/><br>
+	B<input class="slider" id="color_B" max="100"/><br>
+	A<input class="slider" id="color_A" max="1" value="1"/><br>
+	</div>
+</div>
+
+
+<div style="display:none;" id="layer_template">
+	<div class="layer">
+		<img class="thumbnail" style="border:solid 1px;float:left;">
+		<div class="name"></div>
+		<span></span>
+	</div>
+</div>
+<div>
+レイヤ<br>
+<div id="layer_param">
+name<input type="text" id="layer_name"/>
+表示<input type="checkbox" id="layer_display"/><br>
+blendfunc<select type="text" id="layer_blendfunc"/>
+	<option value="normal">normal</option>
+	<option value="add">add</option>
+	<option value="mul">mul</option>
+	<option value="sub">sub</option>
+</select><br>
+alpha<input class="slider" id="layer_alpha" max="1"/><br>
+power<input class="slider" id="layer_power" max="10"/><br>
+</div>
+<div class="layers" id="layers_container">
+</div>
+<input id="width" style="width:64px;"><input id="height" style="width:64px;"><input type="button" id="new" value="新規レイヤ"><br>
+<input type="file" id="f"><br>
+<a id="save_hdr" href="a">結合データをexrで保存(HDR)</a>
+<a id="save_ldr" href="a">プレビュー画像をpngで保存(LDR)</a>
+</div>
+</body>
+</html>
+
+
