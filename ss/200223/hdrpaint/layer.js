@@ -146,7 +146,7 @@ Command.moveLayer=function(layer,position){
 		var img = new Img(width,height);
 		
 		var layer =createLayer(img,n);
-		History.createLog("createNewLayer",{"layer_id":layer.id,"position":n,"width":width,"height":height},"createNewLayer ⇒ id:"+layer.id+"("+layer.name+")");
+		History.createLog("createNewLayer",{"layer_id":layer.id,"position":n,"width":width,"height":height},"createNewLayer ⇒ id:"+layer.id+"("+layer.name+")",{});
 	refreshMain(0);
 		return layer;
 
