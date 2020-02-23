@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<title>hdr_paint</title>
+<style>
+body{
+	background-color:lightgray;
+}
+input[type="text"]{
+	width:64px;
+}
+
+div.area{
+background-color:gray;
+
+border:1px solid black;
+margin:4px 4px 0px 0px;
+padding:4px;
+	overflow:auto;
+}
+div.canvas_area{
+	overflow:scroll;
+}
+
+.layers{
+	border:solid 1px;
+	overflow:visible scroll;
+	height:300px;
+}
+.layer{
+border:solid 1px;
+height:64px;
+font-size:small;
+line-height:1;
+background-color:transparent;
+}
+
+.colorpicker{
+	width:48px;
+
+}
+.layer .name{
+	text-align:left;
+	font-weight:bold;
+
+}
+.layer_attributes{
+	text-align:right;
+
+}
+.layer .thumbnail{
+   background-image:url(back.png);
+	max-width:64px;
+	max-height:64px;
+}
+
+.active_layer{
+background-color:#FFBF00;
+}
+.disable_layer{
+	border-style:dotted;
+}
+.js-output{
+	text-align:right;
+}
+#color_R
+,#color_G
+,#color_B 
+,#color_A{
+width:64px;
+}
+#color_R + .js-slider
+,#color_G + .js-slider
+,#color_B + .js-slider{
+width:128;
+}
+
+#pen_preview{
+   background-image:url(back.png);
+}
+#preview{
+	border:1px solid black;
+		   background-image:url(back.png);
+
+	touch-action:none;
+}
+ul{
+}
+
+</style>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/openexr.js"></script>
+<script type="text/javascript" src="../lib/zip.js"></script>
+<script type="text/javascript" src="../lib/slider.js"></script>
+<script type="text/javascript" src="../lib/colorpicker.js"></script>
+<script type="text/javascript" src="../lib/geono.js"></script>
+<script type="text/javascript" src="./log.js"></script>
+<script type="text/javascript" src="./command.js"></script>
+<script type="text/javascript" src="./redraw.js"></script>
+<script type="text/javascript" src="./img.js"></script>
+<script type="text/javascript" src="./layer.js"></script>
+<script type="text/javascript" src="./file.js"></script>
+<script type="text/javascript">
+"use strict"
+
+var draw_col=new Vec4();
+var inputs=[];
+var pen_preview,pen_preview_ctx;
+
+var pen_log=null;
+
+var pen_preview_img= new Img(256,64);
+
+	var pen_preview_log = new Log();
+	var points=[];
+	pen_preview_log.param.points=points;
+	var MAX = 17;
+	for(var i=0;i<MAX;i++){
+		var x = 2*i/(MAX-1)-1;
+		var point={"pos":new Vec2(),"pressure":0};
+		point.pos[0]=x*100+128;
+		point.pos[1]=Math.sin(x*Math.PI)*20+32;
+		//point.pressure= (1-Math.abs(x));
+		point.pressure= 1-(i/(MAX-1));//(1-Math.abs(x));
+		
+		points.push(point);
+	}
+
+
+	var refreshColor=function(){
+		var col=new Vec4();
+		Vec4.set(col,color_R.value,color_G.value,color_B.value,color_A.value);
+		Vec4.copy(draw_col,col);
+
+		var gamma = 1.0/parseFloat(inputs["gamma"].value);
+		var ev = parseFloat(inputs["ev"].value);
+		var r = Math.pow(2,-ev)*255;
+
+		if(inputs["ch_gamma"].checked){
+			col[0]=Math.pow(col[0],gamma)*r;
+			col[1]=Math.pow(col[1],gamma)*r;
+			col[2]=Math.pow(col[2],gamma)*r;
+		}else{
+			col[0]*=r;
+			col[1]*=r;
+			col[2]*=r;
+		}
+		col[3]=col[3]*255;
+		refreshPen();
+	}
+	var refreshPen=function(){
+//		refreshColor();
+		var weight=parseFloat(inputs["weight"].value);
+	  	var points = pen_preview_log.param.points;
+
+		var pressure_effect_flg= 0;
+		if(inputs["weight_pressure_effect"].checked){
+			pressure_effect_flg|=1;
+		}
+		if(inputs["alpha_pressure_effect"].checked){
+			pressure_effect_flg|=2;
+		}
+
+
+		var alpha_direct=inputs["pen_alpha_direct"].checked;
+		pen_preview_img.clear();
+		for(var li=0;li<points.length-1;li++){
+			drawPen(pen_preview_img,points[li],points[li+1],draw_col,0,weight,pressure_effect_flg,alpha_direct);
+		}
+
+		//結果をキャンバスに表示
+	  	var dst_data  = preview_ctx_imagedata.data;
+	  	var src_data = pen_preview_img.data;
+	  var r=255;
+		for(var yi=0;yi<pen_preview.height;yi++){
+			for(var xi=0;xi<pen_preview.width;xi++){
+			  var dst_idx = preview_ctx_imagedata.width * yi + xi <<2;
+			  var src_idx = pen_preview_img.width * yi + xi <<2;
+	  			dst_data[dst_idx+0] = src_data[src_idx +0]*r;
+	  			dst_data[dst_idx+1] = src_data[src_idx +1]*r;
+	  			dst_data[dst_idx+2] = src_data[src_idx +2]*r;
+	  			dst_data[dst_idx+3] = src_data[src_idx +3]*r;
+			}
+		}
+		pen_preview_ctx.putImageData(preview_ctx_imagedata,0,0
+	  		,0,0,pen_preview_img.width,pen_preview_img.height);
+
+		//pen_preview_ctx.fillStyle="rgb(" + draw_col[0]+","+draw_col[1]+","+draw_col[2]+")";
+		//pen_preview_ctx.fillRect(0,0,pen_preview.width,pen_preview.height);
+	}
+
+var refreshToolTab = function(){
+	var tool_radios = document.getElementById("tools").getElementsByTagName("input");
+	for(var i=0;i<tool_radios.length;i++){
+		var input = tool_radios[i];
+		var div=document.getElementById("status_"+input.id);
+		if(!div)continue;
+		if(input.checked){
+			div.style.display="inline-block";
+			}else{
+			div.style.display="none";
+		}
+	}
+}
+var onloadfunc=function(e){
+	preview=  document.getElementById('preview');
+	preview_ctx =  preview.getContext('2d')
+	preview_ctx_imagedata=preview_ctx.createImageData(preview.width,preview.height);
+
+	pen_preview=  document.getElementById('pen_preview');
+	pen_preview_ctx =  pen_preview.getContext('2d')
+
+	pen_preview_ctx.fillStyle="white";
+	pen_preview_ctx.fillRect(0,0,pen_preview.width,pen_preview.height);
+
+
+	var elements= Array.prototype.slice.call(document.getElementsByTagName("input"));
+	elements = elements.concat(Array.prototype.slice.call(document.getElementsByTagName("select")));
+	for(var i=0;i<elements.length;i++){
+		var id= elements[i].getAttribute("id");
+		inputs[id]= elements[i];
+	}
+
+	Command.resizeCanvas(512,512);
+
+	thumbnail_canvas =  document.createElement('canvas');
+	thumbnail_canvas.width=64;
+	thumbnail_canvas.height=64;
+	thumbnail_ctx =  thumbnail_canvas.getContext('2d')
+
+	var file=document.getElementById("f");
+	file.addEventListener("change",function(evt){
+		var file=evt.target.files[0];
+		Command.loadImageFile(file,layers.indexOf(selected_layer)+1);
+		this.value=null;
+		
+	});
+
+
+	preview.oncontextmenu=function(e){return false;};
+	var drawfunc =function(e){
+		if(inputs["pen"].checked){
+			if((e.buttons & 1) && pen_log){
+
+				var point={"pos":new Vec2(),"pressure":e.pressure};
+
+				point.pos[0]= e.pageX - preview.offsetLeft;
+				point.pos[1]=e.pageY -preview.offsetTop;
+				var points = pen_log.param.points;
+				points.push(point);
+				pen_log.label = "[" + ("0000" + pen_log.id).slice(-4) + "]pen" ;
+				pen_log.label += "(" + points[0].pos[0].toFixed(0)+ ","+ points[0].pos[1].toFixed(0)+")-";
+				pen_log.label += (points.length-2) +"-";
+				pen_log.label += "(" + points[points.length-1].pos[0].toFixed(0)+ ","+ points[points.length-1].pos[1].toFixed(0)+")";
+				Util.setText(pen_log.option,pen_log.label);
+
+				var index = pen_log.param.points.length-1;
+
+				var p0=points[index-1];
+				var p1=points[index];
+				var param = pen_log.param;
+	 			Command.drawLine(selected_layer,p0,p1,param.weight,param.color,selected_layer.mask_alpha,param.pressure_mask,param.alpha_direct);
+			}
+		}else if(inputs["translate"].checked) {
+			if((e.buttons & 1) && pen_log){
+				var x = (e.pageX|0) - drag_start[0];
+				var y = (e.pageY|0) - drag_start[1];
+				Command.translateLayer(selected_layer,-pen_log.param.x,-pen_log.param.y);
+				Command.translateLayer(selected_layer,x,y);
+			}
+		}
+	};
+	var previewMove = function(e){
+		//カーソル下情報表示
+		var data = joined_img.data;
+
+		var x=e.offsetX;
+		var y=e.offsetY;
+		var width=joined_img.width;
+		var height=joined_img.height;
+		var output = document.getElementById("status");
+
+		if(x<0 || y<0 || x>=width || y>=height){return;}
+
+		var idx=((y|0)*preview.width+(x|0))*4;
+		var r= data[idx];
+		var g= data[idx+1];
+		var b= data[idx+2];
+		var a= data[idx+3];
+
+		var str="X:[x],Y:[y]  R:[r], G:[g], B:[b], A:[a] ";
+		str=str.replace(/\[x\]/,x);
+		str=str.replace(/\[y\]/,y);
+		str=str.replace(/\[r\]/,r.toFixed(4));
+		str=str.replace(/\[g\]/,g.toFixed(4));
+		str=str.replace(/\[b\]/,b.toFixed(4));
+		str=str.replace(/\[a\]/,a.toFixed(4));
+
+		if(e.buttons & 2){
+			inputs["color_R"].value=r;
+			inputs["color_G"].value=g;
+			inputs["color_B"].value=b;
+			inputs["color_A"].value=a;
+
+			Util.fireEvent(inputs["color_R"],"change");
+			Util.fireEvent(inputs["color_G"],"change");
+			Util.fireEvent(inputs["color_B"],"change");
+			Util.fireEvent(inputs["color_A"],"change");
+		}
+		Util.setText(output,str);
+	}
+	preview.addEventListener("pointermove",previewMove,false);
+	
+	window.addEventListener("pointerup",function(e){
+		if(pen_log){
+			pen_log=null;
+			if(inputs["pen"].checked){
+				refreshLayerThumbnail(selected_layer);
+				
+			}
+		}
+	},false);
+	window.addEventListener("pointermove",drawfunc,false);
+	preview.addEventListener("touchmove",function(e){e.preventDefault();},false);
+	preview.addEventListener("pointermove",function(e){e.preventDefault();},false);
+	var drag_start=new Vec2();
+	var drag_flg = false;
+
+	preview.addEventListener("pointerdown",function(e){
+		if(inputs["fill"].checked && (e.buttons &1)){
+			var fill_layer=0;
+			if(inputs["fill_layer"].checked){
+				fill_layer=1;
+			}
+			Command.fill(selected_layer,e.offsetX,e.offsetY,draw_col,fill_layer);
+		}else if(inputs["translate"].checked && (e.buttons &1) && selected_layer){
+			drag_start[0]= e.pageX | 0;
+			drag_start[1]= e.pageY | 0;
+			pen_log = History.createLog("translateLayer",{"layer_id":selected_layer.id,"x":0,"y":0},"translate"
+				,{"x":selected_layer.position[0],"y":selected_layer.position[1]});
+		}else if(inputs["pen"].checked && (e.buttons &1) && selected_layer){
+			var weight=parseFloat(inputs["weight"].value);
+			var pressure_effect_flg= 0;
+			if(inputs["weight_pressure_effect"].checked){
+				pressure_effect_flg|=1;
+			}
+			if(inputs["alpha_pressure_effect"].checked){
+				pressure_effect_flg|=2;
+			}
+			var alpha_direct = inputs["pen_alpha_direct"].checked;
+			pen_log = History.createLog("pen",{"layer_id":selected_layer.id,"weight":weight,"color":new Float32Array(draw_col),"pressure_mask":pressure_effect_flg,"alpha_direct":alpha_direct},"pen",{"layer":selected_layer});
+			pen_log.param.points=[];
+
+			var point={"pos":new Vec2(),"pressure":e.pressure};
+			point.pos[0]= e.pageX - preview.offsetLeft;
+			point.pos[1]=e.pageY -preview.offsetTop;
+			
+			pen_log.param.points.push(point);
+
+		}
+		//previewMove(e);
+		Util(preview,"pointermove",e);
+
+		drawfunc(e)
+
+	},false);
+    inputs["history"].addEventListener('change', function(event){
+		History.rest(this.selectedIndex);
+	});
+    document.addEventListener('keydown', function(event){
+ 
+		if(event.keyCode===90 && event.ctrlKey){
+        	if (event.shiftKey) {
+				History.redo();
+			}else{
+				History.undo();
+			}
+			event.preventDefault();
+		}
+    });
+
+	//レイヤパラメータコントロール変更時反映
+	var layer_inputs = Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("input"));
+	layer_inputs = layer_inputs.concat(Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("select")));
+	for(var i=0;i<layer_inputs.length;i++){
+		var input = layer_inputs[i];
+		var f = function(e){
+			if(!selected_layer){
+	  			return;
+	  		}
+			var layer = selected_layer;
+			var member = e.target.id.replace("layer_","");
+			if(e.target.getAttribute("type")==="checkbox"){
+	  			Command.changeLayerAttribute(layer,member,e.target.checked);
+			  }else{
+	  			Command.changeLayerAttribute(layer,member,e.target.value);
+			}
+		}
+		if(input.id==="layer_width"  || input.id==="layer_height"){
+			f=function(e){
+				var width = parseInt(inputs["layer_width"].value);
+				var height= parseInt(inputs["layer_height"].value);
+				Command.resizeLayer(layer,width,height);
+			}
+		}
+
+		input.addEventListener("change",f);
+	}
+
+
+
+
+	var createRGBA=function(){
+		var base = new Vec3();
+		var lumi = Math.pow(2,parseFloat(inputs["color_lumi"].value));
+		Util.hex2rgb(base ,inputs["color_base"].value);
+
+		inputs["color_R"].value = base[0]*lumi;
+		inputs["color_G"].value = base[1]*lumi;
+		inputs["color_B"].value = base[2]*lumi;
+
+		Util.fireEvent(color_R,"change");
+		Util.fireEvent(color_G,"change");
+		Util.fireEvent(color_B,"change");
+		
+	}
+	color_base.addEventListener("change",createRGBA);
+	color_lumi.addEventListener("change",createRGBA);
+	color_R.addEventListener("change",refreshColor);
+	color_G.addEventListener("change",refreshColor);
+	color_B.addEventListener("change",refreshColor);
+	color_A.addEventListener("change",refreshColor);
+	
+
+	var input_tags = document.getElementById("post_effect").getElementsByTagName("input");
+	for(var i=0;i<input_tags.length;i++){
+		var input = input_tags[i]
+		input.addEventListener("change",function(e){
+
+			refreshColor();
+			if(e.target.id==="bloom_power"){
+				refreshMain(1);
+	  		}
+			if(e.target.id==="ch_bloom" || e.target.id==="bloom_size"){
+				refreshMain();
+	  		}
+			if(e.target.id==="ch_gamma" || e.target.id==="gamma" || e.target.id==="ev"){
+				refreshMain(2);
+	  		}
+			
+	  });
+	}
+	var tool_radios = document.getElementById("tools").getElementsByTagName("input");
+	for(var i=0;i<tool_radios.length;i++){
+		var input = tool_radios[i]
+		input.addEventListener("change",function(e){
+			refreshToolTab();
+		});
+	}
+	
+	var input_tags = document.getElementById("status_pen").getElementsByTagName("input");
+	for(var i=0;i<input_tags.length;i++){
+		var input = input_tags[i]
+		input.addEventListener("change",refreshPen );
+	}
+	  
+
+    var a = document.getElementById("save_hpw");
+	a.addEventListener("contextmenu",save_hpw);
+	a.addEventListener("click",save_hpw);
+	
+
+    var a = document.getElementById("save_ldr");
+	a.addEventListener("contextmenu",save_ldr);
+	a.addEventListener("click",save_ldr);
+
+    var a = document.getElementById("save_hdr");
+	a.addEventListener("contextmenu",save_hdr);
+	a.addEventListener("click",save_hdr);
+
+
+
+	var layer=Command.createNewLayer(512,512,0);
+	var img_data = layer.img.data;
+	for(var i=0;i<img_data.length;i++){
+		img_data[i]=1;
+	}
+	layer.name="default layer"
+	refreshLayerThumbnail(layer);
+	selectLayer(layer);
+
+	refreshMain();
+	refreshLayer(layer);
+	refreshToolTab();
+	createRGBA();
+	
+
+	History.deleteLog();
+	History.enableLog();
+	History.createLog("createNew",{},"createNew",null);
+
+}
+var createNewLayer=function(e){
+	//新規レイヤーを作成
+	var width= parseInt(inputs["new_layer_width"].value);
+	var height= parseInt(inputs["new_layer_height"].value);
+	
+	if(!(width*height)){
+		width=preview.width;
+		height=preview.height;
+	}
+	var idx= layers.indexOf(selected_layer)+1;
+	
+	var layer=Command.createNewLayer(width,height,idx);
+
+
+}
+var resizeCanvas=function(e){
+	var width = parseInt(inputs["resize_width"].value);
+	var height= parseInt(inputs["resize_height"].value);
+	Command.resizeCanvas(width,height);
+}
+
+</script>
+</head>
+
+<body onLoad="onloadfunc(event)">
+
+<div  style="float:left;">
+
+	<div class="area">
+		<div id="tools">
+			ツール
+			<label><input type="radio" id="pen" name="tool" checked>ペン </label>
+			<label><input type="radio" id="fill" name="tool">塗りつぶし</label>
+			<label><input type="radio" id="translate" name="tool">移動</label>
+			<label><input type="radio" id="resize" name="tool">リサイズ</label>
+			<label><input type="radio" id="file" name="tool">ファイル</label>
+		</div>
+		<div id="tool_status" style="height:128px;">
+			<div id="status_pen">
+				<div style="float:left;">
+					<div>半径<input class="slider" id="weight" max="100"  value="3" onchange="refreshPen();"/></div>
+					<div>
+						筆圧影響
+						<label><input type="checkbox" id="weight_pressure_effect"/>半径</label>
+						<label><input type="checkbox" id="alpha_pressure_effect"/>アルファ</label>
+					</div>
+					<ul>
+					<li><label><input type="radio" id="pen_alpha_direct" name="pen_alpha" checked />アルファ値を直接書き込む</label></li>
+					<li> <label><input type="radio" id="pen_alpha_blend" name="pen_alpha" disabled="disabled" />アルファ値でブレンドする</label></li>
+					</ul>
+				</div>
+					<canvas width="256" height="64" id="pen_preview"  style=""></canvas>
+			</div>
+			<div id="status_fill">
+				<ul>
+					<li><label><input id="fill_layer" type="radio" name="fill_type" />レイヤ単体</label></li>
+					<li><label><input id="fill_joined" type="radio" name="fill_type" />結合画像</label></li>
+				</ul>
+			</div>
+			<div id="status_resize">
+				幅<input id="resize_width" value="512" type="text">
+				高さ<input id="resize_height" value="512" type="text">
+				<input type="button" id="button_resize" value="リサイズ" onclick="resizeCanvas(event);"><br>
+			</div>
+			<div id="status_file">
+				<input style="display:none;" type="file" value="画像ファイル読み込み" id="open_hpw" accept="application/octet-stream/,.hpw"
+				onchange="
+					var file=event.target.files[0];
+					Util.loadFile(file,Util.loadBinary,function(buffer){
+						load_hdw(buffer);
+					});
+				">
+				<ul>
+				<li><a id="opne_hpw" href="#" onclick="inputs['open_hpw'].click();return false;">ワークファイルを開く</a></li>
+				</ul>
+				<ul>
+				<li><a id="save_hpw" href="#">ワークファイルを保存(hpw))</a></li>
+				<li><a id="save_hdr" href="#">結合データをHDRで保存(exr)</a></li>
+				<li><a id="save_ldr" href="#">プレビュー画像をLDRで保存(png)</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="area canvas_area">
+	
+	<div style="float:left;text-align:left;">
+	ビュー
+	</div>
+	<div id="status" style="text-align:right;">
+		positionvalue
+	</div>
+		<canvas width="256" height="256" id="preview"></canvas><br />
+	</div>
+
+	<div id="post_effect" class="area">
+		<div>ポストエフェクト</div>
+		<input type="checkbox" id="ch_gamma">ガンマ<input class="slider" id="gamma" max="4" value="2.2"/><br>
+		露光<input class="slider" id="ev" min="-10" max="10" value="0"/><br>
+		<label><input type="checkbox" id="ch_bloom">拡散</label>
+		拡散率<input class="slider" id="bloom_power" max="1" value="0.1"/>
+		拡散範囲<input class="slider" id="bloom_size" max="100" value="10"/><br>
+	</div>
+</div>
+
+
+
+
+<div style="float:left;">
+	<div id="color_selecter" class="area">
+		<div>カラーセレクタ</div>
+		ベース色<input class="colorpicker" id="color_base" value="ff0000"/>
+		明るさ<input class="slider" id="color_lumi" min="-10" max="10" value="0"><br>
+		<ul id="color_sample">
+			<li>R<input class="slider" id="color_R" max="100"/></li>
+			<li>G<input class="slider" id="color_G" max="100"/></li>
+			<li>B<input class="slider" id="color_B" max="100"/></li>
+			<li>A<input class="slider" id="color_A" max="1" value="1"/></li>
+		</ul>
+	</div>
+	<div class="area">
+		レイヤ<br>
+		<div id="layer_param" >
+			<div style="width:100%;">
+				名前<input type="text" id="layer_name" style="width:100px;" >
+				<label><input type="checkbox" id="layer_display" style="width:30px;"/>表示</label><br>
+			</div>
+			幅<input type="text" id="layer_width" value="" >
+			高さ<input type="text" id="layer_height" value="">
+			合成func<select type="text" id="layer_blendfunc">
+				<option value="normal">normal</option>
+				<option value="add">add</option>
+				<option value="mul">mul</option>
+				<option value="sub">sub</option>
+			</select><br>
+			α<input class="slider" id="layer_alpha" max="1"/>
+			<label><input type="checkbox" id="layer_mask_alpha"/>αマスク</label><br>
+			明るさ<input class="slider" id="layer_power" min="-10" max="10"/><br>
+		</div>
+
+		<div>
+			<div style="float:left;text-align:left;">
+				<input type="button" id="down_layer" value="↓" onclick="Command.moveLayer(selected_layer,layers.indexOf(selected_layer)-1);">
+				<input type="button" id="up_layer" value="↑" onclick="Command.moveLayer(selected_layer,layers.indexOf(selected_layer)+1);">
+			</div>
+			<div style="text-align:right;">
+				<input type="button" id="delete_layer" value="レイヤ削除" onclick="Command.deleteLayer(selected_layer);"><br>
+			</div>
+		</div>
+		<div class="layers" id="layers_container">
+		</div>
+
+		<div style="display:none;" id="layer_template">
+			<div class="layer" draggable="true" ondragstart="DragStart(event)" ondragover="dragover_handler(event)" ondrop="Drop(event)"  ondragend="dragend(event);">
+				<img class="thumbnail" style="border:solid 1px;float:left;">
+				<div class="name"></div>
+				<div class="layer_attributes"></div>
+			</div>
+		</div>
+
+		<div  style="">
+			<input id="new_layer_width" value="512" type="text">
+			<input id="new_layer_height" value="512" type="text">
+			<input type="button" id="new" onclick="createNewLayer(event);" value="新規レイヤ"><br>
+			<input type="file" id="f" accept="image/*,.hdr,.exr"><br>
+		</div>
+	</div>
+
+</div>
+
+
+<div style="float:left;" class="area">
+	操作履歴<br>
+	<div>
+	<select size=20 id="history">
+	</select>
+	</div>
+	<ul>
+	<li><input type="button" id="button_undo" value="アンドゥ(ctrl+z)" onclick="History.undo()"></li>
+	<li><input type="button" id="button_redo" value="リドゥ(ctrl+shift+z)" onclick="History.redo()"></li>
+	</ul>
+	リストを直接選択でそこまで戻る<br>
+	最大10こ前まで
+</div>
+</body>
+</html>
+
+
