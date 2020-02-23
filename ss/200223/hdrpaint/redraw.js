@@ -18,7 +18,7 @@ var enableRefresh=function(){
 funcs["normal"] = function(dst,dst_idx,src,src_idx,alpha,power){
 	var src_alpha=src[src_idx+3]*alpha;
 	var dst_r = (1 - src_alpha);
-	var src_r = power*alpha;
+	var src_r = power*src_alpha;
 
 	dst[dst_idx+0]=dst[dst_idx+0] * dst_r +  src[src_idx+0]*src_r;
 	dst[dst_idx+1]=dst[dst_idx+1] * dst_r +  src[src_idx+1]*src_r;
@@ -28,7 +28,7 @@ funcs["normal"] = function(dst,dst_idx,src,src_idx,alpha,power){
 funcs["mul"] = function(dst,dst_idx,src,src_idx,alpha,power){
 	var alpha=src[src_idx+3]*alpha;
 	var dst_r = (1-alpha);
-	var src_r = power*alpha;
+	var src_r = power*src_alpha;
 
 	dst[dst_idx+0]=dst[dst_idx+0] * (dst_r +  src[src_idx+0]*src_r);
 	dst[dst_idx+1]=dst[dst_idx+1] * (dst_r +  src[src_idx+1]*src_r);
@@ -37,7 +37,7 @@ funcs["mul"] = function(dst,dst_idx,src,src_idx,alpha,power){
 funcs["add"] = function(dst,dst_idx,src,src_idx,alpha,power){
 	var alpha=src[src_idx+3]*alpha;
 	var dst_r = (1-alpha);
-	var src_r = power*alpha;
+	var src_r = power*src_alpha;
 
 	dst[dst_idx+0]=dst[dst_idx+0]  + src[src_idx+0]*src_r;
 	dst[dst_idx+1]=dst[dst_idx+1]  + src[src_idx+1]*src_r;

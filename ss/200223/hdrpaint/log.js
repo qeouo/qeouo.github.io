@@ -25,6 +25,21 @@ ret.enableLog=function(){
 ret.isEnableLog=function(){
 	return enable_log;
 }
+ret.reset=function(){
+	log_id=0;
+
+	var options = inputs["history"].options;
+	for(var i=options.length;i--;){
+		inputs["history"].removeChild(options[i]);
+	}
+	logs=[];
+	history_cursor=-1;
+}
+ret.setCursor=function(c){
+	history_cursor=c;
+	inputs["history"].selectedIndex=c;
+
+}
 
 ret.rest=function(target){
 	if(history_cursor<target){
@@ -262,6 +277,8 @@ ret.deleteLog=function(){
 		logs[hi].undo_data=null;
 		//inputs["history"].removeChild(logs[hi].option);
 	}
+
+
 	//logs.splice(0,history_cursor+1);
 	//history_cursor=-1;
 	

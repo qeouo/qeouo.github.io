@@ -15,11 +15,6 @@ var load_hdw=function(buffer){
 		return;
 	}
 
-	var options = inputs["history"].options;
-	for(var i=options.length;i--;){
-		inputs["history"].removeChild(options[i]);
-	}
-	logs=[];
 	History.disableLog();
 	disableRefresh();
 	for(var li=layers.length;li--;){
@@ -60,7 +55,9 @@ var load_hdw=function(buffer){
 	enableRefresh();
 	History.enableLog();
 
+	History.reset();
 	History.createLog("loadWorkFile",{},"loadWorkFile",null);
+
 	refreshMain(0);
 
 }

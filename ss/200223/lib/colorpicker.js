@@ -78,6 +78,7 @@ var rgb2hsv=function(hsv,rgb){
 		var cvsHS=document.createElement("canvas");
 		var cursorHS=document.createElement("div");
 		divHS.style.float="left"
+		divHS.style.touch_action="none"
 		divHS.style.width="128px"
 		divHS.style.height="128px"
 		divHS.style.border="inset 2px"
@@ -151,14 +152,14 @@ var rgb2hsv=function(hsv,rgb){
 		}
 		ctx.putImageData(imgdata,0,0);
 
-		divHS.addEventListener("mousedown",function(evt){dragflg=1;},false);
-		divV.addEventListener("mousedown",function(evt){dragflg=2;},false);
-		div.addEventListener("mousedown",function(evt){
+		divHS.addEventListener("pointerdown",function(evt){dragflg=1;},false);
+		divV.addEventListener("pointerdown",function(evt){dragflg=2;},false);
+		div.addEventListener("pointerdown",function(evt){
 			evt.preventDefault();
 			move(evt);
 
 		},false);
-		document.addEventListener("mouseup",function(evt){dragflg=0;},false);
+		document.addEventListener("pointerup",function(evt){dragflg=0;},false);
 		var move=function(evt){
 			if(dragflg==0){
 				return;
@@ -191,7 +192,11 @@ var rgb2hsv=function(hsv,rgb){
 				cursorV.style.top=y*128-1+"px";
 			}
 		}
-		document.addEventListener("mousemove",move,false);
+		document.addEventListener("pointermove",move,false);
+		divHS.addEventListener("touchmove",function(e){e.preventDefault();},false);
+		divHS.addEventListener("pointermove",function(e){e.preventDefault();},false);
+		divV.addEventListener("touchmove",function(e){e.preventDefault();},false);
+		divV.addEventListener("pointermove",function(e){e.preventDefault();},false);
 
 		var setCursor=function(value){
 			hex2rgb(rgb,value);
