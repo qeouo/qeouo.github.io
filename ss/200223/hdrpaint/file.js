@@ -10,8 +10,8 @@ var load_hdw=function(buffer){
 	}
 	var files=Zip.read(buffer);
 
-	var work_file = files.find(function(f){return f.name==="work.txt";});
-	if(!work_file){
+	var doc_file = files.find(function(f){return f.name==="doc.txt";});
+	if(!doc_file){
 		return;
 	}
 
@@ -22,10 +22,10 @@ var load_hdw=function(buffer){
 	}
 	resizeCanvas(256,256);
 
-	var work_data = JSON.parse(Util.utf8ToString(work_file.data));
-	for(var li=0;li<work_data.layers.length;li++){
-		var work_layer=work_data.layers[li];
-		var img_file_name = work_data.layers[li].id + ".exr";
+	var doc_data = JSON.parse(Util.utf8ToString(doc_file.data));
+	for(var li=0;li<doc_data.layers.length;li++){
+		var doc_layer=doc_data.layers[li];
+		var img_file_name = doc_data.layers[li].id + ".exr";
 		var img_file = files.find(function(f){return f.name===img_file_name;});
 		var img = Img.loadExr(img_file.data);
 
@@ -38,15 +38,15 @@ var load_hdw=function(buffer){
 
 		var layer =createLayer(img);
 
-		var keys=Object.keys(work_layer);
+		var keys=Object.keys(doc_layer);
 		for(var ki=0;ki<keys.length;ki++){
 			if(keys[ki]==="id"){
 				continue;
 			}
 			if(typeof layer[keys[ki]] ==="number"){
-				layer[keys[ki]]=parseFloat(work_layer[keys[ki]]);
+				layer[keys[ki]]=parseFloat(doc_layer[keys[ki]]);
 			}else{
-				layer[keys[ki]]=work_layer[keys[ki]];
+				layer[keys[ki]]=doc_layer[keys[ki]];
 			}
 		}
 		refreshLayer(layer);
@@ -56,16 +56,16 @@ var load_hdw=function(buffer){
 	History.enableLog();
 
 	History.reset();
-	History.createLog("loadWorkFile",{},"loadWorkFile",null);
+	History.createLog("loadDocumentFile",{},"loadDocumentFile",null);
 
 	refreshMain(0);
 
 }
-var save_hpw= function(e){
+var save_hpd= function(e){
 	var files=[];
-	var work_data={};
+	var doc_data={};
 
-	work_data.layers=[];
+	doc_data.layers=[];
 
 	for(var li=0;li<layers.length;li++){
 		//ƒŒƒCƒ„‰æ‘œ‰»
@@ -84,12 +84,12 @@ var save_hpw= function(e){
 		delete layer2.img;
 		delete layer2.div;
 		delete layer2.aaadiv;
-		work_data.layers.push(layer2);
+		doc_data.layers.push(layer2);
 	}
 
 	var file = {}
-	file.data = Util.stringToUtf8(JSON.stringify(work_data));
-	file.name="work.txt"
+	file.data = Util.stringToUtf8(JSON.stringify(doc_data));
+	file.name="doc.txt"
 	files.push(file);
 
 	var buffer = Zip.create(files);
@@ -98,7 +98,7 @@ var save_hpw= function(e){
 	var a = e.target;
     a.href =  window.URL.createObjectURL(blob);
     a.target = '_blank';
-    a.download = "project.hpw";
+    a.download = "project.hpd";
 }
 
 var save_hdr= function(e){

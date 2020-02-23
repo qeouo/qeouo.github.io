@@ -474,9 +474,9 @@ var onloadfunc=function(e){
 	}
 	  
 
-    var a = document.getElementById("save_hpw");
-	a.addEventListener("contextmenu",save_hpw);
-	a.addEventListener("click",save_hpw);
+    var a = document.getElementById("save_hpd");
+	a.addEventListener("contextmenu",save_hpd);
+	a.addEventListener("click",save_hpd);
 	
 
     var a = document.getElementById("save_ldr");
@@ -574,7 +574,7 @@ var resizeCanvas=function(e){
 				<input type="button" id="button_resize" value="リサイズ" onclick="resizeCanvas(event);"><br>
 			</div>
 			<div id="status_file">
-				<input style="display:none;" type="file" value="画像ファイル読み込み" id="open_hpw" accept="application/octet-stream/,.hpw"
+				<input style="display:none;" type="file" value="画像ファイル読み込み" id="open_hpd" accept="application/octet-stream/,.hpd"
 				onchange="
 					var file=event.target.files[0];
 					Util.loadFile(file,Util.loadBinary,function(buffer){
@@ -582,10 +582,10 @@ var resizeCanvas=function(e){
 					});
 				">
 				<ul>
-				<li><a id="opne_hpw" href="#" onclick="inputs['open_hpw'].click();return false;">ワークファイルを開く</a></li>
+				<li><a id="opne_hpd" href="#" onclick="inputs['open_hpd'].click();return false;">ドキュメントファイルを開く</a></li>
 				</ul>
 				<ul>
-				<li><a id="save_hpw" href="#">ワークファイルを保存(hpw))</a></li>
+				<li><a id="save_hpd" href="#">ドキュメントファイルを保存(hpd))</a></li>
 				<li><a id="save_hdr" href="#">結合データをHDRで保存(exr)</a></li>
 				<li><a id="save_ldr" href="#">プレビュー画像をLDRで保存(png)</a></li>
 				</ul>
