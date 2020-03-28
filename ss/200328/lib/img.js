@@ -43,10 +43,10 @@ var Img = (function(){
 			h-=(dy+h)-dst.height;
 		}
 		for(var yi=0;yi<h;yi++){
-			var idx0 = dst.getIndex(dx,dy+yi);
-			var idx1 = src.getIndex(x,y+yi);
 			for(var xi=0;xi<w;xi++){
-				dst.rgba[idx0+xi] = src.rgba[idx1+xi];
+			var idx0 = dst.getIndex(dx+xi,dy+yi);
+			var idx1 = src.getIndex(x+xi,y+yi);
+				dst.rgba[idx0] = src.rgba[idx1];
 			}
 		}
 	}
