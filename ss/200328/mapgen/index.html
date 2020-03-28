@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<title>mapgen</title>
+<style>
+</style>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/openexr.js"></script>
+<script type="text/javascript" src="../lib/zip.js"></script>
+<script type="text/javascript" src="../lib/slider.js"></script>
+<script type="text/javascript" src="../lib/colorpicker.js"></script>
+<script type="text/javascript" src="../lib/geono.js"></script>
+<script type="text/javascript" src="../lib/img.js"></script>
+<style>
+canvas{
+	background-color:gray;
+	zoom:400%;
+	image-rendering:pixelated;
+	border:0.25px solid black;
+}
+div#pattern_template{
+	margin-top:20px;
+}
+img{
+	zoom:400%;
+	border:0.25px solid black;
+	image-rendering:pixelated;
+
+}
+</style>
+
+<script type="text/javascript">
+"use strict"
+
+var waves=[];
+var N=3;
+var M=N-1;
+var SIZE=64;
+var SIZE_1=SIZE-1;
+var main_img;
+var pattern_list=[];
+var pattern_img;
+var pattern_img2= new Img(N,N,1);
+var Pattern= function(){
+	this.x=0;
+	this.y=0;
+	this.num=0;
+	this.joint=[(N+2)*(N+2)];
+}
+var Wave= function(){
+	this.num=pattern_list.length;
+	this.update_flg=1;
+	this.flgs=new Array(pattern_list.length);
+	for(var fi=0;fi<this.flgs.length;fi++){
+		this.flgs[fi]=1;
+	}
+}
+
+var checkPattern = function(pat,x,y,offsetx,offsety,px,py){
+	//オフセットありパターン同士の一致チェック
+	for(var yi=0;yi<N;yi++){
+		for(var xi=0;xi<N;xi++){
+			var idx = pat.getIndex(x+xi,y+yi);
+			var ox = (xi)-offsetx;
+			var oy = (yi)-offsety;
+			if(ox< 0|| ox>=N
+				|| oy<0|| oy>=N){
+				continue;
+			}
+			var idx1 = pat.getIndex(px+ox,py+oy);
+			if(pat.rgba[idx] !== pat.rgba[idx1]){
+				return false;
+			}
+		}
+	}
+	return true;
+
+}
+
+var outcheck=function(x,y){
+	if(x<0 || x>=main_img.width
+		|| y<0 || y>=main_img.height){
+		return true;
+	}
+	return false;
+}
+
+var calcIndex=function(x,y){
+	return ((y&SIZE_1)<<6)+(x&SIZE_1);
+}
+var checkPatterns=function(x,y,pat_idx){
+	//ある座標のあるパターンが成立するかチェック
+		var pat = pattern_list[pat_idx];
+	for(var yi=-M;yi<=M;yi++){
+		for(var xi=-M;xi<=M;xi++){
+			if(outcheck(x+xi,y+yi))continue;
+			var list = pat.joint[(yi+M)*5+(xi+M)];
+
+			var idx = calcIndex(x+xi,y+yi);
+			var flgs= waves[idx].flgs;
+			var flg=true;
+			for(var li=0;li<list.length;li++){
+				if(flgs[list[li]]){
+					flg=false;
+					break;
+				}
+			}
+			if(flg){
+				return false;
+			}
+		}
+	}
+	return true;
+
+}
+var err_flg=false;
+var updateList=[];
+var updatewave=function(x,y){
+	var wave = waves[calcIndex(x,y)];
+	
+	var old_num =wave.num;
+
+	//可能性の残っているパターンの再チェック
+	for(var i=0;i<wave.flgs.length;i++){
+		if(wave.flgs[i]){
+			if(!checkPatterns(x,y,i)){
+				//可能性なし
+				wave.flgs[i]=0;
+				wave.num--;
+			}
+		}
+	}
+
+	if(wave.num===0){
+		//詰み
+		err_flg=true;
+		return;
+	}	
+
+	if(wave.num !== old_num){
+		//変化あり
+		wave.update_flg=1;
+		propagation(x,y);
+	}
+
+}
+var propagation=function(x,y){
+	//伝搬
+	for(var yi=-M;yi<=M;yi++){
+		for(var xi=-M;xi<=M;xi++){
+			if(xi===0 && yi===0){
+				continue;
+			}
+			if(outcheck(x+xi,y+yi))continue;
+			var idx = calcIndex(x+xi,y+yi);
+			if(waves[idx].num===1)continue;
+			if(updateList.indexOf(idx)<0){
+				updateList.push(idx);
+			}
+		}
+	}
+}
+
+var converge = function(x,y){
+	var wave=waves[calcIndex(x,y)];
+
+	//1パターンに収束
+	var idx;
+	var sum=0;
+	for(var i=0;i<pattern_list.length;i++){
+		if(wave.flgs[i]){
+			sum+=pattern_list[i].num;
+		}	
+	}
+	var r=Math.random()*sum|0;
+	for(var i=0;i<pattern_list.length;i++){
+		if(wave.flgs[i]){
+			r-=pattern_list[i].num;
+			if(r<0){
+				idx=i;
+				break;
+			}
+		}
+	}
+	for(var i=0;i<wave.flgs.length;i++){
+		wave.flgs[i]=0;
+	}
+	wave.flgs[idx]=1;
+	wave.num=1;
+	wave.update_flg=1;
+
+	propagation(x,y);
+}
+var onloadfunc=function(e){
+	var imgs=[];
+	imgs.push(Img.loadImg("pat0.png",1,function(img){
+		createPattern(img);
+	}));
+	imgs.push(Img.loadImg("pat1.png",1));
+	imgs.push(Img.loadImg("pat2.png",1));
+	imgs.push(Img.loadImg("pat3.png",1));
+
+	var s = document.getElementById("pat");
+	for(var i=0;i<imgs.length;i++){
+		var option =document.createElement("option");
+		option.text=imgs[i].name;
+		s.appendChild(option);
+	}
+
+	var createPattern=function(img){
+
+		pattern_img= img;
+		var pat  =document.getElementById("img_pat");
+		pat.src = img.toDataUrl();
+
+		var canvas = document.getElementById("c");
+		main_img= new Img(canvas.width,canvas.height,1);
+
+
+		pattern_list=[];
+		//パターン収集
+		for(var yi=0;yi<pattern_img.height;yi++){
+			for(var xi=0;xi<pattern_img.width;xi++){
+				var flg=true;
+				for(var pi=0;pi<pattern_list.length;pi++){
+					var pat = pattern_list[pi];
+
+					if(checkPattern(pattern_img,xi,yi,0,0,pat.x,pat.y)){
+						pat.num++;
+						flg=false;
+						break;
+					}
+				}
+				if(flg){
+					var pat = new Pattern();
+					pat.x = xi;
+					pat.y = yi;
+					pat.num=1;
+					pattern_list.push(pat);
+				}
+			}
+		}
+
+		//隣接パターン検索
+		for(var pi=0;pi<pattern_list.length;pi++){
+			var pat = pattern_list[pi];
+			for(var yi=0;yi<5;yi++){
+				for(var xi=0;xi<5;xi++){
+					var list = [];
+					pat.joint[yi*5+xi]=list;
+					for(var pi2=0;pi2<pattern_list.length;pi2++){
+						var pat2=pattern_list[pi2];
+						if(checkPattern(pattern_img,pat.x,pat.y,xi-2,yi-2,pat2.x,pat2.y)){
+							list.push(pi2);
+						}
+					}
+				}
+			}
+		}
+
+		//パターン表示
+		var template_div = document.getElementById("pattern_template");
+		var pattern_area = document.getElementById("pattern_area");
+		while(pattern_area.firstChild)pattern_area.removeChild(pattern_area.firstChild);
+		for(var pi=0;pi<pattern_list.length;pi++){
+			var pat=pattern_list[pi];
+			var pattern_div = template_div.cloneNode(true);
+			Img.copy(pattern_img2,0,0,pattern_img,pat.x,pat.y,N,N);
+			pattern_div.getElementsByClassName("hoge")[0].src = pattern_img2.toDataUrl();
+			var txt = "x" + pat.num + " pos(" +pat.x + "," + pat.y + ")";
+			txt+= " 隣接情報" + JSON.stringify(pat.joint);
+			var txtnode=document.createTextNode(txt);
+			pattern_div.getElementsByClassName("status")[0].appendChild(txtnode);
+
+			txtnode=document.createTextNode("["+pi+"]");
+			pattern_div.getElementsByClassName("no")[0].appendChild(txtnode);
+
+			pattern_area.appendChild(pattern_div);
+		}
+
+		reset();
+	}
+
+	var reset=function(){
+
+		waves=new Array(main_img.width*main_img.height);
+		for(var i=0;i<waves.length;i++){
+			waves[i]=new Wave();
+		}
+
+		for(var yi=0;yi<main_img.height;yi++){
+			for(var xi=0;xi<main_img.width;xi++){
+				var idx = yi * main_img.width + xi;
+				main_img.rgba[idx]=0;
+			}
+		}
+		var x=Math.random()*main_img.width|0;
+		var y=Math.random()*main_img.height|0;
+		
+		var ctx =  c.getContext('2d')
+		ctx.clearRect(0,0,64,64);
+	}
+
+	var pat = document.getElementById("pat");
+	pat.addEventListener("change",function(e){
+		createPattern(imgs[this.selectedIndex]);
+
+	});
+
+	var do_flg=0;
+	var f=function(){
+		if(!do_flg){
+			return;
+		}
+		var max=pattern_list.length+1;
+		for(var wi=0;wi<waves.length;wi++){
+			var wave =waves[wi];
+			if(wave.num===1){
+				continue;
+			}
+			var s=waves[wi].num;
+			if(wave.num<max){
+				max=wave.num;
+			}
+			
+		}
+		if(max===pattern_list.length+1){
+			do_flg=0;
+			start.value="開始"
+			return;
+		}
+		var kouho=[];
+		for(var wi=0;wi<waves.length;wi++){
+			if(waves[wi].num===max){
+				kouho.push(wi);
+			}
+		}
+		
+		var idx = kouho[Math.random()*kouho.length|0];
+		converge(idx&SIZE_1,idx>>6);
+
+		while(updateList.length){
+			var p = updateList.shift();
+			updatewave(p&SIZE_1,p>>6);
+		}
+
+		var ctx =  c.getContext('2d')
+		for(var i=0;i<waves.length;i++){
+			var wave=waves[i];
+			if(wave.update_flg){
+				var r=0;
+				var g=0;
+				var b=0;
+				var sum=0;
+				for(var fi=0;fi<pattern_list.length;fi++){
+					if(!wave.flgs[fi])continue;
+					var pat  =pattern_list[fi];
+					sum+=pat.num;
+					var idx  = pat.y* pattern_img.width + pat.x<<2;
+					r+= pattern_img.data[idx+0]*pat.num;
+					g+= pattern_img.data[idx+1]*pat.num;
+					b+= pattern_img.data[idx+2]*pat.num;
+				}
+
+				var _sum=1/sum;
+				main_img.data[(i<<2)+0]=r*_sum;
+				main_img.data[(i<<2)+1]=g*_sum;
+				main_img.data[(i<<2)+2]=b*_sum;
+				main_img.data[(i<<2)+3]=0xff;
+				wave.update_flg=0;
+			}
+			
+		}
+		ctx.putImageData(main_img.toImageData(),0,0);
+		if(err_flg){
+			alert("詰み");
+			return;
+		}
+		window.setTimeout(f,16);
+	}
+	var start = document.getElementById("start");
+	start.addEventListener("click",function(e){
+		if(!do_flg){
+			do_flg=1;
+			start.value="一時停止"
+			f();
+		}else{
+			start.value="開始"
+			do_flg=0;
+		}
+	});
+
+	document.getElementById("reset").addEventListener("click",function(e){
+		if(!do_flg){
+			reset();
+		}
+	});
+
+}
+
+</script>
+</head>
+
+<body onLoad="onloadfunc(event)">
+
+	<canvas id="c" width="64" height="64" ></canvas>
+	<img id="img_pat" >
+	<select id="pat">
+	</select>
+	<input type="button" id="start" value="開始">
+	<input type="button" id="reset" value="リセット">
+	<br>
+	<div style="display:none;">
+		<div id="pattern_template">
+			<span class="no"></span>
+			<img name="img" class="hoge">
+			<span class="status"></span>
+		</div>
+	</div>
+	<div id="pattern_area">
+	</div>
+</body>
+</html>
+
+
