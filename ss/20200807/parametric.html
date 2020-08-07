@@ -1,6 +1,8 @@
 <html>
 	<head>
-	<title>ƒpƒ‰ƒƒgƒŠƒbƒN‹Èü</title>
+	<
+	<title>ãƒ‘ãƒ©ãƒ¡ãƒˆãƒªãƒƒã‚¯æ›²ç·š</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script type="text/javascript" src="lib/inherits.js"></script>
 		<script type="text/javascript" src="lib/vector.js"></script>
 	</head>
@@ -14,9 +16,9 @@
 	</div>
 		<canvas id="c" width="512" height="512" style="border:1px solid black;"></canvas>
 		<div>
-		<span style="color:red">Ô‚ª“s‡‚æ‚­“K“–‚Éì‚Á‚½ƒpƒ‰ƒƒgƒŠƒbƒN‹Èü</span>
-		‚Å
-		<span style="color:green;">—Î‚ª‚½‚Ô‚ñˆê”Ê“I‚È3ŽŸƒXƒvƒ‰ƒCƒ“‹Èü</span>
+		<span style="color:red">èµ¤ãŒéƒ½åˆã‚ˆãé©å½“ã«ä½œã£ãŸãƒ‘ãƒ©ãƒ¡ãƒˆãƒªãƒƒã‚¯æ›²ç·š</span>
+		ã§
+		<span style="color:green;">ç·‘ãŒãŸã¶ã‚“ä¸€èˆ¬çš„ãª3æ¬¡ã‚¹ãƒ—ãƒ©ã‚¤ãƒ³æ›²ç·š</span>
 		</div>
 <script type="text/javascript">
 var canvas=document.getElementById("c");
@@ -139,7 +141,7 @@ var aaa=function(mode){
 	}
 
 
-	//‚±‚Á‚©‚ç•’Ê‚Ì‚RŽŸƒXƒvƒ‰ƒCƒ“@—‰ð‚µ‚Ä‚¢‚È‚¢
+	//ã“ã£ã‹ã‚‰æ™®é€šã®ï¼“æ¬¡ã‚¹ãƒ—ãƒ©ã‚¤ãƒ³ã€€ç†è§£ã—ã¦ã„ãªã„
 	var a=[];
 	var b=[];
 	var c=[];
@@ -169,7 +171,7 @@ var aaa=function(mode){
 			c[i][1] = 3.0 * (a[i-1][1] - 2.0 * a[i][1] + a[i+1][1]);
 			
 		}
-			  // ¶‰º‚ðÁ‚·
+			  // å·¦ä¸‹ã‚’æ¶ˆã™
 		w[0]=0.0;
 		for(i=1; i<num; i++) {
 			tmp = 4.0 - w[i-1];
@@ -177,12 +179,12 @@ var aaa=function(mode){
 			c[i][1] = (c[i][1] - c[i-1][1])/tmp;
 			w[i] = 1.0 / tmp;
 		}
-			// ‰Eã‚ðÁ‚·
+			// å³ä¸Šã‚’æ¶ˆã™
 		for(i=num-1; i>0; i--) {
 			c[i][0] = c[i][0] - c[i+1][0] * w[i];
 			c[i][1] = c[i][1] - c[i+1][1] * w[i];
 		}
-		  // ‚RŽŸ‘½€Ž®‚Ì1ŽŸŒW”(b)‚Æ3ŽŸŒW”(b)‚ðŒvŽZ
+		  // ï¼“æ¬¡å¤šé …å¼ã®1æ¬¡ä¿‚æ•°(b)ã¨3æ¬¡ä¿‚æ•°(b)ã‚’è¨ˆç®—
 		b[num] = d[num] =0.0;
 		for(i=0; i<num; i++) {
 			d[i][0] = ( c[i+1][0] - c[i][0]) / 3.0;
@@ -204,8 +206,8 @@ var aaa=function(mode){
 	{
 		var j;
 		var dt;
-		j = Math.floor(t); // ¬”“_ˆÈ‰ºØŽÌ‚Ä
-		if(j < 0) j=0; else if (j >= num) j=num-1; // ŠÛ‚ßŒë·‚ðl—¶
+		j = Math.floor(t); // å°æ•°ç‚¹ä»¥ä¸‹åˆ‡æ¨ã¦
+		if(j < 0) j=0; else if (j >= num) j=num-1; // ä¸¸ã‚èª¤å·®ã‚’è€ƒæ…®
 
 		dt = t - j;
 		var ret=[0,0];
