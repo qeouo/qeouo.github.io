@@ -1,0 +1,232 @@
+<html>
+	<head>
+	<title>パラメトリック曲線</title>
+<script type="text/javascript" src="lib/inherits.js"></script>
+		<script type="text/javascript" src="lib/vector.js"></script>
+	</head>
+	<body>
+	<div>
+	<input type="button" value="random" onclick="aaa(0);">
+	<input type="button" value="preset1" onclick="aaa(1);">
+	<input type="button" value="preset2" onclick="aaa(2);">
+	
+	
+	</div>
+		<canvas id="c" width="512" height="512" style="border:1px solid black;"></canvas>
+		<div>
+		<span style="color:red">赤が都合よく適当に作ったパラメトリック曲線</span>
+		で
+		<span style="color:green;">緑がたぶん一般的な3次スプライン曲線</span>
+		</div>
+<script type="text/javascript">
+var canvas=document.getElementById("c");
+var ctx = canvas.getContext("2d");
+
+var aaa=function(mode){
+	ctx.clearRect(0,0,512,512);
+
+	var points=[];
+
+	switch(mode){
+	case 0:
+		for(var pi=0;pi<5;pi++){
+			points.push([Math.random()*500,Math.random()*500]);
+		}
+		break;
+	case 1:
+		for(var pi=0;pi<5;pi++){
+			points.push([pi*50,(pi&1)*50+100]);
+		}
+		for(var pi=0;pi<3;pi++){
+			points.push([pi*100+200,250]);
+			points.push([pi*100+200,400]);
+			points.push([pi*100+250,400]);
+			points.push([pi*100+250,250]);
+		}
+		break;
+	case 2:
+		var ps=[252,294,338,247,354,102,311,23,281,121,246,48,196,120
+			,129,59,99,170,155,283,229,298,214,465,466,357,354,441
+			,233,457,79,367,128,446,239,461];
+		for(var pi=0;pi<ps.length;pi+=2){
+			points.push([ps[pi],ps[pi+1]]);
+		}
+		break;
+	}
+
+
+	var result=[];
+	for(var i=0;i<4;i++){
+		result.push(new Vec2());
+	}
+
+	var p = points;
+	var q0=new Vec2(),q1=new Vec2();
+	var calc2=function(res,n,p){
+		if(n<0 || n>=p.length-1){
+			return;
+		}
+		var i = n;
+		if(i>0 ){
+				Vec2.sub(q0,p[i+1],p[i-1]);
+				Vec2.mul(q0,q0,0.5);
+		}else if(i==0){
+			Vec2.sub(q0,p[i+1],p[i]);
+		}
+		if(i+2>=p.length){
+			Vec2.sub(q1,p[i+1],p[i]);
+		}else{
+			Vec2.sub(q1,p[i+2],p[i]);
+			Vec2.mul(q1,q1,0.5);
+		}
+
+		Vec2.copy(res[3],points[i]);
+
+		Vec2.copy(res[2],q0);
+		
+		Vec2.madd(res[0],q1,p[i+1],-2);
+		Vec2.add(res[0],res[0],q0);
+		Vec2.madd(res[0],res[0],p[i],2);
+
+		Vec2.sub(res[1],p[i+1],res[0]);
+		Vec2.sub(res[1],res[1],q0);
+		Vec2.sub(res[1],res[1],p[i]);
+	}
+
+	var ret=[0,0];
+	var calc=function(t){
+		var j = Math.min(points.length-2,Math.max(0,Math.floor(t)));
+		var dt = t - j;
+
+		calc2(result,j,points);
+
+		Vec3.mul (ret,    result[0],dt*dt*dt);
+		Vec3.madd(ret,ret,result[1],dt*dt);
+		Vec3.madd(ret,ret,result[2],dt);
+		Vec3.add (ret,ret,result[3]);
+		  
+		  return ret;
+	}
+
+	ctx.globalAlpha=0.5;
+	ctx.strokeStyle = "red";
+	ctx.lineWidth= 3;
+
+		var point = points[0];	
+		ctx.beginPath();
+	  ctx.moveTo(point[0],point[1]);
+	for(var pi=0;pi<points.length-1;pi+=0.05){
+	  var point =calc(pi);
+	  
+		ctx.lineTo(point[0],point[1]);
+	  }
+		ctx.stroke();
+	  
+
+	ctx.lineWidth= 1;
+	ctx.strokeStyle = "black";
+	ctx.beginPath();
+	ctx.moveTo(points[0][0],points[0][1]);
+	for(var pi=1;pi<points.length;pi++){
+	  var point = points[pi];
+		ctx.lineTo(point[0],point[1]);
+	  }
+		ctx.stroke();
+
+	for(var pi=0;pi<points.length;pi++){
+		var point = points[pi];
+		ctx.fillRect(point[0]-3,point[1]-3,7,7);
+	}
+
+
+	//こっから普通の３次スプライン　理解していない
+	var a=[];
+	var b=[];
+	var c=[];
+	var d=[];
+	var w=[];
+	 
+	var num = points.length-1;
+		for(i=0; i<=num; i++) {
+			a.push([0,0]);
+			b.push([0,0]);
+			c.push([0,0]);
+			d.push([0,0]);
+			w.push(0);
+			
+			a[i][0] = points[i][0];
+			a[i][1] = points[i][1];
+			
+			c[i]=[1,1];
+
+		}
+		   c[0][0] = 0;
+		   c[0][1]=0;
+		   c[num][0] = 0.0;
+		   c[num][1] = 0.0;
+		for(i=1; i<num; i++) {
+			c[i][0] = 3.0 * (a[i-1][0] - 2.0 * a[i][0] + a[i+1][0]);
+			c[i][1] = 3.0 * (a[i-1][1] - 2.0 * a[i][1] + a[i+1][1]);
+			
+		}
+			  // 左下を消す
+		w[0]=0.0;
+		for(i=1; i<num; i++) {
+			tmp = 4.0 - w[i-1];
+			c[i][0] = (c[i][0] - c[i-1][0])/tmp;
+			c[i][1] = (c[i][1] - c[i-1][1])/tmp;
+			w[i] = 1.0 / tmp;
+		}
+			// 右上を消す
+		for(i=num-1; i>0; i--) {
+			c[i][0] = c[i][0] - c[i+1][0] * w[i];
+			c[i][1] = c[i][1] - c[i+1][1] * w[i];
+		}
+		  // ３次多項式の1次係数(b)と3次係数(b)を計算
+		b[num] = d[num] =0.0;
+		for(i=0; i<num; i++) {
+			d[i][0] = ( c[i+1][0] - c[i][0]) / 3.0;
+			d[i][1] = ( c[i+1][1] - c[i][1]) / 3.0;
+			b[i][0] = a[i+1][0]- a[i][0] - c[i][0] - d[i][0];
+			b[i][1] = a[i+1][1]- a[i][1] - c[i][1] - d[i][1];
+		}
+	for(var pi=1;pi<points.length;pi++){
+		var point0 = points[pi-1];	
+	  var point = points[pi];
+		ctx.beginPath();
+	  ctx.moveTo(point0[0],point0[1]);
+		ctx.lineTo(point[0],point[1]);
+	  ctx.closePath();
+		ctx.stroke();
+	  }
+	  
+	  var calc=function( t)
+	{
+		var j;
+		var dt;
+		j = Math.floor(t); // 小数点以下切捨て
+		if(j < 0) j=0; else if (j >= num) j=num-1; // 丸め誤差を考慮
+
+		dt = t - j;
+		var ret=[0,0];
+		for(var i=0;i<2;i++){
+			ret[i]= a[j][i] + ( b[j][i] + (c[j][i]+ d[j][i] * dt) * dt ) * dt;
+		  }
+		  return ret;
+	}
+	ctx.strokeStyle = "green";
+	ctx.lineWidth= 3;
+
+		var point = points[0];	
+		ctx.beginPath();
+	  ctx.moveTo(point[0],point[1]);
+	for(var pi=0;pi<points.length-1;pi+=0.05){
+	  var point =calc(pi);
+	  
+		ctx.lineTo(point[0],point[1]);
+	  }
+		ctx.stroke();
+}
+aaa(0);
+	</script>
+	</body>
