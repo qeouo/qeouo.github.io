@@ -38,11 +38,11 @@ doc.scale=100;
 doc.canvas_pos=new Vec2();
 doc.cursor_pos=new Vec2();
 
-		var rect = preview.getBoundingClientRect();
 var canvas_field;
 
 
 	var getPos=function(e){
+		var rect = preview.getBoundingClientRect();
 		doc.cursor_pos[0] =(e.clientX- rect.left)-1;
 		doc.cursor_pos[1] = (e.clientY- rect.top)-1;
 		
@@ -224,12 +224,12 @@ var onloadfunc=function(e){
 			if(this.idx>=1){
 
 				//ログ文面変更
-//				p_l.label = ("0000" + p_l.id).slice(-4) + "| pen" ;
-//				p_l.label += "(" + points[0].pos[0].toFixed(0)+ ","+ points[0].pos[1].toFixed(0)+")-";
-//				p_l.label += (points.length-2) +"-";
-//				p_l.label += "(" + points[points.length-1].pos[0].toFixed(0)+ ","+ points[points.length-1].pos[1].toFixed(0)+")";
-//				var option = inputs["history"].options[inputs["history"].selectedIndex];
-//				Util.setText(option,p_l.label);
+				p_l.label = ("0000" + p_l.id).slice(-4) + "| pen" ;
+				p_l.label += "(" + points[0].pos[0].toFixed(0)+ ","+ points[0].pos[1].toFixed(0)+")-";
+				p_l.label += (points.length-2) +"-";
+				p_l.label += "(" + points[points.length-1].pos[0].toFixed(0)+ ","+ points[points.length-1].pos[1].toFixed(0)+")";
+				var option = inputs["history"].options[inputs["history"].selectedIndex];
+				Util.setText(option,p_l.label);
 
 				//今回と前回の座標で直線描画
 				Command.drawHermitian(p_l,this.idx);
