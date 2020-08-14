@@ -73,9 +73,12 @@ var aaa=function(mode){
 				Vec2.mul(q0,q0,0.5);
 		}else if(i==0){
 			Vec2.sub(q0,p[i+1],p[i]);
+			//Vec2.madd(q0,q0,q1,-0.5);
+
 		}
 		if(i+2>=p.length){
 			Vec2.sub(q1,p[i+1],p[i]);
+			Vec2.madd(q1,q1,q0,-0.5);
 		}else{
 			Vec2.sub(q1,p[i+2],p[i]);
 			Vec2.mul(q1,q1,0.5);
