@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<title>hdr_paint</title>
+<link rel="stylesheet" type="text/css" href="main.css">
+<style>
+</style>
+<script type="text/javascript" src="../lib/inherits.js"></script>
+<script type="text/javascript" src="../lib/util.js"></script>
+<script type="text/javascript" src="../lib/datastream.js"></script>
+<script type="text/javascript" src="../lib/vector.js"></script>
+<script type="text/javascript" src="../lib/openexr.js"></script>
+<script type="text/javascript" src="../lib/zip.js"></script>
+<script type="text/javascript" src="../lib/zlib.js"></script>
+<script type="text/javascript" src="../lib/slider.js"></script>
+<script type="text/javascript" src="../lib/colorpicker.js"></script>
+<script type="text/javascript" src="../lib/geono.js"></script>
+<script type="text/javascript" src="../lib/img.js"></script>
+
+<script type="text/javascript" src="./log.js"></script>
+<script type="text/javascript" src="./command.js"></script>
+<script type="text/javascript" src="./layer.js"></script>
+<script type="text/javascript" src="./file.js"></script>
+<script type="text/javascript" src="./redraw.js"></script>
+<script type="text/javascript" src="./tab.js"></script>
+<script type="text/javascript" src="./penfunc.js"></script>
+<script type="text/javascript" src="./brush.js"></script>
+<script type="text/javascript">
+"use strict"
+
+var inputs=[];
+var doc ={};
+doc.draw_col=new Vec4();
+doc.scale=100;
+doc.canvas_pos=new Vec2();
+doc.cursor_pos=new Vec2();
+	var pen_log=null;
+	var pen_func=null;
+
+
+var canvas_field;
+
+
+	var getPos=function(e){
+		var rect = preview.getBoundingClientRect();
+		doc.cursor_pos[0] =(e.clientX- rect.left)-1;
+		doc.cursor_pos[1] = (e.clientY- rect.top)-1;
+		
+		doc.cursor_pos[0]*=100/doc.scale;
+		doc.cursor_pos[1]*=100/doc.scale;
+		
+	}
+var onloadfunc=function(e){
+
+
+	preview=  document.getElementById('preview');
+	preview_ctx =  preview.getContext('2d')
+	preview_ctx_imagedata=preview_ctx.createImageData(preview.width,preview.height);
+
+
+
+
+	var keys=Object.keys(inputs);
+	for(var i=0;i<keys.length;i++){
+		var key = keys[i];
+		var input = inputs[key];
+		input.setAttribute("title",key);
+	}
+
+	
+	var rag=null;
+
+	var drawfunc =function(e){
+		//描画関数
+		
+		var x =doc.cursor_pos[0];
+		var y = doc.cursor_pos[1];
+
+		if(!pen_log){
+			return;
+		}
+
+		if(inputs["pen"].checked){
+			//ペンのとき
+			if(!pen_log)return;
+
+			var point=new PenPoint();
+			point.pos[0]= x;
+			point.pos[1]= y;
+			if(e.buttons&1){
+				if(e.pointerType === "mouse"){
+					point.pressure=1;
+				}else{
+					point.pressure=e.pressure;
+				}
+			}else{
+				point.pressure=0;
+			}	
+			var points= pen_log.param.points;
+
+			//今回座標をパスに追加
+			point.time=Date.now();
+
+			points.push(point);
+			if(inputs["stroke_correction"].checked){
+				if(points.length>=3 && pen_func.idx <points.length-2){
+					var buf=new Vec2();
+					Vec2.sub(buf,points[points.length-2].pos,points[points.length-3].pos);
+					var a=Vec2.scalar(buf);
+					if(a>20){
+						Vec2.norm(buf);
+						Vec2.mul(buf,buf,a-20);
+					}
+					Vec2.add(points[points.length-2].pos,points[points.length-3].pos,buf);
+				}
+			}
+
+			if(!(e.buttons&1)){
+
+				//描画前ポイントを補正
+					var points = pen_log.param.points;
+				if(pen_func.idx +1<points.length){
+					var len = points.length - (pen_func.idx + 1) ;
+					var a = points[pen_func.idx].pressure;
+					var b = points[points.length-1].pressure;
+					for(var pi=pen_func.idx+1;pi<points.length;pi++){
+						var r = ((pi-pen_func.idx)/len);
+						points[pi].pressure = a + (b-a) * r;
+					}
+				}
+
+				
+			}
+
+			if(!(e.buttons&1)){
+				pen_func.end();
+				point.pressure=0;
+				pen_log=null;
+			}	
+
+			
+		}else if(inputs["translate"].checked) {
+			//移動のとき
+			if((e.buttons & 1) && pen_log){
+				x = (x|0) - drag_start[0];
+				y = (y|0) - drag_start[1];
+				
+
+				//一旦元の座標に戻してから再度移動させる
+				Command[pen_log.command](pen_log,true);
+
+				pen_log.param.x=x;
+				pen_log.param.y=y;
+				Command[pen_log.command](pen_log);
+				Log.appendOption();
+				
+			}
+
+			if(!(e.buttons&1)){
+				pen_log=null;
+			}
+		}
+	};
+
+
+	
+	window.addEventListener("pointerup",function(e){
+			getPos(e);
+			if(pen_log){
+				drawfunc(e);
+				e.preventDefault();
+			}
+	});
+	window.addEventListener("pointermove",function(e){
+		getPos(e);
+		refreshPreviewStatus(e);
+		if(pen_log){
+			drawfunc(e);
+			e.preventDefault();
+		}
+	});
+
+	preview.addEventListener("contextmenu",function(e){
+		event.preventDefault();
+	},false);
+	
+	var drag_start=new Vec2();
+
+	preview.addEventListener("pointerdown",function(e){
+		getPos(e);
+		var x =doc.cursor_pos[0];
+		var y = doc.cursor_pos[1];
+		drag_start[0]= x;
+		drag_start[1]= y;
+
+		if(selected_layer===null){
+			return;
+		}
+
+		if(inputs["fill"].checked && (e.buttons &1)){
+			if(selected_layer.type === 1){
+				return;
+			}
+			//塗りつぶし
+
+			var joined_img = root_layer.img;
+			if(x<0 || x>=joined_img.width || y<0 || y>=joined_img.height){
+				//範囲外は無視
+				return;
+			}
+			var layer = selected_layer;
+			x -= layer.position[0];
+			y -= layer.position[1];
+			if(x<0 || x>=layer.img.width || y<0 || y>=layer.img.height){
+				//範囲外は無視
+				return;
+			}
+			Command.executeCommand("fill",{"layer_id":selected_layer.id,"x":x,"y":y,"color":new Float32Array(doc.draw_col),"is_layer":flg_active_layer_only});
+
+		}else if(inputs["translate"].checked && (e.buttons &1) ){
+			//レイヤ位置移動
+			drag_start[0]= x | 0;
+			drag_start[1]= y | 0;
+			var layer_id=-1;//全レイヤ移動
+			if(flg_active_layer_only){
+				//アクティブレイヤ
+				layer_id=selected_layer.id;
+			}
+			pen_log = Command.executeCommand("translateLayer",{"layer_id":layer_id,"x":0,"y":0} ,{"x":selected_layer.position[0],"y":selected_layer.position[1]},1);
+
+
+		}else if((inputs["pen"].checked) && (e.buttons &1) ){
+			//ペンもしくは消しゴム
+
+			if(selected_layer.type !== 0){
+				//通常レイヤ以外は無効
+				return;
+			}
+
+
+			//ペン状態取得
+
+			var param={};
+			Brush.setParam(param);
+			param.points=[];
+			param.layer_id = selected_layer.id;
+			pen_log = Command.executeCommand("pen",param);
+			if(pen_log){
+				pen_func= new PenFunc();
+				pen_func.pen_log=pen_log;
+				if(inputs["stroke_correction"].checked){
+					pen_func.ragtime=40;
+				}else{
+					pen_func.ragtime=18;
+				}
+
+				drawfunc(e);
+			}
+		}
+
+		drawfunc(e);
+
+		if(e.buttons & 2){
+			//スポイト
+			var img= root_layer.img;
+			if(event.ctrlKey){
+				img= selected_layer.img;
+			}
+			if(x<0 || x>=img.width || y<0 || y>img.height){
+			}else{
+				var data = img.data;
+				if( flg_active_layer_only){
+					data = selected_layer.img.data;
+				}
+
+				var idx=((y|0)*img.width+(x|0))*4;
+
+				doc.draw_col[0]=data[idx];
+				doc.draw_col[1]=data[idx+1];
+				doc.draw_col[2]=data[idx+2];
+				doc.draw_col[3]=data[idx+3];
+
+				changeColor(null);
+			}
+		}
+
+	},false);
+
+    inputs["history"].addEventListener('change', function(event){
+		var index = this.selectedIndex;
+		var option = this.options[index];
+		Log.moveLog(parseInt(option.value));
+	});
+
+	document.addEventListener('keyup',function(event){
+		if(event.keyCode===32){
+			flg_active_layer_only=false;
+			refreshMain();
+		}
+	});
+
+	document.addEventListener('keydown', function(event){
+		if(event.target.tagName==="INPUT"){
+			if(event.target.type==="text"){
+				return;
+			}
+		}
+		for(var bi=0;bi<brushes.length;bi++){
+			var brush = brushes[bi];
+			if(!brush.shortcut)continue;
+			var shortcut = brush.shortcut.toUpperCase().charCodeAt(0);
+			if(shortcut === event.keyCode){
+				brush.select();
+				return;
+			}
+		}
+
+		switch(event.keyCode){
+		case 68://d
+			inputs["fill"].checked=true;
+			refreshTab("tools");
+			break;
+		case 70://f
+			inputs["translate"].checked=true;
+			refreshTab("tools");
+			break;
+		case 81://q
+			break;
+		case 87://w
+			break;
+		case 69://e
+			inputs["weight"].value=parseFloat(inputs["weight"].value)-1;
+			Util.fireEvent(inputs["weight"],"change");
+			break;
+		case 82://r
+			inputs["weight"].value=parseFloat(inputs["weight"].value)+1;
+			Util.fireEvent(inputs["weight"],"change");
+			break;
+		case 90:
+			if(event.ctrlKey){
+				if (event.shiftKey) {
+					//リドゥ
+					redo();
+
+				}else{
+					//アンドゥ
+					undo();
+				}
+			}
+			event.preventDefault();
+			break;
+		case 32://space
+			flg_active_layer_only=true;
+			event.preventDefault();
+			refreshMain(1);
+			break;
+		}
+    });
+
+	//レイヤパラメータコントロール変更時反映
+	var layer_inputs = Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("input"));
+	layer_inputs = layer_inputs.concat(Array.prototype.slice.call(document.getElementById("layer_param").getElementsByTagName("select")));
+	for(var i=0;i<layer_inputs.length;i++){
+		var input = layer_inputs[i];
+		var f = function(e){
+			if(!selected_layer){
+	  			return;
+	  		}
+			var layer = selected_layer;
+			var member = e.target.id.replace("layer_","");
+			if(e.target.getAttribute("type")==="checkbox"){
+				Command.executeCommand("changeLayerAttribute",{"layer_id":layer.id,"name":member,"value":e.target.checked});
+			  }else{
+				Command.executeCommand("changeLayerAttribute",{"layer_id":layer.id,"name":member,"value":e.target.value});
+			}
+		}
+		if(input.id==="layer_width"  || input.id==="layer_height"){
+			f=function(e){
+				var layer = selected_layer;
+				var width = parseInt(inputs["layer_width"].value);
+				var height= parseInt(inputs["layer_height"].value);
+				Command.executeCommand("resizeLayer",{"layer_id":layer.id,"width":width,"height":height});
+			}
+		}
+		if(input.id==="layer_x"  || input.id==="layer_y"){
+			f=function(e){
+				var layer = selected_layer;
+				var x= parseInt(inputs["layer_x"].value);
+				var y= parseInt(inputs["layer_y"].value);
+				x-=layer.position[0];
+				y-=layer.position[1];
+				Command.executeCommand("translateLayer",{"layer_id":layer.id,"x":x,"y":y});
+			}
+		}
+
+		input.addEventListener("change",f);
+	}
+
+	inputs["color_A"].addEventListener("change",function(){
+		doc.draw_col[3] = parseFloat(inputs["color_A"].value);
+		changeColor(null);
+
+	});
+
+	var input_tags = document.getElementById("post_effect").getElementsByTagName("input");
+	for(var i=0;i<input_tags.length;i++){
+		var input = input_tags[i]
+		input.addEventListener("change",function(e){
+
+			//refreshColor();
+			if(e.target.id==="bloom_power"){
+				refreshMain(1);
+	  		}
+			if(e.target.id==="ch_bloom" || e.target.id==="bloom_size"){
+				refreshMain();
+	  		}
+			if(e.target.id==="ch_gamma" || e.target.id==="gamma" || e.target.id==="ev"){
+				refreshMain(2);
+				Layer.eachLayers(function(layer){
+					refresh_thumbnail.push(layer);
+				});
+	  		}
+			
+	  });
+	}
+	var tool_radios = document.getElementById("tools").getElementsByTagName("input");
+	for(var i=0;i<tool_radios.length;i++){
+		var input = tool_radios[i]
+		input.addEventListener("change",function(e){
+			refreshTab("tools");
+		});
+	}
+
+	//tool_radios = document.getElementById("color_selector_tab").getElementsByTagName("input");
+	//for(var i=0;i<tool_radios.length;i++){
+	//	var input = tool_radios[i]
+	//	input.addEventListener("change",function(e){
+	//		refreshTab("color_selector_tab");
+	//	});
+	//}
+	
+	var brush_param=document.getElementById("brush_param");
+	var input_tags = Array.prototype.slice.call(brush_param.getElementsByTagName("input"));
+	input_tags= input_tags.concat(Array.prototype.slice.call(brush_param.getElementsByTagName("select")));
+	for(var i=0;i<input_tags.length;i++){
+		var input = input_tags[i]
+		input.addEventListener("change",function(event){refreshpen_flg=true;});
+	}
+	  
+
+	var resizeCanvas=function(){
+		var width = parseInt(inputs["canvas_width"].value);
+		var height= parseInt(inputs["canvas_height"].value);
+		Command.executeCommand("resizeCanvas",{"width":width,"height":height});
+	}
+	inputs["canvas_width"].addEventListener("change",resizeCanvas);
+	inputs["canvas_height"].addEventListener("change",resizeCanvas);
+	inputs["btn_resize_layer"].addEventListener("click",function(e){
+		var width = parseInt(preview.width);
+		var height= parseInt(preview.height);
+		Command.executeCommand("resizeLayer",{"layer_id":selected_layer.id,"width":width,"height":height});
+
+	});
+	inputs["btn_resize_layers"].addEventListener("click",function(e){
+		var width = parseInt(preview.width);
+		var height= parseInt(preview.height);
+		Command.executeCommand("resizeLayer",{"layer_id":-1,"width":width,"height":height});
+
+	});
+	inputs["open_layer"].addEventListener("change",function(e){
+		var file=this.files[0];
+		//Command.executeCommand("loadImageFile",{"position":layers.indexOf(selected_layer)+1,"file":file});
+		
+		Command.loadImageFile_(file,selected_layer.id);
+		this.value=null;
+
+	});
+
+	inputs["open_hpd"].addEventListener("change",function(e){
+
+		var file=this.files[0];
+		Util.loadBinary(file,function(buffer){
+			loadHpd(buffer);
+			var log =Log.createLog("loadDocumentFile",{"file":file.name});
+			Log.appendOption(log);
+		});
+
+		this.value=null;
+	});
+
+	inputs["down_layer"].addEventListener("click",function(e){
+		if(!selected_layer){
+			return;
+		}
+		var parent_layer =  Layer.findParent(selected_layer);
+		var layers = parent_layer.children;
+		var position = layers.indexOf(selected_layer);
+		Command.executeCommand("moveLayer",{"layer_id":selected_layer.id,"parent_layer_id":parent_layer.id,"position":position-1});
+	});
+	inputs["up_layer"].addEventListener("click",function(e){
+		var parent_layer =  Layer.findParent(selected_layer);
+		var layers = parent_layer.children;
+		var position = layers.indexOf(selected_layer);
+		Command.executeCommand("moveLayer",{"layer_id":selected_layer.id,"parent_layer_id":parent_layer.id,"position":position+1});
+	});
+
+	//レイヤ結合ボタン押下時
+	inputs["join_layer"].addEventListener("click",function(e){
+		if(selected_layer.type===1){
+			Command.executeCommand("composite"
+				,{"layer_id":selected_layer.id});
+			return;
+		}
+		var parent_layer = Layer.findParent(selected_layer);
+		var position = parent_layer.children.indexOf(selected_layer);
+
+		if(position===0){
+			return;
+		}
+
+		if(parent_layer.children[position-1].type===1){
+			return;
+		}
+
+		var id2= parent_layer.children[position-1].id;
+		Command.executeCommand("joinLayer",{"layer_id":id2,"layer_id2":selected_layer.id});
+	});
+
+	inputs["delete_layer"].addEventListener("click",function(e){
+		Command.executeCommand("deleteLayer",{"layer_id":selected_layer.id});
+	});
+
+	var oldpos=new Vec2();
+	canvas_field = document.getElementById("canvas_field");
+	canvas_field.addEventListener( "pointerdown", function(e){
+		if(e.buttons&4){
+			oldpos[0]=e.pageX;
+			oldpos[1]=e.pageY;
+			e.preventDefault();
+		}
+	});
+	window.addEventListener( "pointermove", function(e){
+	});
+	document.getElementById("canvas_field").addEventListener( "pointermove", function(e){
+		if(e.buttons&4){
+			//中ボタンドラッグでキャンバス移動
+			//c.scrollLeft-=e.pageX-oldpos[0];
+			//c.scrollTop-=e.pageY-oldpos[1];
+
+			doc.canvas_pos[0]+=(e.pageX-oldpos[0]);
+			doc.canvas_pos[1]+=(e.pageY-oldpos[1]);
+
+			var c=document.getElementById("canvas_field");
+			var spacer=document.getElementById("spcaer");
+			if(doc.canvas_pos[0]<0){
+				c.scrollLeft-=doc.canvas_pos[0];
+				doc.canvas_pos[0]=0;
+			}
+			if(doc.canvas_pos[1]<0){
+				doc.canvas_pos[1]=0;
+			}
+
+			preview.style.left = doc.canvas_pos[0] + "px";
+			preview.style.top = doc.canvas_pos[1] + "px";
+
+			oldpos[0]=e.pageX;
+			oldpos[1]=e.pageY;
+			
+		}
+	});
+	document.getElementById("canvas_area").addEventListener( "wheel", function(e){
+		if(!e.ctrlKey){
+			return;
+		}
+		var add=0;
+		e.preventDefault();
+		if(e.buttons&4){
+			return;
+		}
+		if(event.deltaY>0){
+			if(doc.scale<=100){
+				doc.scale/=2;
+			}else{
+				doc.scale-=100;
+			}
+			
+		}else{
+			if(doc.scale<=100){
+				doc.scale*=2;
+			}else{
+				doc.scale+=100;
+			}
+			
+		}
+		if(doc.scale<25){
+			doc.scale=25;
+		}
+		if(doc.scale>2000){
+			doc.scale=2000;
+		}
+		if(doc.scale>100){
+			preview.style.imageRendering="pixelated";
+		}else{
+			preview.style.imageRendering="auto";
+		}
+		var cx = canvas_field.scrollX+canvas_field.clientWidth/2;
+		var cy = canvas_field.scrollY+canvas_field.clientHeight/2;
+		preview.style.width = (preview.width* doc.scale/100 ) + "px";
+		preview.style.height= (preview.height*doc.scale/100) + "px";
+
+		refreshPreviewStatus(e);
+
+	}) ;
+
+    var a = document.getElementById("save_hpd");
+	a.addEventListener("contextmenu",saveHpd);
+	a.addEventListener("click",saveHpd);
+	
+
+    a = document.getElementById("save_ldr");
+	a.addEventListener("contextmenu",saveLdr);
+	a.addEventListener("click",saveLdr);
+
+    a = document.getElementById("save_hdr");
+	a.addEventListener("contextmenu",saveHdr);
+	a.addEventListener("click",saveHdr);
+
+
+	var url=location.search.substring(1,location.search.length)
+	var args=url.split("&")
+
+	Vec4.set(doc.draw_col,0.8,0.2,0.2,1);
+	changeColor(null);
+
+	for(i=args.length;i--;){
+		var arg=args[i].split("=")
+		if(arg.length >1){
+			var name = arg[0];
+			if(!isNaN(arg[1]) && arg[1]!=""){
+				if(arg[1].length>1 && arg[1].indexOf(0) =="0"){
+					globalParam[name] = arg[1]
+				}else{
+					globalParam[name] = +arg[1]
+				}
+			}else{
+				globalParam[name] = arg[1]
+			}
+		}
+		if(inputs.hasOwnProperty(name)){
+			if((inputs[name].type=="checkbox" || inputs[name].type=="radio") && globalParam[name]){
+				inputs[name].checked=true;
+			}else{
+				inputs[name].value = globalParam[name];
+			}
+			Util.fireEvent(inputs[name],"input");
+		}
+	}
+//初期化
+	img_hsv.func();
+
+	if(globalParam.hasOwnProperty("load")){
+
+		//パラメタ渡されてる場合はそれ開く
+		Util.loadBinary(globalParam.load,function(buffer){
+			loadHpd(buffer);
+			var log =Log.createLog("loadDocumentFile",{"file":globalParam.load});
+			Log.appendOption(log);
+		});
+	}else{
+		root_layer = createLayer(new Img(1,1),1);
+		refreshLayerThumbnail(root_layer);
+		//Command.executeCommand("resizeLayer",{"layer_id":root_layer.id,"width":512,"height":512});
+
+		Command.executeCommand("resizeCanvas",{"width":512,"height":512});
+		Command.executeCommand("createNewLayer",{"position":0,"parent":root_layer.id,"width":preview.width,"height":preview.height});
+		var layer = root_layer.children[0];
+		var img_data = layer.img.data;
+		for(var i=0;i<img_data.length;i++){
+			img_data[i]=1;
+		}
+		layer.name="background"
+		layer.lock=true;
+		layer.refresh();
+
+		Log.reset();
+
+		Command.executeCommand("createNewLayer",{"position":1,"parent":root_layer.id,"width":preview.width,"height":preview.height});
+		layer = root_layer.children[1];
+		layer.name="default"
+		layer.refresh();
+
+		refreshMain();
+		root_layer.refresh();
+		refreshTab("tools");
+		//refreshTab("color_selector_tab");
+	}
+
+	Brush.init();
+	var brush = Brush.create();
+	var brush1 = brush;
+	brush.name="ペン"
+	brush.shortcut="a";
+	brush.weight_pressure_effect=true;
+	brush.stroke_correction=true;
+	brush.weight=5;
+	brush.refresh();
+
+	brush = Brush.create();
+	brush.name="消しゴム"
+	brush.eraser=true;
+	brush.shortcut="s";
+	brush.weight=10;
+	brush.refresh();
+
+	brush1.select();
+
+
+	animation_frame_id=window.requestAnimationFrame(function(e){
+		refreshMain_();
+	});
+
+
+}
+
+var redo=function(){
+	//リドゥ
+
+	var option_index = inputs["history"].selectedIndex;
+	var options = inputs["history"].options;
+	if(option_index === options.length-1){
+		return;
+	}	
+	option_index++;
+	var option = options[option_index];
+	inputs["history"].selectedIndex = option_index;
+
+	Log.moveLog(parseInt(option.value));
+
+}
+
+var undo=function(){
+	//アンドゥ
+
+	var option_index = inputs["history"].selectedIndex;
+	var options = inputs["history"].options;
+	if(option_index === 0){
+		return;
+	}	
+	var option = options[option_index-1];
+	if(option.disabled){
+		return;
+	}
+	option_index--;
+	inputs["history"].selectedIndex = option_index;
+
+	Log.moveLog(parseInt(option.value));
+
+}
+var createNewLayer=function(e){
+	//新規レイヤーを作成
+
+	var parent_layer = root_layer;
+	var pos = 0;
+
+	if(selected_layer===null){
+		parent_layer = root_layer;
+		pos = parent_layer.children.length;
+	}else{
+		if(selected_layer.type===1){
+			parent_layer = selected_layer;
+			pos = parent_layer.children.length;
+		}else{
+			parent_layer = Layer.findParent (selected_layer);
+			pos = parent_layer.children.indexOf(selected_layer)+1;
+		}
+	}
+		
+
+	var width= parent_layer.img.width;
+	var height= parent_layer.img.height;
+	
+	Command.executeCommand("createNewLayer",{"position":pos,"parent":parent_layer.id,"width":width,"height":height});
+}
+var createNewCompositeLayer=function(e){
+	//新規コンポジットレイヤーを作成
+	var width= preview.width;
+	var height= preview.height;
+	
+	var parent_layer = selected_layer;
+	if(parent_layer.type !== 1){
+		parent_layer = Layer.findParent(selected_layer);
+	}
+	var idx= parent_layer.children.indexOf(selected_layer)+1;
+	
+	Command.executeCommand("createNewCompositeLayer",{"parent":parent_layer.id,"position":idx,"width":width,"height":height,"composite_flg":1});
+
+
+}
+
+</script>
+</head>
+
+<body onLoad="onloadfunc(event)">
+<div class="all">
+
+
+<div class="left">
+	<div class="area">
+		<div class="label">ファイル</div>
+		<input style="display:none;" type="file" value="画像ファイル読み込み" id="open_hpd" accept="application/octet-stream/,.hpd">
+		<ul>
+			<li><a id="opne_hpd" href="#" onclick="inputs['open_hpd'].click();return false;">ドキュメントファイルを開く(*.hpd)</a></li>
+		</ul>
+		<ul>
+			<li><a id="save_hpd" href="#">ドキュメントファイルを保存(*.hpd)</a></li>
+			<li><a id="save_hdr" href="#">結合データをHDRで保存(*.exr)</a></li>
+			<li><a id="save_ldr" href="#">プレビュー画像をLDRで保存(*.png)</a></li>
+		</ul>
+	</div>
+
+	<div class="area">
+		<div class="label">ツール</div>
+		<div id="tools">
+			<ul>
+				<li><label><input type="radio" id="pen" name="tool" checked>ブラシ</label>
+					<br><span class="comment">(ブラシ毎にショートカット設定可)</span></li>
+				<li><label><input type="radio" id="fill" name="tool">[d]バケツ</label></li>
+				<li><label><input type="radio" id="translate" name="tool">[f]移動</label></li>
+			</ul>
+		</div>
+		<div id="tool_status">
+		</div>
+	</div>
+
+	<div class="area" id="brush_param">
+		<div class="label">ブラシ</div>
+		<div style="clear:both;">名前<input type="text" id="brush_name" style="width:80px;" >
+		ショトカ<input type="text" id="brush_shortcut" style="width:20px;"></div>
+		<div>
+		<img width="128" height="32" id="pen_preview" style="float:left;">
+		<label><input type="checkbox" id="brush_antialias"/>アンチエ</label><br>
+		<label><input type="checkbox" id="eraser"/>消しゴム</label>
+		</div>
+		<div>直径<input class="slider" id="weight" max="30"  value="3"/></div>
+		<div>縁ぼかし<input class="slider" id="softness" max="1"  value="0"/></div>
+		<div>不透明度<input class="slider" id="brush_alpha" max="1"  value="0"/></div>
+		<div>
+			筆圧影響
+			<label><input type="checkbox" id="weight_pressure_effect"/>径</label>
+			<label><input type="checkbox" id="alpha_pressure_effect"/>アルファ</label>
+		</div>
+		<div>
+		
+		</div>
+		<div>
+			<label><input type="checkbox" id="stroke_correction"/>補正</label>
+			<label><input type="checkbox" id="stroke_interpolation" checked/>補間</label>
+		</div>
+		上書き処理<select id="brush_overlap">
+			<option value="0">大きいα優先</option>
+			<option value="1">αブレンド</option>
+			<option value="2">α直書</option>
+		</select>
+		</ul>
+
+		<div>
+			<div style="float:left;text-align:left;">
+				<input type="button" id="down_brush" value="↓">
+				<input type="button" id="up_brush" value="↑" >
+			</div>
+			<div style="text-align:right;">
+				<input type="button" id="update_brush" value="上書" >
+				<input type="button" id="create_brush" value="新規保存" >
+				<input type="button" id="delete_brush" value="削除" ><br>
+			</div>
+		</div>
+
+		<!-- ブラシ一覧表示部分 -->
+		<div class="brushes" id="brushes_container" >
+		</div>
+
+		<!-- ブラシ一覧テンプレート -->
+		<div style="display:none;" id="brush_template">
+			<div class="brush" onclick="{Brush.brushselect(event)}" draggable="true" ondragstart="{Brush.DragStart(event)}" ondragover="{Brush.dragover_handler(event)}" ondragenter="{Brush.DragEnter(event)}" >
+				<img draggable="false">
+				<span class="name"></span>
+				<div class="attributes"></div>
+			</div>
+		</div>
+
+
+		<div  style="">
+			<ul>
+			<li><a id="" href="#" style="text-decoration:line-through;" onclick=";return false;">ブラシインポート</a></li>
+			</ul>
+			<input style="display:none;"type="file" id="open_brush" accept="image/*,.hdr,.exr" >
+		</div>
+	</div>
+
+	<div id="color_selecter" class="area">
+		<div class="label">カラーセレクタ</div>
+		<div class="color_status">
+			<ul>
+			<li class="red">R<input type="input" id="color_R" value="0.8" /></li>
+			<li class="green">G<input type="input" id="color_G" value="0.2"/></li>
+			<li class="blue">B<input type="input" id="color_B" value="0.2"/></li>
+			</ul>
+		</div>
+		<div id="tab_cs_default" onselectstart="return false;">
+			<div>
+				<div style="position:relative;display:inline-block;" id="img_hsv_area">
+					<img id="img_hsv" width="128" height="128" draggable="false">
+					<div id="cursor_img_hsv"></div>
+					<div id="cursor2_img_hsv"></div>
+				</div>
+				<div style="position:relative;;display:inline-block;">
+					<img id="img_hsv2" width="8" height="128" draggable="false">
+					<div id="cursor_img_hsv2" ></div>
+				</div>
+			</div>
+			明るさ<input class="slider" id="cs_default_lumi" min="-10" max="10" value="0"><br>
+		</div>
+		<div>A<input class="slider" id="color_A" max="1" value="1"/></div>
+	</div>
+</div>
+
+<div class="center">
+	<div class="area canvas_area" id="canvas_area">
+		<div class="label">ビュー</div>
+		<div id="canvas_field" style="clear:both;" class="canvas_field">
+			<div id="spacer" class="spacer">
+				<canvas width="256" height="256" id="preview" ></canvas>
+			</div>
+		</div>
+		<div class="canvas_status">
+			サイズ<input type="text" id="canvas_width" value="256" class="size">x
+			<input type="text" id="canvas_height" value="256" class="size">
+			<input type="button" id="btn_resize_layer" value="アクティブレイヤーをキャンバスに合わせる" >
+			<input type="button" id="btn_resize_layers" value="全レイヤーをキャンバスに合わせる" ><br>
+			<span id="status2">
+			</span>
+			<div class="color_status" style="display:inline-block;">
+					<li class="red">R:<span id="pos_R"></span></li>
+					<li class="green">G:<span id="pos_G"></span></li>
+					<li class="blue">B:<span id="pos_B"></span></li>
+					<li class="alpha">A:<span id="pos_A"></span></li>
+			</div>
+		</div>
+	</div>
+
+</div>
+
+<div class="right">
+	<div class="area">
+		<div class="label" >レイヤ</div>
+		<div id="layer_param" >
+			<div style="width:100%;">
+				名前<input type="text" id="layer_name" style="width:100px;" >
+				<label><input type="checkbox" id="layer_display"/>表示</label>
+				<label><input type="checkbox" id="layer_lock"/>ロック</label>
+			</div>
+			位置<input type="text" id="layer_x" value="" class="size">
+			<input type="text" id="layer_y" value="" class="size">
+			サイズ<input type="text" id="layer_width" value="" class="size">
+			<input type="text" id="layer_height" value="" class="size"><br>
+			合成func<select type="text" id="layer_blendfunc">
+				<option value="normal">normal</option>
+				<option value="add">add</option>
+				<option value="mul">mul</option>
+				<option value="sub">sub</option>
+				<option value="transmit">transmit</option>
+			</select><br>
+			α<input class="slider" id="layer_alpha" max="1"/>
+			<label><input type="checkbox" id="layer_mask_alpha"/>αロック</label><br>
+			明るさ<input class="slider" id="layer_power" min="-10" max="10"/><br>
+		</div>
+
+		<div>
+			<div style="float:left;text-align:left;">
+				<input type="button" id="down_layer" value="↓">
+				<input type="button" id="up_layer" value="↑" >
+				<input type="button" id="join_layer" value="一個下のレイヤと結合" >
+			</div>
+			<div style="text-align:right;">
+				<input type="button" id="delete_layer" value="レイヤ削除" ><br>
+			</div>
+		</div>
+			<span class="comment">※スペースキー押下でアクティブレイヤのみ表示<br>(バケツコマンド等にも影響)</span>
+		<div class="layers" id="layers_container">
+		</div>
+
+		<div style="display:none;" id="layer_template">
+			<div class="layer" draggable="true" ondragstart="DragStart(event)" ondragover="dragover_handler(event)" ondragenter="DragEnter(event)"  ondragend="dragend(event);">
+				<div class="thumbnailouter" >
+					<img class="thumbnail" >
+				</div>
+				<div class="name"></div>
+				<div class="layer_attributes"></div>
+				<div class="children" ondragenter="DragEnterChild(event)"></div>
+			</div>
+		</div>
+
+		<div  style="">
+			<input type="button" id="new" onclick="createNewLayer(event);" value="新規レイヤ">
+			<input type="button" id="new_composite_layer" onclick="createNewCompositeLayer(event);" value="新規グループレイヤ"><br>
+			<ul>
+			<li><a id="" href="#" onclick="inputs['open_layer'].click();return false;">画像ファイルを新規レイヤで開く</a></li>
+			</ul>
+			<input style="display:none;"type="file" id="open_layer" accept="image/*,.hdr,.exr" >
+		</div>
+	</div>
+
+	<div id="post_effect" class="area">
+		<div class="label">ポストエフェクト</div>
+		<input type="checkbox" id="ch_gamma">ガンマ<input class="slider" id="gamma" max="4" value="2.2"/><br>
+		露光<input class="slider" id="ev" min="-10" max="10" value="0"/><br>
+		<label><input type="checkbox" id="ch_bloom">拡散</label><br>
+		拡散率<input class="slider" id="bloom_power" max="1" value="0.1"/><br>
+		拡散範囲<input class="slider" id="bloom_size" max="100" value="10"/><br>
+	</div>
+<div class="area">
+	<div class="label">操作履歴</div>
+	<div>
+	<select size=10 id="history" >
+	</select>
+	</div>
+	<ul class="yoko">
+	<li><input type="button" id="button_undo" value="[ctrl+z]アンドゥ" onclick="undo()"></li>
+	<li><input type="button" id="button_redo" value="[ctrl+shift+z]リドゥ" onclick="redo()"></li>
+	</ul>
+	<span class="comment">リストを直接選択でそこまで戻る。最大10こ前まで</span>
+</div>
+</div>
+
+
+</div>
+
+
+<!--カラーセレクタ-->
+<script type="text/javascript" src="./tab_cs_standard.js"></script>
+<!--
+<script type="text/javascript" src="./tab_cs_base.js"></script>
+<script type="text/javascript" src="./tab_cs_rgb.js"></script>
+-->
+<script type="text/javascript">
+	//最初に全コントロールを配列に入れる
+	var elements= Array.prototype.slice.call(document.getElementsByTagName("input"));
+	elements = elements.concat(Array.prototype.slice.call(document.getElementsByTagName("select")));
+	for(var i=0;i<elements.length;i++){
+		var input = elements[i];
+		var id= input.getAttribute("id");
+		inputs[id]= elements[i];
+	}
+
+	var changeColor=function(target){
+		var tabs=[
+			tab_cs_standard
+		//	,tab_cs_base
+		//	,tab_cs_rgb
+		];
+		inputs["color_R"].value=doc.draw_col[0].toFixed(3);
+		inputs["color_G"].value=doc.draw_col[1].toFixed(3);
+		inputs["color_B"].value=doc.draw_col[2].toFixed(3);
+		inputs["color_A"].value=doc.draw_col[3].toFixed(3);
+		Util.fireEvent(inputs["color_A"],"input");
+
+		for(var i=0;i<tabs.length;i++){
+			if(target === tabs[i]){
+				continue;
+			}
+			tabs[i].setRGB(doc.draw_col);
+		}
+
+//		var str="R:[r], G:[g], B:[b], A:[a] ";
+//
+//		var draw_col=doc.draw_col;
+//		str=str.replace(/\[r\]/,draw_col[0].toFixed(3));
+//		str=str.replace(/\[g\]/,draw_col[1].toFixed(3));
+//		str=str.replace(/\[b\]/,draw_col[2].toFixed(3));
+//		str=str.replace(/\[a\]/,draw_col[3].toFixed(3));
+
+		//var status= document.getElementById("color_status");
+		//Util.setText(status,str);
+
+		refreshpen_flg=true;
+	}
+</script>
+
+</body>
+</html>
+
+
