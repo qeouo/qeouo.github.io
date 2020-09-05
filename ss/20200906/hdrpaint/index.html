@@ -244,11 +244,18 @@ var onloadfunc=function(e){
 				return;
 			}
 
+			if(selected_layer.mask_alpha!== 0
+			&& inputs["eraser"].checked){
+				//アルファマスクありで消しゴムの場合無視
+				return;
+			}
+
 
 			//ペン状態取得
 
 			var param={};
 			Brush.setParam(param);
+			param.alpha_mask = selected_layer.mask_alpha;
 			param.points=[];
 			param.layer_id = selected_layer.id;
 			pen_log = Command.executeCommand("pen",param);

@@ -948,6 +948,7 @@ Command.moveLayer=function(log,undo_flg){
 	var dist = new Vec2();
 
 	var brush_blend=function(dst,idx,pressure,dist,flg,weight,param){
+		var alpha_mask = param.alpha_mask;
 		var color = param.color;
 		var sa = color[3] * param.alpha; 
 		if(param.eraser){
@@ -975,7 +976,9 @@ Command.moveLayer=function(log,undo_flg){
 			dst[idx+0] =  color[0] ;
 			dst[idx+1] =  color[1] ;
 			dst[idx+2] =  color[2] ;
-			dst[idx+3] =  sa ;
+			if(!alpha_mask){
+				dst[idx+3] =  sa ;
+			}
 			return;
 		}
 
@@ -993,7 +996,9 @@ Command.moveLayer=function(log,undo_flg){
 		}
 
 		var da = dst[idx+3]*(1-sa);
-		dst[idx+3] = da + sa;
+		if(!alpha_mask){
+			dst[idx+3] = da + sa;
+		}
 
 		if( dst[idx+3] && !param.eraser){
 			var rr = 1/dst[idx+3];
