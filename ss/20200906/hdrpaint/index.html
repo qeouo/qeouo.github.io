@@ -222,7 +222,12 @@ var onloadfunc=function(e){
 				//範囲外は無視
 				return;
 			}
-			Command.executeCommand("fill",{"layer_id":selected_layer.id,"x":x,"y":y,"color":new Float32Array(doc.draw_col),"is_layer":flg_active_layer_only});
+			var color = new Float32Array(4);
+			color[0] = inputs["color_R"].value;
+			color[1] = inputs["color_G"].value;
+			color[2] = inputs["color_B"].value;
+			color[3] = inputs["color_A"].value;
+			Command.executeCommand("fill",{"layer_id":selected_layer.id,"x":x,"y":y,"color":color,"is_layer":flg_active_layer_only});
 
 		}else if(inputs["translate"].checked && (e.buttons &1) ){
 			//レイヤ位置移動
@@ -289,10 +294,11 @@ var onloadfunc=function(e){
 
 				var idx=((y|0)*img.width+(x|0))*4;
 
-				doc.draw_col[0]=data[idx];
-				doc.draw_col[1]=data[idx+1];
-				doc.draw_col[2]=data[idx+2];
-				doc.draw_col[3]=data[idx+3];
+
+				inputs["color_R"].value=data[idx];
+				inputs["color_G"].value=data[idx+1];
+				inputs["color_B"].value=data[idx+2];
+				inputs["color_A"].value=data[idx+3];
 
 				changeColor(null);
 			}
@@ -411,7 +417,7 @@ var onloadfunc=function(e){
 	}
 
 	inputs["color_A"].addEventListener("change",function(){
-		doc.draw_col[3] = parseFloat(inputs["color_A"].value);
+		//doc.draw_col[3] = parseFloat(inputs["color_A"].value);
 		changeColor(null);
 
 	});
@@ -915,7 +921,7 @@ var createNewCompositeLayer=function(e){
 		<div class="label">カラーセレクタ</div>
 		<div class="color_status">
 			<ul>
-			<li class="red">R<input type="input" id="color_R" value="0.8" /></li>
+			<li class="red">R<input type="input" id="color_R" value="0.8" onchange="{changeColor(null);}" /></li>
 			<li class="green">G<input type="input" id="color_G" value="0.2"/></li>
 			<li class="blue">B<input type="input" id="color_B" value="0.2"/></li>
 			</ul>
@@ -1063,6 +1069,11 @@ var createNewCompositeLayer=function(e){
 	}
 
 	var changeColor=function(target){
+		var color = new Float32Array(4);
+		color[0] = inputs["color_R"].value;
+		color[1] = inputs["color_G"].value;
+		color[2] = inputs["color_B"].value;
+		color[3] = inputs["color_A"].value;
 		var tabs=[
 			tab_cs_standard
 		];
@@ -1071,7 +1082,7 @@ var createNewCompositeLayer=function(e){
 			if(target === tabs[i]){
 				continue;
 			}
-			tabs[i].setRGB(doc.draw_col);
+			tabs[i].setRGB(color);
 		}
 
 		refreshpen_flg=true;
