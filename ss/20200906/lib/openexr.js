@@ -313,7 +313,7 @@ var OpenEXR=(function(){
 				var data2=new Uint8Array(data.length);
 				for(var di=1;di<data.length;di++){
 					//差分情報から実際の値を復元
-					data[di]=(data[di-1]+128+data[di]);//&0xff;
+					data[di]=(data[di-1]-128+data[di])&0xff;
 				}
 				var offset = data.length>>1;
 				for(var di=0;di<offset;di++){

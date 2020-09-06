@@ -3,29 +3,6 @@ var PenPoint=function(){
 	this.pos=new Vec2();
 	this.pressure=1;
 }
-var copyImg= function(dst,dst_x,dst_y,src,src_x,src_y,src_w,src_h){
-	var dst_data = dst.data;
-	var dst_width = dst.width;
-	var src_data = src.data;
-	var src_width = src.width;
-	var dst_idx = 0;
-	var src_idx = 0;
-	var max_yi = Math.min(src_h,dst.height -dst_y);
-	var max_xi = Math.min(src_w,dst.width-dst_x);
-	for(var yi=0;yi<max_yi;yi++){
-		dst_idx = (yi + dst_y) * dst_width + dst_x<<2;
-		src_idx = (yi + src_y) * src_width + src_x<<2;
-		for(var xi=0;xi<max_xi;xi++){
-			dst_data[dst_idx+0] = src_data[src_idx+0];
-			dst_data[dst_idx+1] = src_data[src_idx+1];
-			dst_data[dst_idx+2] = src_data[src_idx+2];
-			dst_data[dst_idx+3] = src_data[src_idx+3];
-			dst_idx+=4;
-			src_idx+=4;
-		}
-
-	}
-}
 var Command = (function(){
 	var  Command = function(){};
 	var ret = Command;
@@ -63,7 +40,7 @@ var Command = (function(){
 var createDif=function(layer,left,top,width,height){
 	//更新領域の古い情報を保存
 	var img = new Img(width,height);
-	copyImg(img,0,0,layer.img,left,top,width,height);
+	Img.copy(img,0,0,layer.img,left,top,width,height);
 	var dif={};
 	dif.img=img;
 	dif.x=left;
@@ -221,7 +198,7 @@ var createDif=function(layer,left,top,width,height){
 		}
 
 		var old_img = new Img(target.width,target.height);
-		copyImg(old_img,0,0,target,0,0,target.width,target.height);
+		Img.copy(old_img,0,0,target,0,0,target.width,target.height);
 
 		//開始座標を登録
 		fillStack.push(y);
@@ -849,7 +826,7 @@ Command.moveLayer=function(log,undo_flg){
 		var old_img = img;
 
 		layer.img=new Img(width,height);
-		copyImg(layer.img,0,0,old_img,0,0,old_img.width,old_img.height);
+		Img.copy(layer.img,0,0,old_img,0,0,old_img.width,old_img.height);
 		layer.refresh();
 		refreshThumbnails(layer);
 		refreshMain(0,0,0,layer.img.width,layer.img.height);
@@ -875,7 +852,7 @@ Command.moveLayer=function(log,undo_flg){
 
 					for(var di=difs.length;di--;){
 						var dif = difs[di];
-						copyImg(layer.img,dif.x,dif.y,dif.img,0,0,dif.img.width,dif.img.height);
+						Img.copy(layer.img,dif.x,dif.y,dif.img,0,0,dif.img.width,dif.img.height);
 					}
 					refreshMain();
 					refreshThumbnails(layer);

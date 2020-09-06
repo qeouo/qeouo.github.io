@@ -85,7 +85,7 @@ var loadHpd=function(buffer){
 			//layer.children[ki]=layers.find(
 		}
 
-		refreshLayer(layer);
+		layer.refresh();
 	}
 	//selectLayer(layer);
 
@@ -95,8 +95,11 @@ var loadHpd=function(buffer){
 
 	refreshMain();
 	refreshTab("tools");
-	refreshTab("color_selector_tab");
-	createRGBA();
+	selectLayer(root_layer.children[root_layer.children.length-1]);
+	
+	//refreshTab("color_selector_tab");
+	//createRGBA();
+	changeColor(null);
 	
 
 	Log.reset();

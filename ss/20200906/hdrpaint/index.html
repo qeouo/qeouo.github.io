@@ -1052,10 +1052,6 @@ var createNewCompositeLayer=function(e){
 
 <!--カラーセレクタ-->
 <script type="text/javascript" src="./tab_cs_standard.js"></script>
-<!--
-<script type="text/javascript" src="./tab_cs_base.js"></script>
-<script type="text/javascript" src="./tab_cs_rgb.js"></script>
--->
 <script type="text/javascript">
 	//最初に全コントロールを配列に入れる
 	var elements= Array.prototype.slice.call(document.getElementsByTagName("input"));
@@ -1069,14 +1065,7 @@ var createNewCompositeLayer=function(e){
 	var changeColor=function(target){
 		var tabs=[
 			tab_cs_standard
-		//	,tab_cs_base
-		//	,tab_cs_rgb
 		];
-		inputs["color_R"].value=doc.draw_col[0].toFixed(3);
-		inputs["color_G"].value=doc.draw_col[1].toFixed(3);
-		inputs["color_B"].value=doc.draw_col[2].toFixed(3);
-		inputs["color_A"].value=doc.draw_col[3].toFixed(3);
-		Util.fireEvent(inputs["color_A"],"input");
 
 		for(var i=0;i<tabs.length;i++){
 			if(target === tabs[i]){
@@ -1084,17 +1073,6 @@ var createNewCompositeLayer=function(e){
 			}
 			tabs[i].setRGB(doc.draw_col);
 		}
-
-//		var str="R:[r], G:[g], B:[b], A:[a] ";
-//
-//		var draw_col=doc.draw_col;
-//		str=str.replace(/\[r\]/,draw_col[0].toFixed(3));
-//		str=str.replace(/\[g\]/,draw_col[1].toFixed(3));
-//		str=str.replace(/\[b\]/,draw_col[2].toFixed(3));
-//		str=str.replace(/\[a\]/,draw_col[3].toFixed(3));
-
-		//var status= document.getElementById("color_status");
-		//Util.setText(status,str);
 
 		refreshpen_flg=true;
 	}

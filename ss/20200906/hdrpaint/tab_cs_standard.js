@@ -176,12 +176,15 @@ var tab_cs_standard=(function(){
 
 	var change_default= function(){
 		var lumi = Math.pow(2,parseFloat(inputs["cs_default_lumi"].value));
-		doc.draw_col[0] = img_hsv.color[0] * lumi;
-		doc.draw_col[1] = img_hsv.color[1] * lumi;
-		doc.draw_col[2] = img_hsv.color[2] * lumi;
-		doc.draw_col[3] = parseFloat(inputs["color_A"].value);
+		inputs["color_R"].value=img_hsv.color[0] * lumi;
+		inputs["color_G"].value=img_hsv.color[1] * lumi;
+		inputs["color_B"].value=img_hsv.color[2] * lumi;
+		//doc.draw_col[0] = img_hsv.color[0] * lumi;
+		//doc.draw_col[1] = img_hsv.color[1] * lumi;
+		//doc.draw_col[2] = img_hsv.color[2] * lumi;
+		//doc.draw_col[3] = parseFloat(inputs["color_A"].value);
 
-		changeColor(tab_cs_standard);
+		//changeColor(tab_cs_standard);
 	}
 	img_hsv.func=change_default;
 	document.getElementById("cs_default_lumi").addEventListener("change",change_default);

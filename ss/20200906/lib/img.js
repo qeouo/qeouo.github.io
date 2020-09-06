@@ -20,7 +20,7 @@ var Img = (function(){
 		this.format=format;
 		if(this.width){
 			switch(this.format){
-			case 1:
+			case ret.FORMAT_UINT8:
 				this.imagedata=ctx.createImageData(this.width,this.height);
 				this.data=this.imagedata.data;//new Uint8Array(this.width*this.height<<2);
 				this.rgba=new Uint32Array(this.data.buffer);
@@ -39,31 +39,41 @@ var Img = (function(){
 	ret.FORMAT_UINT8=1;
 
 
-	ret.copy=function(dst,dx,dy,src,x,y,w,h){
-		if(dx<0){
-			x-=dx;
-			w+=dx;
-			dx=0;
-		}
-		if(dy<0){
-			y-=dy;
-			h+=dy;
-			dy=0;
-		}
-		if(dx+w>dst.width){
-			w-=(dx+w)-dst.width;
-		}
-		if(dy+h>dst.height){
-			h-=(dy+h)-dst.height;
-		}
-		for(var yi=0;yi<h;yi++){
-			for(var xi=0;xi<w;xi++){
-			var idx0 = dst.getIndex(dx+xi,dy+yi);
-			var idx1 = src.getIndex(x+xi,y+yi);
-				dst.rgba[idx0] = src.rgba[idx1];
+	ret.copy = function(dst,dst_x,dst_y,src,src_x,src_y,src_w,src_h){
+		var dst_data = dst.data;
+		var dst_width = dst.width;
+		var src_data = src.data;
+		var src_width = src.width;
+		var dst_idx = 0;
+		var src_idx = 0;
+		var max_yi = Math.min(src_h,dst.height -dst_y);
+		var max_xi = Math.min(src_w,dst.width-dst_x);
+
+		if(dst.type===ret.FORMAT_UINT8 && src.type===ret.FORMAT_UINT8){
+			for(var yi=0;yi<h;yi++){
+				for(var xi=0;xi<w;xi++){
+				var idx0 = dst.getIndex(dx+xi,dy+yi);
+				var idx1 = src.getIndex(x+xi,y+yi);
+					dst.rgba[idx0] = src.rgba[idx1];
+				}
+			}
+		}else{
+			for(var yi=0;yi<max_yi;yi++){
+				dst_idx = (yi + dst_y) * dst_width + dst_x<<2;
+				src_idx = (yi + src_y) * src_width + src_x<<2;
+				for(var xi=0;xi<max_xi;xi++){
+					dst_data[dst_idx+0] = src_data[src_idx+0];
+					dst_data[dst_idx+1] = src_data[src_idx+1];
+					dst_data[dst_idx+2] = src_data[src_idx+2];
+					dst_data[dst_idx+3] = src_data[src_idx+3];
+					dst_idx+=4;
+					src_idx+=4;
+				}
+
 			}
 		}
 	}
+
 	ret.prototype.getIndex=function(x,y){
 		return y * this.width + x;
 	}

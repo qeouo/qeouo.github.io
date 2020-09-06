@@ -125,7 +125,12 @@ var Brush=(function(){
 		}
 
 		ret.setParam=function(param){
-			param.color = new Float32Array(doc.draw_col);
+			//param.color = new Float32Array(doc.draw_col);
+			param.color = new Float32Array(4);
+			param.color[0] = inputs["color_R"].value;
+			param.color[1] = inputs["color_G"].value;
+			param.color[2] = inputs["color_B"].value;
+			param.color[3] = inputs["color_A"].value;
 			param.weight=parseFloat(inputs["weight"].value);
 			param.softness=parseFloat(inputs["softness"].value);
 			param.antialias=inputs["brush_antialias"].checked;

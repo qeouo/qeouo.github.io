@@ -63,7 +63,7 @@ var Log = (function(){
 
 				for(var di=difs.length;di--;){
 					var dif = difs[di];
-					copyImg(layer.img,dif.x,dif.y,dif.img,0,0,dif.img.width,dif.img.height);
+					Img.copy(layer.img,dif.x,dif.y,dif.img,0,0,dif.img.width,dif.img.height);
 				}
 				refreshMain();
 				Layer.bubble_func(layer,

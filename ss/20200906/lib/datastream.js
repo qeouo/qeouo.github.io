@@ -150,7 +150,7 @@ var DataStream =(function(){
 	}
 	ret.prototype.readFloat16=function(le){
 		var dv = this.dv;
-		var data = this.getUint16(this.idx>>3,le);
+		var data = this.getUint16(le);
 		if(data === 0)return 0.0; 
 		var sign = (data>>15) &1;
 		sign = 1-sign*2 ;
