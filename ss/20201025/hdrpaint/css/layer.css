@@ -1,0 +1,131 @@
+
+/* レイヤ ------------------------------------------------*/
+
+.layers{
+	border:solid 1px;
+	overflow:visible scroll;
+	height:240px;
+	background-color:#111;
+}
+.layer{
+	color:#ccc;
+	border:solid 1px;
+	height:auto;
+	min-width:240px;
+	font-size:smaller;
+	line-height:1;
+	background-color:#333;
+	padding-left:2px;
+	padding-top:1px;
+    padding-bottom: 1px;
+    padding-right: 0px;
+	margin:1px;
+	margin-bottom:0px;
+	white-space: nowrap;
+	position:relative;
+	min-height:34px;
+}
+.layer.modifier{
+	background-color:#131;
+	border-radius:10px;
+}
+.layer.modifier.active{
+	background-color:#393;
+}
+
+.layer .thumbnail{
+	border:solid 1px;
+	background-image:url(../back.png);
+}
+.layer.modifier>.thumbnailouter{
+	display:none;
+}
+.layer .name{
+	text-align:left;
+	font-weight:bold;
+	float:left;
+
+
+}
+.layer_attributes{
+	/*position:absolute;*/
+	top:2px;
+	right:0px;
+}
+.layer_dragenter{
+	min-height:34px;
+	min-width:240px;
+	position:absolute;
+	left:8px;
+	top:0px;
+
+}
+.layer .openclosebutton{
+	float:left;
+	margin-right:4px;
+	visibility:hidden;
+	color:inherit;
+}
+.layer.group{
+	border-radius:10px;
+}
+.layer.group>.openclosebutton{
+	visibility:inherit;
+}
+.layer .openclosebutton:after{
+	text-decoration:underline;
+	content:'+';
+}
+.layer.open>.openclosebutton:after{
+	content:'-';
+}
+.layer>div.children{
+	display:none;
+	clear:both;
+	margin-left:8px;
+    min-height: 32px;
+	padding-top:1px;
+   /* border: 1px solid black; */
+}
+.layer.group.open>div.children{
+	display:inherit;
+}
+.layer .openclosebutton a{
+	color:inherit;
+}
+.layer .thumbnailouter{
+	width:32px;
+	height:32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+	float:left;
+	margin-top:1px;
+	margin-right:4px;
+}
+.layer.invisible {
+	opacity:0.3;
+}
+ .layer.lock .layer_attributes{
+	text-decoration: line-through;
+}
+.layer_attributes{
+	text-align:right;
+
+}
+
+.active{
+background-color:#FFBF00;
+color:#000;
+}
+
+div#modifier_param_area{
+position:relative;
+margin:8px;
+min-height:120px;
+}
+div.modifier_param{
+left:0px;
+top:0px;
+display:none;
+}
