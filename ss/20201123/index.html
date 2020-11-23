@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<title>hdr_paint</title>
+<link rel="stylesheet" type="text/css" href="./css/main.css">
+<link rel="stylesheet" type="text/css" href="./css/layer.css">
+<link rel="stylesheet" type="text/css" href="./css/dialog.css">
+<style>
+</style>
+</head>
+
+<body>
+<div class="all">
+
+
+<div class="left">
+	<div class="area">
+		<div class="label">ファイル</div>
+		<input style="display:none;" type="file" value="" id="file_hpd" accept="application/octet-stream/,.hpd">
+		<ul>
+			<li><a id="open_hpd" href="#" onclick="">作業ファイル開く(*.hpd)</a></li>
+		</ul>
+		<ul>
+			<li><a id="save_hpd" href="#">作業ファイル保存(*.hpd)</a></li>
+			<li><a id="save_hdr" href="#">結合データをHDR保存(*.exr)</a></li>
+			<li><a id="save_ldr" href="#">結合データをLDR保存(*.png)</a></li>
+		</ul>
+	</div>
+
+	<div class="area">
+		<div class="label">ツール</div>
+		<div id="tools">
+			<ul>
+				<li><label><input type="radio" id="pen" name="tool" checked>ブラシ</label>
+				<li><label><input type="radio" id="translate" name="tool">[t]移動</label></li>
+				<li><label><input type="radio" id="fill" name="tool">[f]塗り潰し</label></li>
+				<li><label><input type="radio" id="color_picker" name="tool">(q)カラーピッカー</label></li>
+			</ul>
+		</div>
+		<div id="tool_status">
+			<div id="tab_fill">
+				<label><input type="checkbox" id="fill_alpha"/>α=1境界</label><br>
+				
+			
+			</div>
+		</div>
+	</div>
+
+	<div class="area" id="brush_param" onchange="{Brush.refreshPreview();}">
+		<div class="label">ブラシ</div>
+		<div style="clear:both;">名前<input type="text" id="brush_name" style="width:80px;" >
+		ショトカ<input type="text" id="brush_shortcut" style="width:20px;"></div>
+		<div>
+		<img width="128" height="32" id="pen_preview" style="float:left;">
+		<label><input type="checkbox" id="brush_antialias"/>AA</label><br>
+		<label><input type="checkbox" id="eraser"/>消しゴム</label>
+		</div>
+		<div>直径<input class="slider" id="weight" max="100"  value="3"/></div>
+		<div>縁ぼかし<input class="slider" id="softness" max="1"  value="0"/></div>
+		<div>不透明度<input class="slider" id="brush_alpha" max="1"  value="0"/></div>
+		<div>
+			筆圧影響
+			<label><input type="checkbox" id="weight_pressure_effect"/>径</label>
+			<label><input type="checkbox" id="alpha_pressure_effect"/>アルファ</label>
+		</div>
+		<div>
+		
+		</div>
+		<div>
+			<label><input type="checkbox" id="stroke_correction"/>補正</label>
+			<label><input type="checkbox" id="stroke_interpolation" checked/>補間</label>
+		</div>
+		上書き処理<select id="brush_overlap">
+			<option value="0">大きいα優先</option>
+			<option value="1">αブレンド</option>
+			<option value="2">α直書</option>
+		</select>
+		</ul>
+
+		<div>
+			<div style="float:left;text-align:left;">
+				<input type="button" id="down_brush" value="↓">
+				<input type="button" id="up_brush" value="↑" >
+			</div>
+			<div style="text-align:right;">
+				<input type="button" id="update_brush" value="上書" >
+				<input type="button" id="create_brush" value="新規保存" >
+				<input type="button" id="delete_brush" value="削除" ><br>
+			</div>
+		</div>
+
+		<!-- ブラシ一覧表示部分 -->
+		<div class="brushes" id="brushes_container" >
+		</div>
+
+		<!-- ブラシ一覧テンプレート -->
+		<div style="display:none;" id="brush_template">
+			<div class="brush"  onclick="Brush.brushselect(event)" draggable="true" ondragstart="{Brush.DragStart(event)}" ondragover="{Brush.dragover_handler(event)}" ondragenter="{Brush.DragEnter(event)}" >
+				<img draggable="false">
+				<span class="name"></span>
+				<div class="attributes"></div>
+			</div>
+		</div>
+
+
+		<div  style="">
+			<ul>
+			<li><a id="add_brush" href="#" >ブラシインポート</a></li>
+			</ul>
+			<input style="display:none;" type="file" id="open_brush" accept="image/*,.hdr,.exr" >
+		</div>
+	</div>
+
+	<div id="color_selecter" class="area">
+		<div class="label">カラーセレクタ</div>
+		<div id="tab_cs_default"> 
+			<div style="float:left;" onselectstart="return false;">
+				<div style="position:relative;display:inline-block;" id="img_hsv_area">
+					<img id="img_hsv" width="128" height="128" draggable="false">
+					<div id="cursor_img_hsv"></div>
+					<div id="cursor2_img_hsv"></div>
+				</div>
+				<div style="position:relative;display:inline-block;">
+					<img id="img_hsv2" width="8" height="128" draggable="false">
+					<div id="cursor_img_hsv2" ></div>
+				</div>
+			</div>
+			<div class="color_status" class="float:left;" onchange="{changeColor();}">
+				<ul>
+				<li class="red">R<input type="text" id="color_R" value="0.8" /></li>
+				<li class="green">G<input type="text" id="color_G" value="0.2"/></li>
+				<li class="blue">B<input type="text" id="color_B" value="0.2"/></li>
+				</ul>
+			</div>
+			<div style="clear:both;">
+				明るさ<input class="slider" id="cs_default_lumi" min="-10" max="10" value="0"><br>
+			</div>
+		</div>
+		A<input class="slider" id="color_A" max="1" value="1"/>
+	</div>
+
+	<div id="additional" class="area" style="display:none;">
+		<div class="label">フィルタとか</div>
+	</div>
+	<div class="area">
+		<div class="label">操作履歴</div>
+		<div class="history">
+			<select size=5 id="history" >
+			</select>
+		</div>
+		<ul class="yoko">
+			<li><input type="button" id="button_undo" value="[ctrl+z]アンドゥ" onclick="undo();"></li>
+			<li><input type="button" id="button_redo" value="[ctrl+shift+z]リドゥ" onclick="redo()"></li>
+		</ul>
+	</div>
+
+</div>
+
+<div class="center">
+	<div class="area canvas_area" id="canvas_area">
+		<div class="label">ビュー</div>
+		<div class="canvas_status2">
+			キャンバスサイズ<input type="text" id="canvas_width" value="256" class="size">x
+			<input type="text" id="canvas_height" value="256" class="size">
+			<input type="button" id="btn_resize_layer" value="アクティブレイヤをキャンバスに合わせる" >
+			<input type="button" id="btn_resize_layers" value="全レイヤをキャンバスに合わせる" >
+		</div>
+		<div id="canvas_field" style="clear:both;" class="canvas_field">
+			<div id="spacer" class="spacer">
+				<canvas width="256" height="256" id="preview" ></canvas>
+			</div>
+		</div>
+		<div class="canvas_status">
+			<span id="status2">
+			</span>
+			<div class="color_status color_monitor" style="display:inline-block;">
+				<ul>
+					<li class="red">R:<span id="pos_R"></span></li>
+					<li class="green">G:<span id="pos_G"></span></li>
+					<li class="blue">B:<span id="pos_B"></span></li>
+					<li class="alpha">A:<span id="pos_A"></span></li>
+				</ul>
+			</div>
+		</div>
+
+		<div style="display:inline;position:absolute;right:0px;bottom:0px;">
+			<label><input type="checkbox" id="selected_layer_only" onchange="{Redraw.refreshPreview(1);}">(w)選択レイヤのみ表示</label>
+		</div>
+	</div>
+
+</div>
+
+<div class="right">
+	<div class="area">
+		<div class="label" >レイヤ/モディファイア</div>
+		<div id="layer_param" >
+			<div style="width:100%;">
+				名前<input type="text" id="layer_name" style="width:100px;" >
+				<label><input type="checkbox" id="layer_display"/>表示</label>
+				<label><input type="checkbox" id="layer_lock"/>ロック</label>
+			</div>
+
+			<div id="modifier_param_area" >
+				<div id="div_layer" class="modifier_param">
+					位置<input type="text" id="layer_x" value="" class="size">
+					<input type="text" id="layer_y" value="" class="size">
+					サイズ<input type="text" id="layer_width" value="" class="size">
+					<input type="text" id="layer_height" value="" class="size"><br>
+					<div id="div_blendfunc">合成func<select type="text" id="layer_blendfunc">
+					</select></div>
+					α<input class="slider" id="layer_alpha" max="1"/>
+					<label><input type="checkbox" id="layer_mask_alpha"/>αロック</label><br>
+					明るさ<input class="slider" id="layer_power" min="-10" max="10"/><br>
+				</div>
+			</div>
+		</div>
+
+		<div>
+			<div style="float:left;text-align:left;">
+				<input type="button" id="down_layer" value="↓">
+				<input type="button" id="up_layer" value="↑" >
+				<input type="button" id="join_layer" value="一個下のレイヤと結合" >
+			</div>
+			<div style="text-align:right;">
+				<input type="button" id="delete_layer" value="レイヤ削除" ><br>
+			</div>
+		</div>
+		<div class="layers" id="layers_container" >
+		</div>
+
+		<div style="display:none;" id="layer_template">
+			<div class="layer open" draggable="true"
+				ondragstart="Layer.DragStart(event)"
+				ondragover="Layer.DragOver(event)"
+				onclick="Layer.click(event)">
+				<a href="#" class="openclosebutton" onclick="Layer.opencloseClick(event)">
+				</a>
+				<div class="layer_dragenter" ondragenter="Layer.DragEnter(event)" > </div>
+				<div class="thumbnailouter" >
+					<img class="thumbnail" >
+				</div>
+				<div class="name"></div>
+				<div class="layer_attributes"></div>
+				<div class="children" ondragenter="Layer.DragEnterChild(event)"></div>
+			</div>
+		</div>
+
+		<div  style="">
+			<input type="button" id="new" onclick="createNewLayer(event);" value="新規">
+			<input type="button" id="copylayer" onclick="copylayer(event);" value="複製">
+			<input type="button" id="new_composite_layer" onclick="createNewCompositeLayer(event);" value="新規グループレイヤ"><br>
+			<ul>
+			<li><a id="" href="#" onclick="inputs['open_layer'].click();return false;">画像ファイルを新規レイヤで開く</a></li>
+			</ul>
+			<input style="display:none;"type="file" id="open_layer" accept="image/*,.hdr,.exr" >
+			<div id="modifier_area" onclick="createModifier(event);">
+			モディファイア<br>
+			</div>
+		</div>
+	</div>
+
+	<div id="post_effect" class="area">
+		<div class="label">ポストエフェクト</div>
+		<input type="checkbox" id="ch_gamma">ガンマ<input class="slider" id="gamma" max="4" value="2.2"/><br>
+		露光<input class="slider" id="ev" min="-10" max="10" value="0"/><br>
+		<label><input type="checkbox" id="ch_bloom">拡散</label><br>
+		拡散率<input class="slider" id="bloom_power" max="1" value="0.1"/><br>
+		拡散範囲<input class="slider" id="bloom_size" max="100" value="10"/><br>
+	</div>
+</div>
+
+</div>
+
+<div class="dialog_parent"></div>
+<script type="module" src="./index.js"> </script>
+</body>
+</html>
+
+
