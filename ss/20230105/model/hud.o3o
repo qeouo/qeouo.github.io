@@ -1,0 +1,95 @@
+{"format":"Ono3dObject Version 0.2"
+,"materials":[
+    {"name": "Dots Stroke", "name_full": "Dots Stroke", "blend_method": "OPAQUE"}
+  ,  {"name": "Material", "name_full": "Material", "blend_method": "BLEND", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "opacity": 1.0, "metallic": 0.0, "specular": 0.1, "roughness": 0.4000000059604645, "ior": 1.4500000476837158, "subRoughness": 0.0, "baseColorMap": "//hud.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB"}
+]
+,"meshes":[
+  {
+    "name":"Plane"
+    ,"name_full":"Plane"
+    ,"auto_smooth_angle":0.523599
+    ,"vertices":[
+      {"pos":[-1.000000, 0.000000, 1.000000]}
+      ,{"pos":[ 1.000000, 0.000000, 1.000000]}
+      ,{"pos":[-1.000000,-0.000000,-1.000000]}
+      ,{"pos":[ 1.000000,-0.000000,-1.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVMap"
+        ,"data":[
+          [ 0.000000, 0.500000, 0.500000, 0.500000, 0.500000, 0.000000, 0.000000, 0.000000]
+        ]
+      }
+    ]
+  }
+]
+,"lights":[
+  ]
+,"reflectionProbes":[
+  ]
+,"armatures":[
+]
+,"framerate":24
+,"actions":[
+]
+,"collections":{
+  "Collection":{
+    "children":[]
+    ,"objects":["arrow","Camera"]
+  }
+}
+,"objects":[
+  {
+    "name":"arrow"
+    ,"name_full":"arrow"
+    ,"display_type":"TEXTURED"
+    ,"show_bounds":false
+    ,"display_bounds_type":"BOX"
+    ,"groups":[]
+    ,"material_slots":["Material"]
+    ,"location":[ 0.000000, 0.000000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 0.050000, 0.050000, 0.050000]
+    ,"type":"MESH"
+    ,"data":"Plane"
+    ,"bound_box":[-1.000000, 0.000000,-1.000000, 1.000000, 0.000000, 1.000000]
+    ,"bound_type":"BOX"
+    ,"modifiers":[
+    ]
+  }
+  ,{
+    "name":"Camera"
+    ,"name_full":"Camera"
+    ,"display_type":"TEXTURED"
+    ,"show_bounds":false
+    ,"display_bounds_type":"BOX"
+    ,"groups":[]
+    ,"material_slots":[]
+    ,"location":[ 0.000000, 1.000000,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 2.000000, 2.000000, 2.000000]
+    ,"type":"CAMERA"
+    ,"data":"Camera.001"
+    ,"bound_box":[ 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000]
+    ,"bound_type":"BOX"
+    ,"modifiers":[
+    ]
+  }
+]
+,"scenes":[
+  {
+    "name":"Scene"
+    ,"frame_start":1
+    ,"frame_end":250
+    ,"objects":["arrow","Camera"]
+    ,"world":{
+      "name":"World"
+    }
+  }
+]
+}
