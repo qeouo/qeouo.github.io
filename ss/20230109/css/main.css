@@ -1,0 +1,74 @@
+html{
+	height:100%;
+
+	font-size:14px;
+	line-height:100%;
+	font-family:sans-serif;
+}
+body{
+	text-align:center;
+	color:#fff;
+	background-color:#333;
+	margin:0;
+	height:100%;
+
+}
+a{
+	color:white;
+}
+span.openclosebutton{
+	vertical-align:top;
+	left:2px;
+	top:2px;
+	position:fixed;
+	z-index:100;
+}
+span.openclosebutton[openclose="1"] a:after{
+	content:"close";
+}
+span.openclosebutton[openclose="0"] a:before{
+	content:"open";
+}
+
+div.menu{
+	padding-top:32px;
+	padding-left:2px;
+	width:300px;
+	background-color:rgba(0,0,0,0.5);
+	text-align:left;
+	display:inline-block;
+	height:100%;
+}
+div.openclose{
+	height:100%;
+	left:0px;
+	top:0px;
+	position:fixed;
+	transition: all 200ms 0s ease;
+	z-index:50;
+}
+div.openclose[openclose="1"]{
+	left:0%;
+}
+div.openclose[openclose="0"]{
+	left:-300px;
+}
+
+div#aaa{
+	z-index:0;
+width:100%;
+}
+div#aaa canvas{
+width:100%;
+}
+
+div#aaa[content="false"]{
+	display:none;
+
+
+}
+
+span.menucaption{
+	width:100px;
+	display:inline-block;
+}
