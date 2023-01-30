@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html style="background-color:black;">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>viewer</title>
+<link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/slider.css">
+<link rel="stylesheet" href="css/colorpickerhdr.css">
+</head>
+
+<body>
+<div class="openclose" bind:openclose="openclose">
+<div class="menu">
+	<span style="padding:4px;white-space:pre;" bind:="process_times"></span>
+	<br>
+	<br>
+
+	<label><input type="text" bind:="fps" feedback></input>fps</label><br>
+	<label><input type="checkbox" bind:="physics" feedback></input>physics</label><br>
+	<label><input type="checkbox" bind:="render" feedback></input>render</label><br>
+	<label><input type="checkbox" bind:="use_smoothing" feedback></input>use smoothing</label>
+	<input class="slider" feedback bind:="smoothing"></input><br>
+	<label>bloom</label><input class="slider" feedback bind:="exposure_bloom"></input><br>
+	<label><input type="checkbox" bind:="auto_exposure" feedback>auto_exposure</label><br>
+	<label>exposure_level</label><input class="slider" max="3" feedback bind:="exposure_level"></input><br>
+	<label>exposure_upper</label><input class="slider" max="5" feedback bind:="exposure_upper"></input><br>
+	<label><input type="checkbox" bind:="use_custom_material" feedback></input>use custom material</label><br>
+	<div style="background-color:#444;">
+		material<br>
+		<select>
+			<option>1</option>
+			<option>2</option>
+			<option>3</option>
+		
+		</select><br>
+	<span class="menucaption">base_color</span><input class="colorpicker" bind:="custom_material.baseColor" feedback></input><br>
+	<span class="menucaption">opacity</span><input class="slider" feedback bind:="custom_material.opacity"></input><br>
+	<span class="menucaption">specular</span><input class="slider" feedback bind:="custom_material.specular"></input><br>
+	<span class="menucaption">roughness</span><input class="slider" feedback bind:="custom_material.roughness"></input><br>
+	<span class="menucaption">metallic</span><input class="slider" feedback bind:="custom_material.metallic"></input><br>
+	<span class="menucaption">ior</span><input class="slider" feedback bind:="custom_material.ior" min=0 max=2></input><br>
+	<span class="menucaption">sub_roughness</span><input class="slider" feedback bind:="custom_material.subRoughness"></input><br>
+	<span class="menucaption">emt</span><input class="slider" feedback bind:="custom_material.emt" min=0 max=100></input><br>
+	<span class="menucaption">fresnel</span><input class="slider" feedback bind:="custom_material.fresnel"></input><br>
+	</div>
+	<span class="menucaption">cursor_pos_2d</span><span bind:="cursor_pos_2d"></span><br>
+	<span class="menucaption">cursor_pos_3d</span><span bind:="cursor_pos_3d"></span><br>
+	<span class="menucaption">test</span><input class="colorpickerhdr"></input><br>
+	<label><input type="checkbox" bind:="debug.show_lightprobe" feedback></input>show_lightprobe</label>
+	<br>
+	points=<span bind:="lightprobe.points.length"></span>
+	nodes=<span bind:="lightprobe.bspTree.nodes.length"></span>
+	<br>
+	<label><input type="checkbox" bind:="debug.show_shadowmap" feedback></input>show_shadowmap</label><br>
+	<label><input type="checkbox" bind:="debug.show_environmentmap" feedback></input>show_environmentmap</label><br>
+	<label><input type="checkbox" bind:="debug.show_GBuffer" feedback></input>show_GBuffer</label><br>
+</div>
+</div>
+	<span class="openclosebutton" bind:openclose="openclose"> <a href="#" onclick="values.openclose = 1-values.openclose;"></a></span>
+
+<div class="main">
+
+<div id="aaa" bind:content="render";> </div>
+
+<div>
+
+</body>
+<script type="module" src="./index.js"></script>
+
+
+
+</html>
+
+
