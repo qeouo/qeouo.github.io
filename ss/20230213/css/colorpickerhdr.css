@@ -1,0 +1,46 @@
+.colorpickerhdr_form{
+	position:absolute;
+	z-Index:100;
+	background-color:#333;
+	touchAction:none;
+	border:1px solid white;
+	padding:2px;
+	display:none;
+}
+
+/**色相・彩度選択エリア**/
+.div_main{
+display:inline;
+
+}
+.colorselector .cursor{
+	position:absolute;
+	border:1px solid black;
+	width:1px;
+	height:1px;
+	left:0px;
+	top:0px;
+}
+
+.colorselector .sv_parent{
+	position:relative;
+	display:inline-block;
+}
+.colorselector .cphdr_h_img{
+	width:8px;
+	height:128px;
+}
+.colorselector .cphdr_h_cursor{
+	width:8px;
+}
+.colorselector .cphdr_sv_img{
+width:128px;
+height:128px;
+	background-image:url("./back.png");
+}
+.colorselector .cphdr_s_cursor{
+	width:128px;
+}
+.colorselector .cphdr_v_cursor{
+	height:128px;
+}
