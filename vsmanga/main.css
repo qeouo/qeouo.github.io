@@ -2,6 +2,9 @@
 	margin:0px;
 	padding:0px;
 }
+input{
+margin:4px;
+}
 input[type="button"]{
 height:32px;
 width:64px;
