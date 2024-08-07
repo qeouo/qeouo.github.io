@@ -2,6 +2,22 @@
 	margin:0px;
 	padding:0px;
 }
+
+div.right_handle{
+	right:0px;
+
+}
+div.left_handle{
+	left:0px;
+
+}
+.clickable{
+	cursor:pointer;
+	position:fixed;
+	height:100%;
+	width:25%;
+
+}
 input{
 margin:4px;
 }
@@ -20,18 +36,22 @@ html, body {
 	height: 100%; 
 	width:100%;
 	background-color:black;
-	display: flex;
-	flex-direction: column;
+display:flex;
+		flex-direction:column;
 }
 
+#view{
+height:90%;
+}
 
 #view{
-	display:inline-block;
-	flex-shrink: 1;
+	position:relative;
 	overflow-x: scroll;
 	overflow-y: clip;
 	white-space:nowrap;
 	vertical-align:middle;
+	z-index:100;
+	flex-grow:1;
 	
 }
 div.page{
@@ -48,6 +68,9 @@ width:100%;
 
 #ui{
 text-align:center;
+position:relative;
+width:100%;
+	   z-index:100;
 }
 
 div.left{

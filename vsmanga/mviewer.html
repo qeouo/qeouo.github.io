@@ -5,42 +5,15 @@
 </head>
 <body>
 <div id="view">
-<!--
-	<div class="page left" id="page_0">
-	</div>
-	<div class="page right" id="page_1">
-		<img src="test1.png">
-	</div>
-	<div class="page left" id="page_2">
-		<img src="test2.png">
-	</div>
-	<div class="page right" id="page_3">
-		<img src="test3.png">
-	</div>
-	<div class="page left" id="page_4">
-		<img src="test4.png">
-	</div>
-	<div class="page right" id="page_5">
-		<img src="test5.png">
-	</div>
-	<div class="page left" id="page_6">
-		<img src="test6.png">
-	</div>
-	<div class="page right" id="page_7">
-		<img src="test7.png">
-	</div>
-	<div class="page left" id="page_8">
-		<img src="test8.png">
-	</div>
-	<div class="page right" id="page_9">
-	</div>
-	-->
-</div>
+		<div class="left_handle clickable" onpointerdown="back();"></div>
+		<div class="right_handle clickable" onpointerdown="next();"></div>
+		</div>
+
 
 <div id="ui">
-<input type="button" value="back" onclick="back()"></input>
+<input type="button" value="back" onpointerdown="back()"></input>
 <input type="text" id="page" ></input>
-<input type="button" value="next" id=="next" onclick="next()"></input>
+<input type="button" value="next" id=="next" onpointerdown="next()"></input>
 double page<input type="checkbox"  id="dualsw" onclick="dualsw()"></input>
 <span style="margin-left:40px;"><a href="./index.html">Return to Top Page</a></span>
 </div>
