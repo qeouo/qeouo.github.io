@@ -1,3 +1,4 @@
-page_max=10;file=cifs_melancholy/cifs_melancholy%n.png;
+page_max=10;file=cifs_melancholy/cifs_melancholy_%n.png;
 9: 
 10:<img src="cifs_melancholy/cifs_melancholy_ex.png">
+11: 

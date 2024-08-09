@@ -1,13 +1,10 @@
-page_max=12;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;
-1:<img src="yonkoma/drill.png" /><img src="yonkoma/takeabath.png" />
-2:<img src="yonkoma/fingersnap.png" /><img src="yonkoma/something_reeks.png" />
-3:<img src="yonkoma/moomin.jpg" /><img src="yonkoma/gaijin.png" />
-4:<img src="yonkoma/bird.png" /><img src="yonkoma/real.png" />
-5:<img src="yonkoma/smartbull.png" /><img src="yonkoma/mario.png" />
-6:<img src="yonkoma/rest.png" /><img src="yonkoma/chest.png" />
-7:<img src="yonkoma/chest2.png" /><img src="yonkoma/gratitude.png" />
-8:<img src="yonkoma/welovelev.png" /><img src="yonkoma/cleaner.png" />
-9:<img src="yonkoma/easyproblem.png" /><img src="yonkoma/mimic_bee.png" />
-10:<img src="yonkoma/mu.png" /><img src="yonkoma/daipan.png" />
-11:<img src="yonkoma/lev_error.png" /><img src="yonkoma/face_to_face.png" />
-12:<img src="yonkoma/sleeping_cif.png" /><img src="yonkoma/sleeping_cif2.png" />
+page_max=8;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;
+1:<img src="yonkoma/something_reeks.png" /><img src="yonkoma/moomin.jpg" />
+2:<img src="yonkoma/bird.png" /><img src="yonkoma/smartbull.png" />
+3:<img src="yonkoma/mario.png" /><img src="yonkoma/rest.png" />
+4:<img src="yonkoma/chest.png" /><img src="yonkoma/cleaner.png" />
+5:<img src="yonkoma/easyproblem.png" /><img src="yonkoma/mimic_bee.png" />
+6:<img src="yonkoma/daipan.png" /><img src="yonkoma/lev_error.png" />
+7:<img src="yonkoma/face_to_face.png" /><img src="yonkoma/sleeping_cif.png" />
+8:<img src="yonkoma/sleeping_cif2.png" />
+9: 

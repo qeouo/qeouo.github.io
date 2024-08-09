@@ -1,4 +1,0 @@
-page_max=2;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;
-1:<img src="yonkoma/void_tale/golden.png" /><img src="yonkoma/void_tale/golden2.png" />
-2:<img src="yonkoma/void_tale/akazukin.png" /><img src="yonkoma/void_tale/rabbit_turtoise.png" />
-

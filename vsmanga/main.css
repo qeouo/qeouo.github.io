@@ -54,6 +54,9 @@ height:90%;
 	flex-grow:1;
 	
 }
+#view[stop="1"]{
+	overflow-x:hidden;
+}
 div.page{
 width:50%;
 	overflow: none;
