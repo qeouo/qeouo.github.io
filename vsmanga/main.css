@@ -58,11 +58,12 @@ height:90%;
 	overflow-x:hidden;
 }
 div.page{
-width:50%;
+	width:50%;
 	overflow: none;
 	display:inline-block;
 	text-align:center;
 	vertical-align:middle;
+
 }
 #view[double_page="0"] div.page{
 width:100%;

@@ -7,21 +7,20 @@
 >
 </head>
 <body>
-<div id="view">
-		<div class="left_handle clickable" onpointerdown="back();"></div>
-		<div class="right_handle clickable" onpointerdown="next();"></div>
+<div id="view" tabindex="1">
+		<div class="left_handle clickable" onpointerdown="mviewer.pagemove(-1);" ontouchstart="event.stopPropagation();"></div>
+		<div class="right_handle clickable" onpointerdown="mviewer.pagemove(1);" ontouchstart="event.stopPropagation();"></div>
 		</div>
 
 
 <div id="ui">
-<input type="button" value="back" onpointerdown="back()"></input>
+<input type="button" value="back" onpointerdown="mviewer.pagemove(-1)"></input>
 <input type="text" id="page" ></input>
-<input type="button" value="next" id=="next" onpointerdown="next()"></input>
-double page<input type="checkbox"  id="dualsw" onclick="dualsw()"></input>
+<input type="button" value="next" id=="next" onpointerdown="mviewer.pagemove(1)"></input>
+double page<input type="checkbox"  id="cb_double" onclick="((e)=>{mviewer.doubleSw(e.target.checked)})(event)"></input>
 <span style="margin-left:40px;"><a href="./index.html">Return to Top Page</a></span>
 </div>
-</body>
-<script type="text/javascript" src="mviewer.js" ></script>
+<script defer src="mviewer_dcc0b957dbbe77ac05f9.js"></script></body>
 
 
 

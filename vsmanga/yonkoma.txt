@@ -6,5 +6,5 @@ page_max=8;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;
 5:<img src="yonkoma/easyproblem.png" /><img src="yonkoma/mimic_bee.png" />
 6:<img src="yonkoma/daipan.png" /><img src="yonkoma/lev_error.png" />
 7:<img src="yonkoma/face_to_face.png" /><img src="yonkoma/sleeping_cif.png" />
-8:<img src="yonkoma/sleeping_cif2.png" />
+8:<img src="yonkoma/sleeping_cif2.png" /><img src="yonkoma/damaged_tail.png" />
 9: 
