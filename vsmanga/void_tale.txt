@@ -1,4 +1,4 @@
-page_max=3;file=_%n.png;yonkoma=1;
+page_max=3;file=_%n.png;yonkoma=1;title=Void tale;
 1:<img src="yonkoma/void_tale/golden.png" /><img src="yonkoma/void_tale/golden2.png" />
 2:<img src="yonkoma/void_tale/akazukin.png" /><img src="yonkoma/void_tale/cinderella.png" />
 3:<img src="yonkoma/void_tale/rabbit_turtoise.png" />

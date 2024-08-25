@@ -1,4 +1,4 @@
-page_max=5;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;
+page_max=5;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;title=Void nanka;
 1:<img src="yonkoma/something/drill.png" /><img src="yonkoma/something/takeabath.png" />
 2:<img src="yonkoma/something/fingersnap.png" /><img src="yonkoma/something/gaijin.png" />
 3:<img src="yonkoma/something/real.png" /><img src="yonkoma/something/chest2.png" />

@@ -1,4 +1,4 @@
-page_max=8;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;
+page_max=8;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;title=Void 4koma;
 1:<img src="yonkoma/something_reeks.png" /><img src="yonkoma/moomin.jpg" />
 2:<img src="yonkoma/bird.png" /><img src="yonkoma/smartbull.png" />
 3:<img src="yonkoma/mario.png" /><img src="yonkoma/rest.png" />
