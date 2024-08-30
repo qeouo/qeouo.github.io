@@ -1,2 +1,2 @@
-page_max=1;file=strange_dream/ex/strange_dream_ex_%n.png;title=Strange dream ex;
+page_max=2;file=strange_dream/ex/strange_dream_ex_%n.png;title=Strange dream ex;
 
