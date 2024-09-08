@@ -1,5 +1,5 @@
-page_max=7;file=strange_dream/dream%n.png;yonkoma=1;title=Strange dream;
-
+page_max=7;yonkoma=1;title=Strange dream;
+:<img src="strange_dream/dream%N1.png" /><img src="strange_dream/dream%N2.png" />
 4:<img src="strange_dream/dream7.png" /><img src="strange_dream/dream9.png" />
 5: 
 6:<img src="strange_dream/dream8.png" /><img src="strange_dream/dream0.png" />
