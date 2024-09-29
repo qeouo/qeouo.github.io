@@ -1,6 +1,7 @@
-page_max=5;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;title=Void nanka;
+page_max=6;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;title=Void nanka;
 1:<img src="yonkoma/something/drill.png" /><img src="yonkoma/something/takeabath.png" />
 2:<img src="yonkoma/something/fingersnap.png" /><img src="yonkoma/something/gaijin.png" />
 3:<img src="yonkoma/something/real.png" /><img src="yonkoma/something/chest2.png" />
 4:<img src="yonkoma/something/gratitude.png" /><img src="yonkoma/something/welovelev.png" />
 5:<img src="yonkoma/something/drill_heart.png" /><img src="yonkoma/something/mu.png" />
+6:<img src="yonkoma/something/daicon4.png" />

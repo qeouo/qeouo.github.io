@@ -1,4 +1,4 @@
-page_max=8;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;title=Void 4koma;
+page_max=9;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;title=Void 4koma;
 1:<img src="yonkoma/something_reeks.png" /><img src="yonkoma/moomin.jpg" />
 2:<img src="yonkoma/bird.png" /><img src="yonkoma/smartbull.png" />
 3:<img src="yonkoma/mario.png" /><img src="yonkoma/rest.png" />
@@ -7,4 +7,5 @@ page_max=8;file=cifs_melancholy/cifs_melancholy_%n.png;yonkoma=1;title=Void 4kom
 6:<img src="yonkoma/daipan.png" /><img src="yonkoma/lev_error.png" />
 7:<img src="yonkoma/face_to_face.png" /><img src="yonkoma/sleeping_cif.png" />
 8:<img src="yonkoma/sleeping_cif2.png" /><img src="yonkoma/damaged_tail.png" />
-9: 
+9:<img src="yonkoma/rip_current.png" /><img src="yonkoma/sword_blade.png" />
+
