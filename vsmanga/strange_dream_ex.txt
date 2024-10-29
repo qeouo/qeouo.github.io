@@ -1,2 +1,0 @@
-page_max=2;title=Strange dream ex;
-:<img src="strange_dream/ex/strange_dream_ex_%n.png" />

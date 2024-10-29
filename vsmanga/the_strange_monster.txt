@@ -1,2 +1,0 @@
-page_max=12;title=THE STRANGE MONSTER;
-:<img src="the_strange_monster/the_strange_monster_%n.png" />
