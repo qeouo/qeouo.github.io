@@ -66,6 +66,7 @@ void main(void){
 
 [fragmentshader]#version 300 es
 precision lowp float; 
+precision highp int;
 #include(../../lib/shader/common)
 #include(../../lib/shader/rgbe)
 in lowp vec2 vUv; 

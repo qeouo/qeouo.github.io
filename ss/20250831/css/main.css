@@ -6,12 +6,17 @@ html{
 	font-family:sans-serif;
 }
 body{
-	text-align:center;
 	color:#fff;
 	background-color:#333;
 	margin:0;
 	height:100%;
+	width:100%;
 
+	text-align:center;
+}
+span.main{
+	text-align:center;
+	width:640px;
 }
 a{
 	color:white;

@@ -1371,8 +1371,8 @@
     {"name": "サン", "name_full": "サン", "type": "SUN", "color": [1.0, 1.0, 1.0], "energy": 1.0, "use_shadow": true}
   ]
 ,"cameras":[
-    {"name": "Camera", "name_full": "Camera", "type": "PERSP", "clip_start": 0.10000000149011612, "clip_end": 100.0, "lens": 43.45584487915039, "angle": 0.7853981852531433, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
-  ,  {"name": "Camera.001", "name_full": "Camera.001", "type": "PERSP", "clip_start": 0.10000000149011612, "clip_end": 100.0, "lens": 43.45584487915039, "angle": 0.7853981852531433, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
+    {"name": "Camera", "name_full": "Camera", "type": "PERSP", "clip_start": 5.0, "clip_end": 30.0, "lens": 43.45584487915039, "angle": 0.7853981852531433, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
+  ,  {"name": "Camera.001", "name_full": "Camera.001", "type": "PERSP", "clip_start": 5.0, "clip_end": 20.0, "lens": 43.45584487915039, "angle": 0.7853981852531433, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
   ,  {"name": "カメラ", "name_full": "カメラ", "type": "ORTHO", "clip_start": 0.10000000149011612, "clip_end": 1000.0, "lens": 50.0, "angle": 0.6911112070083618, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
   ,  {"name": "カメラ.001", "name_full": "カメラ.001", "type": "ORTHO", "clip_start": 0.10000000149011612, "clip_end": 1000.0, "lens": 50.0, "angle": 0.6911112070083618, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
   ]
@@ -1836,23 +1836,6 @@
           ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 1.000000}]}
           ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000}]}
           ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 1.000000}]}
-        ]
-      }
-    ]
-  }
-  ,{
-    "name":"平面.001アクション.001" 
-    ,"name_full":"平面.001アクション.001" 
-    ,"endframe":30
-    ,"id_root":"OBJECT"
-    ,"slots":[
-      {
-        "name":"Legacy Slot" 
-        ,"fcurves":[
-          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 1.225214,"i":"C"},{"f":20,"p": 1.320874,"i":"C"},{"f":30,"p": 1.225214,"i":"C"}]}
-          ,{"target":"","type":"location","idx":2,"keys":[{"f":0,"p": 0.000000,"i":"C"},{"f":20,"p":-0.000000,"i":"C"},{"f":30,"p": 0.000000,"i":"C"}]}
-          ,{"target":"","CYCLES":1,"type":"location","idx":1,"keys":[{"f":0,"p":-1.841902,"i":"C"},{"f":20,"p":-3.500111,"i":"C"},{"f":30,"p":-1.841902,"i":"C"}]}
-          ,{"target":"","type":"sprite","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":20,"p": 1.000000,"i":"C"},{"f":30,"p": 1.000000,"i":"C"}]}
         ]
       }
     ]

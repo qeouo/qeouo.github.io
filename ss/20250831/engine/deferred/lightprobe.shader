@@ -15,6 +15,7 @@ void main(void){
 
 [fragmentshader]#version 300 es
 precision highp usampler2D;
+precision highp int;
 in lowp vec2 vPos; 
 in lowp vec2 vUv; 
 uniform vec3 anglePos;  
