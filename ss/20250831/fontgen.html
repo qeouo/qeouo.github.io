@@ -1,0 +1,42 @@
+<html>
+<head>
+<style>
+canvas{
+	background-color:black;
+}
+
+input{
+width:32px;
+}
+textarea{
+width:500px;
+height:100px;
+}
+</style>
+</head>
+<body>
+<div id="main">
+<span style="display:inline-block;width:128px;">
+image:<br>
+width<input type="text" id ="image_width" value="256"></input><br>
+height<input type="text" id ="image_height" value="256"></input><br>
+</span>
+<span style="display:inline-block;">
+font:<br>
+width<input type="text" id ="width" value="8"></input><br>
+height<input type="text" id ="height" value="16"></input><br>
+</span><br>
+<input type="checkbox" id="alphabet" checked>alphabet</input><br>
+<textarea id="text">
+</textarea><br>
+<button onclick="a()" id="ebtn">generate</button><br>
+<textarea id="outtext">
+</textarea><br>
+<canvas width="512" height=512" id="c">
+</canvas>
+
+</div>
+<script type="text/javascript" src="fontgen.js"></script>
+</body>
+</html>
+

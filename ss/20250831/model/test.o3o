@@ -1,0 +1,91 @@
+{"format":"Ono3dObject Version 0.2"
+,"libraries":[
+  {
+    "name":"dis.blend"
+    ,"name_full":"dis.blend"
+    ,"filepath":"//dis.blend" 
+  }
+]
+,"materials":[
+    {"name": "Dots Stroke", "name_full": "Dots Stroke", "blend_method": "HASHED"}
+  ,  {"name": "Material", "name_full": "Material", "blend_method": "HASHED", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.0, "roughness": 0.5, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0}
+  ,  {"name": "Material.003", "name_full": "Material.003 [dis.blend]", "blend_method": "HASHED", "baseColorMap": "//test.png", "interpolation": "Linear", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.0, "roughness": 0.5, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0}
+]
+,"meshes":[
+  {
+    "name":"Cube.004"
+    ,"name_full":"Cube.004 [dis.blend]"
+    ,"library":"dis.blend"
+  }
+]
+,"lights":[
+    {"name": "Light", "type": "POINT", "color": [1.0, 1.0, 1.0], "use_shadow": true}
+  ]
+,"cameras":[
+    {"name": "Camera", "type": "PERSP", "clip_start": 0.10000000149011612, "clip_end": 100.0, "lens": 50.0, "angle": 0.6911112070083618, "lens_unit": "MILLIMETERS", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
+  ]
+,"reflectionProbes":[
+  ]
+,"armatures":[
+  {
+    "name":"アーマチュア.001" 
+    "name_full":"アーマチュア.001 [dis.blend]" 
+    ,"library":"dis.blend"
+  }
+]
+,"framerate":24
+,"actions":[
+  {
+    "name":"uneune" 
+    "name_full":"uneune [dis.blend]" 
+    ,"library":"dis.blend"
+  }
+]
+,"collections":{
+  "Collection":{
+    "children":[]
+    ,"objects":["Light","Camera","body [dis.blend]"]
+  }
+}
+,"objects":[
+  {
+    "name":"Camera"
+    ,"name_full":"Camera"
+    ,"type":"CAMERA"
+    ,"display_type":"WIRE"
+    ,"location":[ 7.358891, 4.958310, 6.925791]
+    ,"rotation":[ 1.109319, 0.814928,-0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"Camera"
+  }
+  ,{
+    "name":"Light"
+    ,"name_full":"Light"
+    ,"type":"LIGHT"
+    ,"display_type":"TEXTURED"
+    ,"location":[ 4.076245, 5.903862,-1.005454]
+    ,"rotation":[ 0.650328, 1.866391,-0.055217]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"Light"
+  }
+  ,{
+    "name":"body"
+    ,"name_full":"body [dis.blend]"
+    ,"library":"dis.blend"
+    ,{
+      "name":"アーマチュア"
+      ,"name_full":"アーマチュア [dis.blend]"
+      ,"library":"dis.blend"
+    ]
+    ,"scenes":[
+      {
+        "name":"Scene"
+        ,"frame_start":1
+        ,"frame_end":250
+        ,"objects":["Light","Camera","body"]
+        ,"world":{
+          "name":"World"
+        }
+      }
+    ]
+    }

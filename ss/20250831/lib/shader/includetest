@@ -1,0 +1,4 @@
+in lowp vec3 aPos; 
+in lowp vec3 aNormal; 
+in lowp vec2 aUv; 
+in lowp float aEnvRatio;  

@@ -1,0 +1,38 @@
+
+mediump vec3 textureRGBE(sampler2D tex,vec2 texsize,vec2 uv){ 
+	vec2 unit = 1.0/texsize; \
+	uv = uv - 0.5 * unit; \
+	vec2 r = fract(uv*texsize); 
+	return mix(mix(unpackRGBE(texture2D(tex,uv)) 
+			,unpackRGBE(texture2D(tex,uv+unit*vec2(1.0,0.0))),r.x) 
+		,mix(unpackRGBE(texture2D(tex,uv+unit*vec2(0.0,1.0))) 
+			,unpackRGBE(texture2D(tex,uv+unit)),r.x) 
+		,r.y); 
+} 
+mediump vec3 textureR11G11B10(sampler2D tex,vec2 texsize,vec2 uv){ 
+	vec2 unit = 1.0/texsize; \
+	uv = uv - 0.5 * unit; \
+	vec2 r = fract(uv*texsize); 
+	return mix(mix(unpackR11G11B10(texture2D(tex,uv)) 
+			,unpackR11G11B10(texture2D(tex,uv+vec2(unit.x,0.0))),r.x) 
+		,mix(unpackR11G11B10(texture2D(tex,uv+vec2(0.0,unit.y))) 
+			,unpackR11G11B10(texture2D(tex,uv+unit)),r.x) 
+		,r.y); 
+} 
+mediump vec3 textureDecode(sampler2D tex,vec2 texsize,vec2 uv){ 
+	vec2 unit = 1.0/texsize; \
+	uv = uv - 0.5 * unit; \
+	vec2 r = fract(uv*texsize); 
+	return mix(mix(decode(texture2D(tex,uv)) 
+			,decode(texture2D(tex,uv+vec2(unit.x,0.0))),r.x) 
+		,mix(decode(texture2D(tex,uv+vec2(0.0,unit.y))) 
+			,decode(texture2D(tex,uv+unit)),r.x) 
+		,r.y).rgb; 
+} 
+mediump vec3 textureTri(sampler2D texture,vec2 size,vec2 uv,float w){ 
+	float refx = pow(0.5,floor(w));  
+	uv.t = max(min(uv.t,0.5-0.5/(refx*size.y)),0.5/(refx*size.y)); 
+	mediump vec3 refCol = textureDecode(texture,size,uv*refx + vec2(0.0,1.0-refx));  
+	mediump vec3 q = textureDecode(texture,size,uv*refx*0.5 + vec2(0.0,1.0-refx*0.5));  
+	return mix(refCol,q,fract(w)); 
+} 

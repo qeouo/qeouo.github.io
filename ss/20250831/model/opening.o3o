@@ -1,0 +1,329 @@
+{"format":"Ono3dObject Version 0.2"
+,"libraries":[
+]
+,"materials":[
+    {"name": "sprite", "name_full": "sprite", "blend_method": "HASHED", "baseColorMap": "//test.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+]
+,"meshes":[
+  {
+    "name":"平面.001"
+    ,"name_full":"平面.001"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 0.562500, 0.437500, 0.562500, 0.437500, 0.500000, 0.000000, 0.500000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.002"
+    ,"name_full":"平面.002"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"1"
+        ,"data":[
+          [ 0.085213, 0.292075, 0.109185, 0.293306, 0.109185, 0.284081, 0.085213, 0.282850]
+        ]
+      }
+      ,{
+        "name":"2"
+        ,"data":[
+          [ 0.085213, 0.292075, 0.109185, 0.293306, 0.109185, 0.284081, 0.085213, 0.282850]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.003"
+    ,"name_full":"平面.003"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"1"
+        ,"data":[
+          [ 0.141811, 0.288384, 0.165783, 0.289614, 0.165783, 0.280389, 0.141811, 0.279159]
+        ]
+      }
+      ,{
+        "name":"2"
+        ,"data":[
+          [ 0.085213, 0.292075, 0.109185, 0.293306, 0.109185, 0.284081, 0.085213, 0.282850]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.004"
+    ,"name_full":"平面.004"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.022326, 0.291116, 0.040116, 0.291116, 0.040116, 0.273326, 0.022326, 0.273326]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.005"
+    ,"name_full":"平面.005"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"1"
+        ,"data":[
+          [ 0.210712, 0.285923, 0.234685, 0.287154, 0.234685, 0.277929, 0.210712, 0.276698]
+        ]
+      }
+      ,{
+        "name":"2"
+        ,"data":[
+          [ 0.085213, 0.292075, 0.109185, 0.293306, 0.109185, 0.284081, 0.085213, 0.282850]
+        ]
+      }
+    ]
+  }
+]
+,"lights":[
+  ]
+,"cameras":[
+    {"name": "カメラ", "name_full": "カメラ", "type": "ORTHO", "clip_start": 0.10000000149011612, "clip_end": 1000.0, "lens": 50.0, "angle": 0.6911112070083618, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
+  ]
+,"reflectionProbes":[
+  ]
+,"armatures":[
+]
+,"framerate":60
+,"actions":[
+  {
+    "name":"backlightアクション" 
+    ,"name_full":"backlightアクション" 
+    ,"endframe":12
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"backlight" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 0.000000,"i":"C"},{"f":6,"p": 1.000000,"i":"C"},{"f":12,"p": 1.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"backlightアクション.001" 
+    ,"name_full":"backlightアクション.001" 
+    ,"endframe":12
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"backlight" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":6,"p": 0.000000,"i":"C"},{"f":12,"p": 1.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"backlightアクション.002" 
+    ,"name_full":"backlightアクション.002" 
+    ,"endframe":12
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"backlight" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":6,"p": 1.000000,"i":"C"},{"f":12,"p": 0.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+]
+,"collections":{
+}
+,"objects":[
+  {
+    "name":"back"
+    ,"name_full":"back"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 1.600000,-1.200000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.004"
+  }
+  ,{
+    "name":"backlight"
+    ,"name_full":"backlight"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"backlightアクション"
+      ,"slot":"backlight"
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.274030,-1.177328, 0.229388]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.120000, 0.160000, 1.000000]
+    ,"data":"平面.002"
+  }
+  ,{
+    "name":"backlight.001"
+    ,"name_full":"backlight.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"backlightアクション.001"
+      ,"slot":"backlight"
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+          ]
+        }
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.274030,-1.177328, 0.229388]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.120000, 0.160000, 1.000000]
+    ,"data":"平面.003"
+  }
+  ,{
+    "name":"backlight.002"
+    ,"name_full":"backlight.002"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"backlightアクション.002"
+      ,"slot":"backlight"
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+          ]
+        }
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.274030,-1.177328, 0.229388]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.120000, 0.160000, 1.000000]
+    ,"data":"平面.005"
+  }
+  ,{
+    "name":"copyright"
+    ,"name_full":"copyright"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.274030,-1.177328, 0.417694]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.120000, 0.160000, 1.000000]
+    ,"data":"平面.001"
+  }
+  ,{
+    "name":"カメラ"
+    ,"name_full":"カメラ"
+    ,"type":"CAMERA"
+    ,"display_type":"TEXTURED"
+    ,"location":[ 1.600000,-1.200000, 5.175100]
+    ,"rotation":[ 1.570796, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"カメラ"
+  }
+]
+,"scenes":[
+  {
+    "name":"opening"
+    ,"frame_start":0
+    ,"frame_end":90
+    ,"objects":["カメラ","back","copyright","backlight","backlight.001","backlight.002"]
+    ,"world":"World.001"  }
+]
+,"worlds":[
+  {"name": "World.001", "name_full": "World.001", "envTexture": "back.png", "color": [0.17529229819774628, 0.17529229819774628, 0.17529229819774628]}
+]
+}

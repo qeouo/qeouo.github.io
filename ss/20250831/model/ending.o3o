@@ -1,0 +1,1588 @@
+{"format":"Ono3dObject Version 0.2"
+,"libraries":[
+  {
+    "name":"sd_bee.blend"
+    ,"name_full":"sd_bee.blend"
+    ,"filepath":"//sd_bee.blend" 
+  }
+  ,{
+    "name":"sd_cif.blend"
+    ,"name_full":"sd_cif.blend"
+    ,"filepath":"//sd_cif.blend" 
+  }
+]
+,"materials":[
+    {"name": "black", "name_full": "black", "blend_method": "HASHED", "baseColor": [0.0, 0.0, 0.0], "metallic": 0.0, "roughness": 0.5, "ior": 1.5, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "ed0", "name_full": "ed0", "blend_method": "HASHED", "baseColorMap": "//end0.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "ed1", "name_full": "ed1", "blend_method": "HASHED", "baseColorMap": "//end1.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "ed2", "name_full": "ed2", "blend_method": "HASHED", "baseColorMap": "//end2.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "ed3", "name_full": "ed3", "blend_method": "HASHED", "baseColorMap": "//end3.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "ed4", "name_full": "ed4", "blend_method": "HASHED", "baseColorMap": "//end4.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "filter", "name_full": "filter", "blend_method": "HASHED", "baseColorMap": "//filter.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "screenbuffer", "name_full": "screenbuffer", "blend_method": "HASHED", "screenbuffer": true, "baseColorMap": "", "interpolation": "Linear", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.0, "roughness": 0.5, "ior": 1.5, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "sprite", "name_full": "sprite", "blend_method": "HASHED", "baseColorMap": "//test.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.4645669460296631, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "マテリアル", "name_full": "マテリアル", "blend_method": "HASHED", "baseColor": [1.0, 1.0, 1.0], "metallic": 0.0, "roughness": 0.5, "ior": 1.5, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [1.0, 1.0, 1.0], "radiant_energy": 0.0}
+  ,  {"name": "マテリアル", "name_full": "マテリアル [sd_bee.blend]", "blend_method": "HASHED", "baseColorMap": "//tex.png", "interpolation": "Closest", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [0.800000011920929, 0.800000011920929, 0.800000011920929], "metallic": 0.0, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [0.0, 0.0, 0.0], "radiant_energy": 0.0}
+  ,  {"name": "マテリアル", "name_full": "マテリアル [sd_cif.blend]", "blend_method": "HASHED", "baseColorMap": "//tex.png", "interpolation": "Linear", "extension": "REPEAT", "colorspace": "sRGB", "baseColor": [1.0, 1.0, 1.0], "metallic": 0.0, "roughness": 1.0, "ior": 1.4500000476837158, "opacity": 1.0, "specular": 0, "subRoughness": 0, "radiant": [0.0, 0.0, 0.0], "radiant_energy": 0.0}
+]
+,"meshes":[
+  {
+    "name":"平面"
+    ,"name_full":"平面"
+    ,"vertices":[
+      {"pos":[-1.000000, 0.000000, 1.000000]}
+      ,{"pos":[ 1.000000, 0.000000, 1.000000]}
+      ,{"pos":[-1.000000,-0.000000,-1.000000]}
+      ,{"pos":[ 1.000000,-0.000000,-1.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.437500, 0.312500, 0.593750, 0.312500, 0.593750, 0.203125, 0.437500, 0.203125]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.001"
+    ,"name_full":"平面.001"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.002"
+    ,"name_full":"平面.002"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.003"
+    ,"name_full":"平面.003"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.004"
+    ,"name_full":"平面.004"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.005"
+    ,"name_full":"平面.005"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 1.000000, 1.000000, 1.000000, 1.000000,-0.875000, 0.000000,-0.875000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.034"
+    ,"name_full":"平面.034"
+    ,"vertices":[
+      {"pos":[-0.500000, 0.500000, 0.000000]}
+      ,{"pos":[ 0.500000, 0.500000, 0.000000]}
+      ,{"pos":[-0.500000,-0.500000,-0.000000]}
+      ,{"pos":[ 0.500000,-0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,2,3,1],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 0.429688, 0.000000, 0.000000, 0.625000, 0.000000, 0.625000, 0.429688]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.037"
+    ,"name_full":"平面.037"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.500000, 0.000000]}
+      ,{"pos":[ 0.500000,-0.500000, 0.000000]}
+      ,{"pos":[-0.500000, 0.500000,-0.000000]}
+      ,{"pos":[ 0.500000, 0.500000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.038"
+    ,"name_full":"平面.038"
+    ,"vertices":[
+      {"pos":[-1.000000,-1.000000, 0.000000]}
+      ,{"pos":[ 1.000000,-1.000000, 0.000000]}
+      ,{"pos":[-1.000000, 1.000000,-0.000000]}
+      ,{"pos":[ 1.000000, 1.000000,-0.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.000000, 1.000000, 1.000000, 1.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"立方体"
+    ,"name_full":"立方体"
+    ,"vertices":[
+      {"pos":[-1.000000, 0.009234, 1.000000]}
+      ,{"pos":[-1.000000, 2.009233, 1.000000]}
+      ,{"pos":[-1.000000, 0.009233,-1.000000]}
+      ,{"pos":[-1.000000, 2.009233,-1.000000]}
+      ,{"pos":[ 1.000000, 0.009234, 1.000000]}
+      ,{"pos":[ 1.000000, 2.009233, 1.000000]}
+      ,{"pos":[ 1.000000, 0.009233,-1.000000]}
+      ,{"pos":[ 1.000000, 2.009233,-1.000000]}
+    ]
+    ,"faces":[
+      {"idx":[0,2,3,1],"mat":0}
+      ,{"idx":[2,6,7,3],"mat":0}
+      ,{"idx":[6,4,5,7],"mat":0}
+      ,{"idx":[4,0,1,5],"mat":0}
+      ,{"idx":[2,0,4,6],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.375000, 1.000000, 0.375000, 0.750000, 0.625000, 0.750000, 0.625000, 1.000000]
+          ,[ 0.375000, 0.750000, 0.375000, 0.500000, 0.625000, 0.500000, 0.625000, 0.750000]
+          ,[ 0.375000, 0.500000, 0.375000, 0.250000, 0.625000, 0.250000, 0.625000, 0.500000]
+          ,[ 0.375000, 0.250000, 0.375000, 0.000000, 0.625000, 0.000000, 0.625000, 0.250000]
+          ,[ 0.125000, 0.500000, 0.125000, 0.250000, 0.375000, 0.250000, 0.375000, 0.500000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.001"
+    ,"name_full":"平面.001 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"平面.002"
+    ,"name_full":"平面.002 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"立方体"
+    ,"name_full":"立方体 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"立方体.002"
+    ,"name_full":"立方体.002 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"立方体.004"
+    ,"name_full":"立方体.004 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"立方体.005"
+    ,"name_full":"立方体.005 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"立方体.007"
+    ,"name_full":"立方体.007 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"立方体.008"
+    ,"name_full":"立方体.008 [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"head"
+    ,"name_full":"head [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"head.001"
+    ,"name_full":"head.001 [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"平面.001"
+    ,"name_full":"平面.001 [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"立方体.001"
+    ,"name_full":"立方体.001 [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"立方体.009"
+    ,"name_full":"立方体.009 [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+]
+,"lights":[
+    {"name": "サン", "name_full": "サン", "type": "SUN", "color": [1.0, 1.0, 1.0], "energy": 1.0, "use_shadow": true}
+  ]
+,"cameras":[
+    {"name": "Camera.001", "name_full": "Camera.001", "type": "PERSP", "clip_start": 0.10000000149011612, "clip_end": 100.0, "lens": 43.45584487915039, "angle": 0.7853981852531433, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
+  ,  {"name": "カメラ", "name_full": "カメラ", "type": "ORTHO", "clip_start": 0.10000000149011612, "clip_end": 1000.0, "lens": 50.0, "angle": 0.6911112070083618, "lens_unit": "FOV", "sensor_fit": "AUTO", "sensor_height": 24.0, "sensor_width": 36.0}
+  ]
+,"reflectionProbes":[
+  ]
+,"armatures":[
+  {
+    "name":"アーマチュア" 
+    ,"name_full":"アーマチュア [sd_bee.blend]" 
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"アーマチュア" 
+    ,"name_full":"アーマチュア [sd_cif.blend]" 
+    ,"library":"sd_cif.blend"
+  }
+]
+,"framerate":60
+,"actions":[
+  {
+    "name":"Camera.001アクション" 
+    ,"name_full":"Camera.001アクション" 
+    ,"endframe":1222
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"Camera.001" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":-249,"p": 3.236897,"i":"C"},{"f":217,"p":-1.961673,"i":"L"},{"f":460,"p": 1.257109,"i":"C"},{"f":505,"p":-0.196863,"i":"C"},{"f":842,"p":-0.444583,"i":"C"},{"f":902,"p": 0.000000,"i":"L"},{"f":1222,"p": 0.000000,"i":"C"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":-249,"p": 1.294928,"i":"C"},{"f":217,"p":-2.706588,"i":"L"},{"f":460,"p":-2.706588,"i":"C"},{"f":505,"p": 3.351602,"i":"C"},{"f":842,"p": 1.172342,"i":"C"},{"f":902,"p": 8.517712,"i":"L"},{"f":1222,"p": 3.747855,"i":"C"}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":-249,"p": 0.198674,"i":"C"},{"f":217,"p": 0.399126,"i":"L"},{"f":460,"p": 0.399126,"i":"C"},{"f":505,"p": 0.931330,"i":"C"},{"f":842,"p": 5.701493,"i":"C"},{"f":902,"p":-0.024524,"i":"L"},{"f":1222,"p":-0.024524,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":-249,"p": 1.745868,"i":"C"},{"f":217,"p": 1.570796,"i":"L"},{"f":460,"p": 1.570796,"i":"C"},{"f":505,"p": 1.570797,"i":"C"},{"f":842,"p": 0.267791,"i":"C"},{"f":902,"p": 1.869745,"i":"L"},{"f":1222,"p": 1.869745,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":-249,"p": 0.024682,"i":"C"},{"f":217,"p":-0.000000,"i":"L"},{"f":460,"p":-0.000000,"i":"C"},{"f":505,"p": 1.570796,"i":"C"},{"f":842,"p": 0.052766,"i":"C"},{"f":902,"p":-0.000000,"i":"L"},{"f":1222,"p":-0.000000,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":-249,"p": 1.015250,"i":"C"},{"f":217,"p": 3.141593,"i":"L"},{"f":460,"p": 3.141593,"i":"C"},{"f":505,"p": 0.000000,"i":"C"},{"f":842,"p":-0.074715,"i":"C"},{"f":902,"p": 0.000000,"i":"L"},{"f":1222,"p": 0.000000,"i":"C"}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":-249,"p": 1.000000,"i":"C"},{"f":217,"p": 1.000000,"i":"L"},{"f":460,"p": 1.000000,"i":"C"},{"f":505,"p": 1.000000,"i":"C"},{"f":842,"p": 1.000000,"i":"C"},{"f":902,"p": 1.000000,"i":"L"},{"f":1222,"p": 1.000000,"i":"C"}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":-249,"p": 1.000000,"i":"C"},{"f":217,"p": 1.000000,"i":"L"},{"f":460,"p": 1.000000,"i":"C"},{"f":505,"p": 1.000000,"i":"C"},{"f":842,"p": 1.000000,"i":"C"},{"f":902,"p": 1.000000,"i":"L"},{"f":1222,"p": 1.000000,"i":"C"}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":-249,"p": 1.000000,"i":"C"},{"f":217,"p": 1.000000,"i":"L"},{"f":460,"p": 1.000000,"i":"C"},{"f":505,"p": 1.000000,"i":"C"},{"f":842,"p": 1.000000,"i":"C"},{"f":902,"p": 1.000000,"i":"L"},{"f":1222,"p": 1.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"dancemonitorアクション" 
+    ,"name_full":"dancemonitorアクション" 
+    ,"endframe":910
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"dancemonitor" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":910,"p": 4.800000}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":910,"p": 1.403247}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":910,"p":-1.200000}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":910,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":910,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":910,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":910,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":910,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":910,"p": 2.400000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"dancemonitorアクション.001" 
+    ,"name_full":"dancemonitorアクション.001" 
+    ,"endframe":1134
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"dancemonitor" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":909,"p": 1.600000,"i":"L"},{"f":919,"p": 1.600000,"i":"L"},{"f":1124,"p": 1.600000,"i":"L"},{"f":1134,"p": 1.600000,"i":"L"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":909,"p": 1.403250,"i":"L"},{"f":919,"p": 1.403250,"i":"L"},{"f":1124,"p": 1.403250,"i":"L"},{"f":1134,"p": 1.403250,"i":"L"}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":909,"p":-3.600000,"i":"L"},{"f":919,"p":-2.400000,"i":"L"},{"f":1124,"p":-2.400000,"i":"L"},{"f":1134,"p":-3.600000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":909,"p": 3.200000,"i":"L"},{"f":1124,"p": 3.200000,"i":"L"},{"f":1134,"p": 3.200000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":909,"p": 1.000000,"i":"L"},{"f":1124,"p": 1.000000,"i":"L"},{"f":1134,"p": 1.000000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":909,"p": 2.400000,"i":"L"},{"f":1124,"p": 2.400000,"i":"L"},{"f":1134,"p": 2.400000,"i":"L"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":1124,"p": 0.000000,"i":"L"},{"f":1134,"p": 0.000000,"i":"L"}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":1124,"p":-0.000000,"i":"L"},{"f":1134,"p":-0.000000,"i":"L"}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":1124,"p": 0.000000,"i":"L"},{"f":1134,"p": 0.000000,"i":"L"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"dancemonitorアクション.002" 
+    ,"name_full":"dancemonitorアクション.002" 
+    ,"endframe":1528
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"dancemonitor" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":1200,"p":-1.600000,"i":"L"},{"f":1210,"p": 0.000000,"i":"L"},{"f":1518,"p": 0.000000,"i":"L"},{"f":1528,"p":-1.600000,"i":"L"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":1200,"p": 1.403250,"i":"L"},{"f":1210,"p": 1.403250,"i":"L"},{"f":1518,"p": 1.403250,"i":"L"},{"f":1528,"p": 1.403250,"i":"L"}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":1200,"p":-1.200000,"i":"L"},{"f":1210,"p":-1.200000,"i":"L"},{"f":1518,"p":-1.200000,"i":"L"},{"f":1528,"p":-1.200000,"i":"L"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":1200,"p": 0.000000,"i":"L"},{"f":1518,"p": 0.000000,"i":"L"}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":1200,"p":-0.000000,"i":"L"},{"f":1518,"p":-0.000000,"i":"L"}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":1200,"p": 0.000000,"i":"L"},{"f":1518,"p": 0.000000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":1200,"p": 3.200000,"i":"L"},{"f":1518,"p": 3.200000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":1200,"p": 1.000000,"i":"L"},{"f":1518,"p": 1.000000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":1200,"p": 2.400000,"i":"L"},{"f":1518,"p": 2.400000,"i":"L"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"dancemonitorアクション.003" 
+    ,"name_full":"dancemonitorアクション.003" 
+    ,"endframe":1922
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"dancemonitor" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":1600,"p": 1.600000,"i":"L"},{"f":1610,"p": 1.600000,"i":"L"},{"f":1912,"p": 1.600000,"i":"L"},{"f":1922,"p": 1.600000,"i":"L"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":1600,"p": 1.403250,"i":"L"},{"f":1610,"p": 1.403250,"i":"L"},{"f":1912,"p": 1.403250,"i":"L"},{"f":1922,"p": 1.403250,"i":"L"}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":1600,"p": 1.200000,"i":"L"},{"f":1610,"p": 0.000000,"i":"L"},{"f":1912,"p": 0.000000,"i":"L"},{"f":1922,"p": 1.200000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":1600,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":1600,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":1600,"p": 2.400000}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":1600,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":1600,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":1600,"p": 0.000000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"ed0アクション" 
+    ,"name_full":"ed0アクション" 
+    ,"endframe":16
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"ed0" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 1.600000},{"f":1,"p": 1.627676},{"f":2,"p": 1.565405},{"f":3,"p": 1.572324},{"f":4,"p": 1.600000},{"f":5,"p": 1.627676},{"f":6,"p": 1.565405},{"f":7,"p": 1.572324},{"f":8,"p": 1.600000},{"f":9,"p": 1.627676},{"f":10,"p": 1.565405},{"f":11,"p": 1.572324},{"f":12,"p": 1.600000},{"f":13,"p": 1.627676},{"f":14,"p": 1.565405},{"f":15,"p": 1.572324},{"f":16,"p": 1.600000,"i":"C"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000},{"f":8,"p":-0.000000},{"f":12,"p":-0.000000}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":0,"p":-1.200000},{"f":1,"p":-1.172324},{"f":2,"p":-1.234595},{"f":3,"p":-1.193081},{"f":4,"p":-1.200000},{"f":5,"p":-1.172324},{"f":6,"p":-1.234595},{"f":7,"p":-1.193081},{"f":8,"p":-1.200000},{"f":9,"p":-1.172324},{"f":10,"p":-1.234595},{"f":11,"p":-1.193081},{"f":12,"p":-1.200000},{"f":13,"p":-1.172324},{"f":14,"p":-1.234595},{"f":15,"p":-1.193081},{"f":16,"p":-1.200000,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000},{"f":8,"p": 0.000000},{"f":12,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000},{"f":8,"p":-0.000000},{"f":12,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000},{"f":8,"p": 0.000000},{"f":12,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 3.200000},{"f":4,"p": 3.200000},{"f":8,"p": 3.200000},{"f":12,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000},{"f":4,"p": 1.000000},{"f":8,"p": 1.000000},{"f":12,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 2.400000},{"f":4,"p": 2.400000},{"f":8,"p": 2.400000},{"f":12,"p": 2.400000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"ed0アクション.001" 
+    ,"name_full":"ed0アクション.001" 
+    ,"endframe":8
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"ed0" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 1.600000},{"f":1,"p": 1.627676},{"f":2,"p": 1.565405},{"f":3,"p": 1.572324},{"f":4,"p": 1.600000},{"f":5,"p": 1.627676},{"f":6,"p": 1.565405},{"f":7,"p": 1.572324},{"f":8,"p": 1.600000,"i":"C"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":0,"p":-1.200000},{"f":1,"p":-1.172324},{"f":2,"p":-1.234595},{"f":3,"p":-1.193081},{"f":4,"p":-1.200000},{"f":5,"p":-1.172324},{"f":6,"p":-1.234595},{"f":7,"p":-1.193081},{"f":8,"p":-1.200000,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 3.200000},{"f":4,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000},{"f":4,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 2.400000},{"f":4,"p": 2.400000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"ed0アクション.002" 
+    ,"name_full":"ed0アクション.002" 
+    ,"endframe":8
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"ed0" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 1.600000},{"f":1,"p": 1.627676},{"f":2,"p": 1.565405},{"f":3,"p": 1.572324},{"f":4,"p": 1.600000},{"f":5,"p": 1.627676},{"f":6,"p": 1.565405},{"f":7,"p": 1.572324},{"f":8,"p": 1.600000,"i":"C"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":0,"p":-1.200000},{"f":1,"p":-1.172324},{"f":2,"p":-1.234595},{"f":3,"p":-1.193081},{"f":4,"p":-1.200000},{"f":5,"p":-1.172324},{"f":6,"p":-1.234595},{"f":7,"p":-1.193081},{"f":8,"p":-1.200000,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 3.200000},{"f":4,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000},{"f":4,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 2.400000},{"f":4,"p": 2.400000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"ed0アクション.003" 
+    ,"name_full":"ed0アクション.003" 
+    ,"endframe":8
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"ed0" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 1.600000},{"f":1,"p": 1.627676},{"f":2,"p": 1.565405},{"f":3,"p": 1.572324},{"f":4,"p": 1.600000},{"f":5,"p": 1.627676},{"f":6,"p": 1.565405},{"f":7,"p": 1.572324},{"f":8,"p": 1.600000,"i":"C"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":0,"p":-1.200000},{"f":1,"p":-1.172324},{"f":2,"p":-1.234595},{"f":3,"p":-1.193081},{"f":4,"p":-1.200000},{"f":5,"p":-1.172324},{"f":6,"p":-1.234595},{"f":7,"p":-1.193081},{"f":8,"p":-1.200000,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 3.200000},{"f":4,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000},{"f":4,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 2.400000},{"f":4,"p": 2.400000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"ed0アクション.004" 
+    ,"name_full":"ed0アクション.004" 
+    ,"endframe":8
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"ed0" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 1.600000},{"f":1,"p": 1.627676},{"f":2,"p": 1.565405},{"f":3,"p": 1.572324},{"f":4,"p": 1.600000},{"f":5,"p": 1.627676},{"f":6,"p": 1.565405},{"f":7,"p": 1.572324},{"f":8,"p": 1.600000,"i":"C"}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":0,"p":-1.200000},{"f":1,"p":-1.172324},{"f":2,"p":-1.234595},{"f":3,"p":-1.193081},{"f":4,"p":-1.200000},{"f":5,"p":-1.172324},{"f":6,"p":-1.234595},{"f":7,"p":-1.193081},{"f":8,"p":-1.200000,"i":"C"}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":4,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":0,"p": 0.000000},{"f":4,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 3.200000},{"f":4,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000},{"f":4,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 2.400000},{"f":4,"p": 2.400000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"filterアクション" 
+    ,"name_full":"filterアクション" 
+    ,"endframe":1989
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"filter" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":1989,"p": 0.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"obi1アクション.001" 
+    ,"name_full":"obi1アクション.001" 
+    ,"endframe":1909
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"obi1" 
+        ,"fcurves":[
+          {"target":"","type":"scale","idx":0,"keys":[{"f":1909,"p": 1.862685}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":1909,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":1909,"p": 1.000000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"アクション" 
+    ,"name_full":"アクション" 
+    ,"endframe":0
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"dancemonitor" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 4.800000}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":0,"p": 1.403247}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":0,"p":-1.200000}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":0,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":0,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":0,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 2.400000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"アクション.001" 
+    ,"name_full":"アクション.001" 
+    ,"endframe":119
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"平面.008" 
+        ,"fcurves":[
+          {"target":"","type":"rotation_euler","idx":2,"keys":[{"f":-240,"p":-0.000000,"i":"C"},{"f":-17,"p":-0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":-240,"p": 1.800000,"i":"C"},{"f":-17,"p": 1.800000,"i":"L"},{"f":119,"p": 1.800000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":-240,"p": 1.000000,"i":"C"},{"f":-17,"p": 1.000000,"i":"L"},{"f":119,"p": 1.000000,"i":"L"}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":-240,"p": 1.200000,"i":"C"},{"f":-17,"p": 1.200000,"i":"L"},{"f":119,"p": 2.400000,"i":"L"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"アクション.002" 
+    ,"name_full":"アクション.002" 
+    ,"endframe":319
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"dancemonitor" 
+        ,"fcurves":[
+          {"target":"","type":"location","idx":0,"keys":[{"f":0,"p": 4.800000},{"f":10,"p": 3.200000},{"f":309,"p": 3.200000},{"f":319,"p": 4.800000}]}
+          ,{"target":"","type":"location","idx":1,"keys":[{"f":0,"p":-1.200000},{"f":10,"p":-1.200000},{"f":309,"p":-1.200000},{"f":319,"p":-1.200000}]}
+          ,{"target":"","type":"rotation_euler","idx":0,"keys":[{"f":0,"p": 0.000000},{"f":309,"p": 0.000000},{"f":319,"p": 0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":2,"keys":[{"f":0,"p":-0.000000},{"f":309,"p":-0.000000},{"f":319,"p":-0.000000}]}
+          ,{"target":"","type":"rotation_euler","idx":1,"keys":[{"f":0,"p": 0.000000},{"f":309,"p": 0.000000},{"f":319,"p": 0.000000}]}
+          ,{"target":"","type":"scale","idx":0,"keys":[{"f":0,"p": 3.200000},{"f":309,"p": 3.200000},{"f":319,"p": 3.200000}]}
+          ,{"target":"","type":"scale","idx":2,"keys":[{"f":0,"p": 1.000000},{"f":309,"p": 1.000000},{"f":319,"p": 1.000000}]}
+          ,{"target":"","type":"scale","idx":1,"keys":[{"f":0,"p": 2.400000},{"f":309,"p": 2.400000},{"f":319,"p": 2.400000}]}
+          ,{"target":"","type":"location","idx":2,"keys":[{"f":309,"p": 1.403247}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"crash" 
+    ,"name_full":"crash [sd_bee.blend]" 
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"dakko" 
+    ,"name_full":"dakko [sd_bee.blend]" 
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"dance" 
+    ,"name_full":"dance [sd_bee.blend]" 
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"damaged" 
+    ,"name_full":"damaged [sd_cif.blend]" 
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"headアクション" 
+    ,"name_full":"headアクション [sd_cif.blend]" 
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"walk" 
+    ,"name_full":"walk [sd_cif.blend]" 
+    ,"library":"sd_cif.blend"
+  }
+]
+,"collections":{
+  "back":{
+    "children":[]
+    ,"objects":["立方体"]
+  }
+  ,"Bee":{
+    "children":["body"]
+    ,"objects":["アーマチュア","head","bee_hit"]
+  }
+  ,"body":{
+    "children":[]
+    ,"objects":["cape","button","leg","arm","fuku.001","epron.001"]
+  }
+  ,"body.001":{
+    "children":[]
+    ,"objects":["cape.001","button.001","leg.001","arm.001","fuku","epron"]
+  }
+  ,"Cif":{
+    "children":["body.001","OVERRIDE_HIDDEN"]
+    ,"objects":["mainbone.001","hit_head","head.001","hit_body.001","tare.001","head_broken"]
+  }
+  ,"OVERRIDE_HIDDEN":{
+    "children":[]
+    ,"objects":["アーマチュア.001"]
+  }
+  ,"Bee [sd_bee.blend]":{
+    "children":["body [sd_bee.blend]"]
+    ,"objects":["アーマチュア [sd_bee.blend]","head [sd_bee.blend]","bee_hit [sd_bee.blend]"]
+  }
+  ,"body [sd_bee.blend]":{
+    "children":[]
+    ,"objects":["cape [sd_bee.blend]","button [sd_bee.blend]","leg [sd_bee.blend]","arm [sd_bee.blend]","fuku [sd_bee.blend]","epron [sd_bee.blend]"]
+  }
+  ,"body [sd_cif.blend]":{
+    "children":[]
+    ,"objects":["cape [sd_cif.blend]","button [sd_cif.blend]","leg [sd_cif.blend]","arm [sd_cif.blend]","fuku [sd_cif.blend]","epron [sd_cif.blend]"]
+  }
+  ,"Cif [sd_cif.blend]":{
+    "children":["body [sd_cif.blend]","OVERRIDE_HIDDEN [sd_cif.blend]"]
+    ,"objects":["mainbone [sd_cif.blend]","hit_head [sd_cif.blend]","head [sd_cif.blend]","hit_body [sd_cif.blend]","tare [sd_cif.blend]","head_broken [sd_cif.blend]"]
+  }
+  ,"OVERRIDE_HIDDEN [sd_cif.blend]":{
+    "children":[]
+    ,"objects":["アーマチュア [sd_cif.blend]"]
+  }
+}
+,"objects":[
+  {
+    "name":"arm"
+    ,"name_full":"arm"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["chest","arm1.L","arm2.L","hand.L","shoulder.R","arm1.R","arm2.R","hand.R"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.520546,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"アーマチュア"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.008 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"アーマチュア","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"arm.001"
+    ,"name_full":"arm.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["chest","arm1.L","arm2.L","hand.L","shoulder.R","arm1.R","arm2.R","hand.R"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.520546,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"mainbone.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.008 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"mainbone.001","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"bee_hit"
+    ,"name_full":"bee_hit"
+    ,"type":"MESH"
+    ,"display_type":"BOUNDS"
+    ,"animation_data":{
+      "name":""
+      ,"action":"dakko [sd_bee.blend]"
+      ,"slot":"bee_hit"
+      ,"nla_tracks":[
+        {
+          "name":"[保留アクション]"
+          ,"mute":true
+          ,"strips":[
+            {"action": "crash [sd_bee.blend]", "action_slot": "bee_hit", "name": "fall", "action_frame_start": 0.0, "action_frame_end": 1.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 1.0}
+          ]
+        }
+      ]
+    }
+    ,"show_bounds":true
+    ,"bound_type":"BOX"
+    ,"hide_render": 1
+    ,"location":[-0.517955, 0.313573,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 0.278784, 0.278784, 0.278784]
+    ,"parent":"アーマチュア"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体 [sd_bee.blend]"
+  }
+  ,{
+    "name":"button"
+    ,"name_full":"button"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["chest"]
+    ,"location":[ 0.000000, 0.747364,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"アーマチュア"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.005 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"アーマチュア","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"button.001"
+    ,"name_full":"button.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["chest"]
+    ,"location":[ 0.000000, 0.747364,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"mainbone.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.005 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"mainbone.001","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"Camera.001"
+    ,"name_full":"Camera.001"
+    ,"type":"CAMERA"
+    ,"display_type":"WIRE"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"Camera.001アクション"
+          ,"strips":[
+            {"action": "Camera.001アクション", "action_slot": "Camera.001", "name": "Camera.001アクション", "action_frame_start": -249.0, "action_frame_end": 1222.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 424.0, "frame_end": 1895.0}
+          ]
+        }
+      ]
+    }
+    ,"location":[-0.196863, 0.931330, 3.351602]
+    ,"rotation":[ 1.570797, 0.000000, 1.570796]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"Camera.001"
+  }
+  ,{
+    "name":"cape"
+    ,"name_full":"cape"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["shoulder.L","shoulder.R","chest"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.557480,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"アーマチュア"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.002 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"アーマチュア","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"cape.001"
+    ,"name_full":"cape.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["shoulder.L","shoulder.R","chest"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.557480,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"mainbone.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.002 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"mainbone.001","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"dancemonitor"
+    ,"name_full":"dancemonitor"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"アクション.002"
+          ,"strips":[
+            {"action": "アクション", "action_slot": "dancemonitor", "name": "アクション", "action_frame_start": 0.0, "action_frame_end": 1.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 1.0}
+            ,{"action": "アクション.002", "action_slot": "dancemonitor", "name": "アクション.002", "action_frame_start": 0.0, "action_frame_end": 319.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 429.0, "frame_end": 748.0}
+            ,{"action": "dancemonitorアクション.001", "action_slot": "dancemonitor", "name": "dancemonitorアクション.001", "action_frame_start": 909.0, "action_frame_end": 1134.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 909.0, "frame_end": 1134.0}
+            ,{"action": "dancemonitorアクション.002", "action_slot": "dancemonitor", "name": "dancemonitorアクション.002", "action_frame_start": 1200.0, "action_frame_end": 1528.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD_FORWARD", "repeat": 1.0, "scale": 1.0, "frame_start": 1185.0, "frame_end": 1513.0}
+            ,{"action": "dancemonitorアクション", "action_slot": "dancemonitor", "name": "dancemonitorアクション", "action_frame_start": 910.0, "action_frame_end": 911.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 1513.0, "frame_end": 1514.0}
+            ,{"action": "dancemonitorアクション.003", "action_slot": "dancemonitor", "name": "dancemonitorアクション.003", "action_frame_start": 1600.0, "action_frame_end": 1922.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 1576.0, "frame_end": 1898.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["screenbuffer"]
+    ,"location":[ 4.800000,-1.200000, 1.403247]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.034"
+  }
+  ,{
+    "name":"ed0"
+    ,"name_full":"ed0"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+            {"action": "ed0アクション", "action_slot": "ed0", "name": "ed0アクション", "action_frame_start": 0.0, "action_frame_end": 16.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 16.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["ed0"]
+    ,"location":[ 1.600000,-1.200000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.037"
+  }
+  ,{
+    "name":"ed1"
+    ,"name_full":"ed1"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+            {"action": "ed0アクション.001", "action_slot": "ed0", "name": "ed0アクション", "action_frame_start": 0.0, "action_frame_end": 16.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 16.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["ed1"]
+    ,"location":[ 1.600000,-1.200000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.001"
+  }
+  ,{
+    "name":"ed2"
+    ,"name_full":"ed2"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+            {"action": "ed0アクション.002", "action_slot": "ed0", "name": "ed0アクション", "action_frame_start": 0.0, "action_frame_end": 16.000001907348633, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 16.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["ed2"]
+    ,"location":[ 1.600000,-1.200000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.002"
+  }
+  ,{
+    "name":"ed3"
+    ,"name_full":"ed3"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+            {"action": "ed0アクション.003", "action_slot": "ed0", "name": "ed0アクション", "action_frame_start": 0.0, "action_frame_end": 16.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 16.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["ed3"]
+    ,"location":[ 1.600000,-1.200000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.003"
+  }
+  ,{
+    "name":"ed4"
+    ,"name_full":"ed4"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+            {"action": "ed0アクション.004", "action_slot": "ed0", "name": "ed0アクション", "action_frame_start": 0.0, "action_frame_end": 16.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 16.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["ed4"]
+    ,"location":[ 1.600000,-1.200000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.004"
+  }
+  ,{
+    "name":"epron"
+    ,"name_full":"epron"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"hide_render": 1
+    ,"groups":["chest","west"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.747364,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"アーマチュア.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"平面.002 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"アーマチュア.001","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"epron.001"
+    ,"name_full":"epron.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["chest","west"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.747364,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"アーマチュア"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"平面.002 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"アーマチュア","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"filter"
+    ,"name_full":"filter"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"filterアクション"
+      ,"slot":"filter"
+      ,"nla_tracks":[
+        {
+          "name":"ed0アクション"
+          ,"strips":[
+          ]
+        }
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["filter"]
+    ,"location":[ 1.600000,-1.200000, 0.530712]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 3.200000, 2.400000, 1.000000]
+    ,"data":"平面.005"
+  }
+  ,{
+    "name":"fuku"
+    ,"name_full":"fuku"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"damaged [sd_cif.blend]"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"groups":["chest","west"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.747364,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"mainbone.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"平面.001 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"mainbone.001","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"fuku.001"
+    ,"name_full":"fuku.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["chest","west"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.747364,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"アーマチュア"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"平面.001 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"アーマチュア","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"head"
+    ,"name_full":"head"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["head","fix"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 1.052639, 0.018926]
+    ,"rotation":[-0.166976,-0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"アーマチュア"
+    ,"parent_bone":"head"
+    ,"iparentmatrix":[ 1.000000,-0.000000,-0.000000,-0.000000,-0.000000,-1.000000,-0.000000, 1.000000,-0.000000,-0.000000,-0.018926, 1.099902]
+    ,"data":"立方体.004 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+    ]
+  }
+  ,{
+    "name":"head.001"
+    ,"name_full":"head.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"headアクション [sd_cif.blend]"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"groups":["head","fix"]
+    ,"material_slots":["マテリアル [sd_cif.blend]"]
+    ,"location":[ 0.000000, 0.089232, 0.063524]
+    ,"rotation":[-1.429486,-0.017279,-0.002458]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"mainbone.001"
+    ,"parent_bone":"head"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"head [sd_cif.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+    ]
+  }
+  ,{
+    "name":"head_broken"
+    ,"name_full":"head_broken"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+      ]
+    }
+    ,"hide_render": 1
+    ,"groups":["head","fix"]
+    ,"material_slots":["マテリアル [sd_cif.blend]"]
+    ,"location":[ 0.000000, 0.089232, 0.063524]
+    ,"rotation":[-1.429486,-0.017279,-0.002458]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"mainbone.001"
+    ,"parent_bone":"head2"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"head.001 [sd_cif.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+    ]
+  }
+  ,{
+    "name":"hit_body.001"
+    ,"name_full":"hit_body.001"
+    ,"type":"MESH"
+    ,"display_type":"WIRE"
+    ,"show_bounds":true
+    ,"bound_type":"BOX"
+    ,"hide_render": 1
+    ,"location":[ 0.000000, 0.580403,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 0.340591, 0.569952, 0.340591]
+    ,"parent":"mainbone.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.009 [sd_cif.blend]"
+  }
+  ,{
+    "name":"hit_head"
+    ,"name_full":"hit_head"
+    ,"type":"MESH"
+    ,"display_type":"BOUNDS"
+    ,"show_bounds":true
+    ,"bound_type":"BOX"
+    ,"hide_render": 1
+    ,"location":[-0.000000, 0.000000, 1.887015]
+    ,"rotation":[ 0.000000, 0.000000,-0.000000]
+    ,"scale":[ 0.355438, 0.303899, 0.039305]
+    ,"parent":"mainbone.001"
+    ,"parent_bone":"Bone"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.001 [sd_cif.blend]"
+  }
+  ,{
+    "name":"leg"
+    ,"name_full":"leg"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["foot.L","leg1.L","leg2.L","leg1.R","leg2.R","foot.R"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.503457,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 0.230663, 0.230663, 0.230663]
+    ,"parent":"アーマチュア"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.007 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"コリジョン","type":"COLLISION"}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"アーマチュア","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"leg.001"
+    ,"name_full":"leg.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["foot.L","leg1.L","leg2.L","leg1.R","leg2.R","foot.R"]
+    ,"material_slots":["マテリアル [sd_bee.blend]"]
+    ,"location":[ 0.000000, 0.503457,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 0.230663, 0.230663, 0.230663]
+    ,"parent":"mainbone.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"立方体.007 [sd_bee.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"コリジョン","type":"COLLISION"}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"mainbone.001","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"mainbone.001"
+    ,"name_full":"mainbone.001"
+    ,"type":"ARMATURE"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"dance [sd_bee.blend]"
+      ,"slot":"Legacy Slot"
+      ,"nla_tracks":[
+        {
+          "name":"[保留アクション]"
+          ,"mute":true
+          ,"strips":[
+            {"action": "walk [sd_cif.blend]", "action_slot": "Legacy Slot", "name": "walk", "action_frame_start": 0.0, "action_frame_end": 30.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 30.0}
+          ]
+        }
+      ]
+    }
+    ,"location":[ 0.490961, 0.000000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"アーマチュア [sd_cif.blend]"
+  }
+  ,{
+    "name":"obi1"
+    ,"name_full":"obi1"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"アクション.001"
+          ,"strips":[
+            {"action": "アクション.001", "action_slot": "平面.008", "name": "アクション.001", "action_frame_start": -240.0, "action_frame_end": 119.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 359.0}
+            ,{"action": "obi1アクション.001", "action_slot": "obi1", "name": "obi1アクション.001", "action_frame_start": 1909.0, "action_frame_end": 1910.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 1990.0, "frame_end": 1991.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["black"]
+    ,"location":[ 1.600000, 1.200000, 0.700000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.800000, 2.400000, 1.000000]
+    ,"data":"平面.038"
+  }
+  ,{
+    "name":"obi2"
+    ,"name_full":"obi2"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"アクション.001"
+          ,"strips":[
+            {"action": "obi1アクション.001", "name": "obi1アクション.001", "action_frame_start": 0.0, "action_frame_end": 1.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": -1.0, "frame_end": 0.0}
+            ,{"action": "アクション.001", "action_slot": "平面.008", "name": "アクション.001", "action_frame_start": -240.0, "action_frame_end": 119.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 359.0}
+            ,{"action": "obi1アクション.001", "action_slot": "obi1", "name": "obi1アクション.002", "action_frame_start": 1909.0, "action_frame_end": 1910.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 1990.0, "frame_end": 1991.0}
+          ]
+        }
+      ]
+    }
+    ,"material_slots":["black"]
+    ,"location":[ 1.512320,-3.600000, 0.700000]
+    ,"rotation":[-0.000000, 0.000000,-0.000000]
+    ,"scale":[ 1.800000, 2.400000, 1.000000]
+    ,"data":"平面.038"
+  }
+  ,{
+    "name":"tare.001"
+    ,"name_full":"tare.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"groups":["chest","west"]
+    ,"location":[ 0.000000, 0.754948,-0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"parent":"mainbone.001"
+    ,"iparentmatrix":[ 1.000000, 0.000000, 0.000000, 0.000000, 1.000000,-0.000000, 0.000000, 0.000000, 1.000000, 0.000000, 0.000000, 0.000000]
+    ,"data":"平面.001 [sd_cif.blend]"
+    ,"modifiers":[
+      {"name":"ミラー","type":"MIRROR","use_x":1,"use_y":0,"use_z":0}
+      ,{"name":"アーマチュア","type":"ARMATURE","object":"mainbone.001","vertex_group":""}
+    ]
+  }
+  ,{
+    "name":"アーマチュア"
+    ,"name_full":"アーマチュア"
+    ,"type":"ARMATURE"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"nla_tracks":[
+        {
+          "name":"[保留アクション]"
+          ,"mute":true
+          ,"strips":[
+            {"action": "dance [sd_bee.blend]", "action_slot": "Legacy Slot", "name": "dance", "action_frame_start": 0.0, "action_frame_end": 60.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 60.0}
+          ]
+        }
+        ,{
+          "name":"dance"
+          ,"strips":[
+            {"action": "dance [sd_bee.blend]", "action_slot": "Legacy Slot", "name": "dance.001", "action_frame_start": 0.0, "action_frame_end": 2400.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 2400.0}
+          ]
+        }
+      ]
+    }
+    ,"location":[-0.790204, 0.000000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"アーマチュア [sd_bee.blend]"
+  }
+  ,{
+    "name":"アーマチュア.001"
+    ,"name_full":"アーマチュア.001"
+    ,"type":"ARMATURE"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"dance [sd_bee.blend]"
+      ,"slot":"Legacy Slot"
+      ,"nla_tracks":[
+        {
+          "name":"[保留アクション]"
+          ,"mute":true
+          ,"strips":[
+            {"action": "dance [sd_bee.blend]", "action_slot": "Legacy Slot", "name": "dance", "action_frame_start": 0.0, "action_frame_end": 60.0, "blend_in": 0.0, "blend_out": 0.0, "blend_type": "REPLACE", "extrapolation": "HOLD", "repeat": 1.0, "scale": 1.0, "frame_start": 0.0, "frame_end": 60.0}
+          ]
+        }
+      ]
+    }
+    ,"location":[ 0.000000, 0.000000, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"アーマチュア [sd_bee.blend]"
+  }
+  ,{
+    "name":"カメラ"
+    ,"name_full":"カメラ"
+    ,"type":"CAMERA"
+    ,"display_type":"TEXTURED"
+    ,"location":[ 1.600000,-1.200000, 5.175100]
+    ,"rotation":[ 1.570796, 0.000000, 0.000000]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"カメラ"
+  }
+  ,{
+    "name":"サン"
+    ,"name_full":"サン"
+    ,"type":"LIGHT"
+    ,"display_type":"TEXTURED"
+    ,"location":[ 1.415060, 5.204730, 2.185835]
+    ,"rotation":[ 0.377344, 0.091863,-0.313741]
+    ,"scale":[ 1.000000, 1.000000, 1.000000]
+    ,"data":"サン"
+  }
+  ,{
+    "name":"平面"
+    ,"name_full":"平面"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"filterアクション"
+      ,"slot":"filter"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.750034,-2.087983, 0.563151]
+    ,"rotation":[ 1.570796, 0.000000, 0.000000]
+    ,"scale":[ 0.420000, 1.000000, 0.320000]
+    ,"data":"平面"
+  }
+  ,{
+    "name":"立方体"
+    ,"name_full":"立方体"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"material_slots":["マテリアル"]
+    ,"location":[ 0.000000,-0.147004, 0.000000]
+    ,"rotation":[ 0.000000, 0.000000, 0.000000]
+    ,"scale":[ 7.134321, 7.134321, 7.134321]
+    ,"data":"立方体"
+  }
+  ,{
+    "name":"epron"
+    ,"name_full":"epron [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"fuku"
+    ,"name_full":"fuku [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"arm"
+    ,"name_full":"arm [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"bee_hit"
+    ,"name_full":"bee_hit [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"button"
+    ,"name_full":"button [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"cape"
+    ,"name_full":"cape [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"head"
+    ,"name_full":"head [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"leg"
+    ,"name_full":"leg [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"アーマチュア"
+    ,"name_full":"アーマチュア [sd_bee.blend]"
+    ,"library":"sd_bee.blend"
+  }
+  ,{
+    "name":"arm"
+    ,"name_full":"arm [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"button"
+    ,"name_full":"button [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"cape"
+    ,"name_full":"cape [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"head"
+    ,"name_full":"head [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"head_broken"
+    ,"name_full":"head_broken [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"hit_body"
+    ,"name_full":"hit_body [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"hit_head"
+    ,"name_full":"hit_head [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"leg"
+    ,"name_full":"leg [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"mainbone"
+    ,"name_full":"mainbone [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"tare"
+    ,"name_full":"tare [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"アーマチュア"
+    ,"name_full":"アーマチュア [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"epron"
+    ,"name_full":"epron [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+  ,{
+    "name":"fuku"
+    ,"name_full":"fuku [sd_cif.blend]"
+    ,"library":"sd_cif.blend"
+  }
+]
+,"scenes":[
+  {
+    "name":"ending_dance"
+    ,"frame_start":0
+    ,"frame_end":2400
+    ,"objects":["Camera.001","サン","mainbone.001","hit_head","head.001","hit_body.001","tare.001","head_broken","cape.001","button.001","leg.001","arm.001","fuku","epron","アーマチュア.001","アーマチュア","head","bee_hit","cape","button","leg","arm","fuku.001","epron.001","立方体"]
+    ,"world":"World.001"  }
+  ,{
+    "name":"ending_hud"
+    ,"frame_start":0
+    ,"frame_end":2400
+    ,"objects":["dancemonitor","ed0","obi1","obi2","カメラ","ed1","ed2","ed3","ed4","filter","平面"]
+    ,"world":"World.001"  }
+]
+,"worlds":[
+  {"name": "World.001", "name_full": "World.001", "envTexture": "back.png", "color": [0.17529229819774628, 0.17529229819774628, 0.17529229819774628]}
+]
+}

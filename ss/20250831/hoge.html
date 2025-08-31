@@ -1,0 +1,84 @@
+<html>
+<BODY>
+<canvas id="c" width="512" height="512"></canvas>
+<script type="text/javascript">
+ var c = document.getElementById("c");
+ var ctx = c.getContext("2d");
+ var pos =[{t:0,p:40},{t:100,p:200},{t:140,p:40},{t:300,p:200},{t:500,p:40}];
+
+ctx.fillStyle="black";
+ for(var i=0;i<pos.length;i++){
+	 var p = pos[i];
+ ctx.strokeRect(p.t,p.p,5,5);
+		 }
+
+ for(var i=1;i<pos.length-2;i++){
+	var p0 = pos[i-1].p;
+	var p1 = pos[i].p;
+	var p2 = pos[i+1].p;
+	var p3 = pos[i+2].p;
+	var t0 = pos[i-1].t;
+	var t1 = pos[i].t;
+	var t2 = pos[i+1].t;
+	var t3 = pos[i+2].t;
+
+	var k3 = (p3-p0)/((t3-t2)*(t3-t0)*(t3-t1))
+		+(p2-p0)/((t2-t3)*(t2-t0)*(t2-t1))
+		+(p1-p0)/((t1-t2)*(t1-t0)*(t1-t3));
+
+	var k2 = -(p3-p0)*(t2+t1+t0)/((t3-t2)*(t3-t0)*(t3-t1))
+			 -(p2-p0)*(t3+t1+t0)/((t2-t3)*(t2-t0)*(t2-t1))
+			 -(p1-p0)*(t3+t2+t0)/((t1-t2)*(t1-t0)*(t1-t3))
+	var k1 = (p1 - p0 - (t1*t1*t1 - t0*t0*t0)*k3  - (t1*t1-t0*t0)*k2)/(t1-t0);
+	var k0 = p0 - (t0*t0*t0*k3 + t0*t0*k2 +t0*k1);
+	for(var t=pos[i].t;t<pos[i+1].t;t+=10){
+		var p = k3*t*t*t + k2*t*t + k1*t + k0;
+	 ctx.fillRect(t,p,5,5);
+	}
+}
+var k3 = 0;
+var k2 = 0;
+var k1 = 0;
+var k0 = 0;
+var old2
+var old3
+ctx.fillStyle="red";
+ for(var i=0;i<pos.length-1;i++){
+	 k0 = pos[i].p;
+	 var dt = pos[i+1].t - pos[i].t;
+//	 if(i == 0 ){
+//		 var r = (pos[i+2].p - pos[i].p)/  (pos[i+2].t - pos[i].t);
+//		 k1 = (2*pos[i+1].p - dt*r -2*k0)/(dt-1);
+//		 k2 = (pos[i+1].p - k1 *dt - k0)/(dt*dt);
+//		 //k1 = (pos[Math.min(i+1,pos.length-1)].p - pos[Math.max(i-1,0)].p)/ (pos[Math.min(i+1,pos.length-1)].t - pos[Math.max(i-1,0)].t);
+//		 //var r = (pos[Math.min(i+2,pos.length-1)].p - pos[i].p)/  (pos[Math.min(i+2,pos.length-1)].t - pos[i].t);
+//		 //k2 =  (3 * pos[i+1].p - r*dt -2*k1*dt -3*k0)/(dt*dt);
+//		 k3 = (pos[i+1].p - k0 -k1*dt -k2*dt*dt)/dt/dt/dt;
+//	 }else if(i == pos.length-2 ){
+//		 k1 = (pos[i+1].p - pos[i-1].p)/ (pos[i+1].t -pos[i-1].t);
+//		 k2 = (pos[i+1].p - k1 *dt - k0)/(dt*dt);
+//		 k3 = 0; 
+//	 }else{
+//		 k1 = (pos[i+1].p - pos[i-1].p)/ (pos[i+1].t -pos[i-1].t);
+//		 var r = (pos[i+2].p - pos[i].p)/  (pos[i+2].t - pos[i].t);
+//		 k2 =  (3 * pos[i+1].p - r*dt -2*k1*dt -3*k0)/(dt*dt);
+//		 k3 = (pos[i+1].p - k0 -k1*dt -k2*dt*dt)/dt/dt/dt;
+//	 }
+		 k1 = (pos[Math.min(i+1,pos.length-1)].p - pos[Math.max(i-1,0)].p)/ (pos[Math.min(i+1,pos.length-1)].t - pos[Math.max(i-1,0)].t);
+		 var r = (pos[Math.min(i+2,pos.length-1)].p - pos[i].p)/  (pos[Math.min(i+2,pos.length-1)].t - pos[i].t);
+		 k2 =  (3 * pos[i+1].p - r*dt -2*k1*dt -3*k0)/(dt*dt);
+		 k3 = (pos[i+1].p - k0 -k1*dt -k2*dt*dt)/dt/dt/dt;
+
+
+
+	for(var j=0;j<1;j+=0.1){
+		var t = j * dt;
+
+		var p = k3*t*t*t + k2*t*t + k1*t + k0;
+		ctx.fillRect(t + pos[i].t,p,2,2);
+	}
+}
+
+</script>
+</BODY>
+</html>

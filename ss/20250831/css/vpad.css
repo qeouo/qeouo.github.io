@@ -1,0 +1,48 @@
+div.vpad{
+	color:black;
+	position:fixed;
+	left:0px;
+	bottom:0px;
+	z-index:10;
+	display:inline-block;
+	width:100%;
+	aspect-ratio:3;
+	bottom:0px;
+	overflow:hidden;
+	opacity:0.7;
+	user-select:none;
+}
+span.vpad{
+	padding:2px;
+	text-align:left;
+	background-color:#ccc;
+	width:10%;
+	display:inline-block;
+	aspect-ratio:1;
+	transform:translate(-50%,-50%);
+	position:absolute;
+}
+span[code="0"]{
+	left:10%;
+	top:50%;
+}
+span[code="2"]{
+	left:30%;
+	top:50%;
+}
+
+span[code="4"]{
+	left:90%;
+	top:50%;
+}
+span[code="5"]{
+	left:70%;
+	top:50%;
+}
+
+label.vpad{
+	position:fixed;
+	left:0px;
+	bottom:0px;
+	z-index:1000;
+}

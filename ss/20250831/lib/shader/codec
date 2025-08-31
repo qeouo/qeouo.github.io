@@ -1,0 +1,102 @@
+precision mediump float;  
+const mediump float geta = 15.0; 
+lowp vec4 packR11G11B10(mediump vec3 raw){ 
+	mediump vec3 idx = floor(log2(max(raw,0.00001))); 
+	idx = max(min(idx,16.0),-15.0); 
+	mediump vec3 num = max((raw*exp2(-idx) -1.0),0.0) ;
+	return (vec4((idx +geta),floor(num.b * 32.0))*8.0
+		+ floor(vec4(num.rg,fract(num.rg * 8.0))*8.0) 
+	)/255.0; 
+} 
+mediump vec3 unpackR11G11B10(lowp vec4 raw){ 
+	mediump vec4 lo = floor(raw*255.0+0.5)/8.0; 
+	mediump vec4 hi= floor(lo); 
+	lo -=  hi; 
+	mediump vec3 kasu = vec3(lo.rg + lo.ba/8.0,hi.a/32.0); 
+	kasu = kasu + sign(kasu + hi.rgb) ; 
+	return  (kasu ) 
+		* exp2(hi.rgb-geta); 
+} 
+lowp vec4 packRGBE(mediump vec3 src){ 
+	mediump float idx = ceil(log2(max(max(src.r,max(src.g,src.b)),0.000001))); 
+	return vec4(src/ exp2(idx),(idx+128.0)/255.0); 
+} 
+mediump vec3 unpackRGBE(lowp vec4 src){ 
+	return src.rgb * exp2(floor(src.a*255.5 - 128.0)); 
+} 
+const mediump vec3 v1286432 = vec3(128.0,64.0,32.0); \n\
+lowp vec4 packFloat(mediump vec3 src){ 
+	mediump vec3 abs_src= abs(src) ; 
+	float idx = clamp(ceil(log2( 
+		max(max(abs_src.r,max(abs_src.g,abs_src.b)),0.0002) 
+		)),-geta,31.0-geta); 
+	return vec4(abs_src / exp2(idx) 
+		,(dot(max(-sign(src),0.0),v1286432)+(idx+geta))/255.0); 
+} 
+mediump vec3 unpackFloat(lowp vec4 src){ 
+	mediump float e = floor(src.a*255.5); 
+	return src.rgb 
+		* (1.0 -mod(floor(e/v1286432),2.0)*2.0)  
+		* exp2(mod(e,32.0) - geta); 
+} 
+lowp vec2 packUFP16(mediump float raw){ 
+	if(raw==0.0)return vec2(0.0,0.0); 
+	mediump float idx = clamp(floor(log2(raw)),-geta,31.0-geta);  
+	mediump float f = (raw /exp2(idx) -1.0)*256.0; 
+	return vec2(floor(f),floor(fract(f)*8.0)*32.0 + (idx+geta))/255.0; 
+} 
+mediump float unpackUFP16(lowp vec2 src){ 
+	if(src.r==0.0 && src.g==0.0)return 0.0; 
+	return (dot(floor(src.rg* vec2(255.5,255.5/32.0)) 
+		,vec2(1.0/256.0,1.0/(256.0*8.0))) +1.0) 
+		* exp2(mod(floor(src.g*255.5),32.0)-geta); 
+} 
+lowp vec2 packUXP16(mediump float ff){ 
+	lowp vec2 color; 
+	mediump float f = ff*255.0; 
+	color.r = floor(f); 
+	f=(f-color.r)*255.0; 
+	color.g = floor(f); 
+
+	return color*(1.0/255.0); 
+} 
+mediump float unpackUXP16(lowp vec2 src){ 
+	return (src.r*256.0  + src.g)/256.0; 
+} 
+mediump vec2 decodeFull_(lowp vec4 src){ 
+	return vec2(unpackUFP16(src.rg),unpackUFP16(src.ba)); 
+} 
+mediump vec2 decodeVec2(sampler2D tex,vec2 texsize,vec2 uv){ 
+	vec2 unit = 1.0/texsize; \
+	uv += - 0.5 * unit; \
+	vec2 r = fract(uv*texsize); 
+	return mix(mix(decodeFull_(texture2D(tex,uv)) 
+			,decodeFull_(texture2D(tex,uv+vec2(unit.x,0.0))),r.x) 
+		,mix(decodeFull_(texture2D(tex,uv+vec2(0.0,unit.y))) 
+			,decodeFull_(texture2D(tex,uv+unit)),r.x) 
+		,r.y); 
+} 
+const mediump float PI =3.14159265359;  
+float atan2(in float y, in float x) { 
+	return x == 0.0 ? sign(y)*PI/2.0 : atan(y, x); 
+} 
+const mediump float _PI =1.0/3.14159265359; 
+vec2 angle2uv(vec3 angle) { 
+	return vec2(atan2(angle.z,angle.x)*_PI*0.5 + 0.5  
+		,-atan2(angle.y,length(angle.xz))*_PI + 0.5); 
+} 
+vec3 uv2angle(vec2 uv) { 
+	vec3 va; 
+	va.y = sin((0.5-uv.y)*PI); 
+	float l = sqrt(1.0-va.y*va.y); 
+	float r = (-uv.x*2.0-0.5)* PI; 
+	va.x = sin(r)*l; 
+	va.z = cos(r)*l; 
+	return va; 
+} 
+lowp vec4 encode(mediump vec3 src){ 
+	return packR11G11B10(src); 
+} 
+mediump vec3 decode(vec4 src){ 
+	return unpackR11G11B10(src); 
+} 
