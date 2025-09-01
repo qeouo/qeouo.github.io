@@ -16,7 +16,8 @@ span.vpad{
 	padding:2px;
 	text-align:left;
 	background-color:#ccc;
-	width:10%;
+	width:18%;
+	border:1px solid white;
 	display:inline-block;
 	aspect-ratio:1;
 	transform:translate(-50%,-50%);

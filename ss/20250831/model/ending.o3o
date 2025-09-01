@@ -159,6 +159,292 @@
     ]
   }
   ,{
+    "name":"平面.006"
+    ,"name_full":"平面.006"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.750000, 0.875000, 0.750000, 0.875000, 0.718750, 0.656250, 0.718750]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.007"
+    ,"name_full":"平面.007"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.875000, 0.875000, 0.875000, 0.875000, 0.843750, 0.656250, 0.843750]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.008"
+    ,"name_full":"平面.008"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.781250, 0.875000, 0.781250, 0.875000, 0.750000, 0.656250, 0.750000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.009"
+    ,"name_full":"平面.009"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.875000, 0.875000, 0.875000, 0.875000, 0.843750, 0.656250, 0.843750]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.010"
+    ,"name_full":"平面.010"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.812500, 0.875000, 0.812500, 0.875000, 0.781250, 0.656250, 0.781250]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.011"
+    ,"name_full":"平面.011"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.875000, 0.875000, 0.875000, 0.875000, 0.843750, 0.656250, 0.843750]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.012"
+    ,"name_full":"平面.012"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.843750, 0.875000, 0.843750, 0.875000, 0.812500, 0.656250, 0.812500]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.013"
+    ,"name_full":"平面.013"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.875000, 0.875000, 0.875000, 0.875000, 0.843750, 0.656250, 0.843750]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.014"
+    ,"name_full":"平面.014"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.906250, 0.875000, 0.906250, 0.875000, 0.875000, 0.656250, 0.875000]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.015"
+    ,"name_full":"平面.015"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.937500, 0.765625, 0.937500, 0.765625, 0.906250, 0.656250, 0.906250]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.016"
+    ,"name_full":"平面.016"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 0.968750, 0.937500, 0.968750, 0.937500, 0.937500, 0.656250, 0.937500]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.017"
+    ,"name_full":"平面.017"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.765625, 0.937500, 1.000000, 0.937500, 1.000000, 0.906250, 0.765625, 0.906250]
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"平面.018"
+    ,"name_full":"平面.018"
+    ,"vertices":[
+      {"pos":[-0.500000,-0.000000, 0.500000]}
+      ,{"pos":[ 0.500000,-0.000000, 0.500000]}
+      ,{"pos":[-0.500000,-0.000000,-0.500000]}
+      ,{"pos":[ 0.500000,-0.000000,-0.500000]}
+    ]
+    ,"faces":[
+      {"idx":[0,1,3,2],"mat":0}
+    ]
+    ,"use_auto_smooth":0
+    ,"uv_layers":[
+      {
+        "name":"UVマップ"
+        ,"data":[
+          [ 0.656250, 1.000000, 0.937500, 1.000000, 0.937500, 0.968750, 0.656250, 0.968750]
+        ]
+      }
+    ]
+  }
+  ,{
     "name":"平面.034"
     ,"name_full":"平面.034"
     ,"vertices":[
@@ -582,6 +868,48 @@
     ]
   }
   ,{
+    "name":"illust" 
+    ,"name_full":"illust" 
+    ,"endframe":1502
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"illust" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":1195,"p": 0.000000,"i":"C"},{"f":1502,"p": 1.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"model" 
+    ,"name_full":"model" 
+    ,"endframe":737
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"model" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":442,"p": 0.000000,"i":"C"},{"f":737,"p": 1.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"music" 
+    ,"name_full":"music" 
+    ,"endframe":1122
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"music" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":922,"p": 0.000000,"i":"C"},{"f":1122,"p": 1.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
     "name":"obi1アクション.001" 
     ,"name_full":"obi1アクション.001" 
     ,"endframe":1909
@@ -593,6 +921,34 @@
           {"target":"","type":"scale","idx":0,"keys":[{"f":1909,"p": 1.862685}]}
           ,{"target":"","type":"scale","idx":2,"keys":[{"f":1909,"p": 1.000000}]}
           ,{"target":"","type":"scale","idx":1,"keys":[{"f":1909,"p": 1.000000}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"program" 
+    ,"name_full":"program" 
+    ,"endframe":1887
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"program" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"},{"f":1586,"p": 0.000000,"i":"C"},{"f":1887,"p": 1.000000,"i":"C"}]}
+        ]
+      }
+    ]
+  }
+  ,{
+    "name":"start_hidden" 
+    ,"name_full":"start_hidden" 
+    ,"endframe":0
+    ,"id_root":"OBJECT"
+    ,"slots":[
+      {
+        "name":"obi2" 
+        ,"fcurves":[
+          {"target":"","type":"hide_render","idx":0,"keys":[{"f":0,"p": 1.000000,"i":"C"}]}
         ]
       }
     ]
@@ -914,7 +1270,7 @@
       ]
     }
     ,"material_slots":["screenbuffer"]
-    ,"location":[ 4.800000,-1.200000, 1.403247]
+    ,"location":[ 1.600000, 0.000000, 1.403250]
     ,"rotation":[ 0.000000, 0.000000, 0.000000]
     ,"scale":[ 3.200000, 2.400000, 1.000000]
     ,"data":"平面.034"
@@ -1230,6 +1586,25 @@
     ,"data":"立方体.001 [sd_cif.blend]"
   }
   ,{
+    "name":"illust"
+    ,"name_full":"illust"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"illust"
+      ,"slot":"illust"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.399327,-1.047789, 1.479468]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.010"
+  }
+  ,{
     "name":"leg"
     ,"name_full":"leg"
     ,"type":"MESH"
@@ -1292,6 +1667,49 @@
     ,"data":"アーマチュア [sd_cif.blend]"
   }
   ,{
+    "name":"model"
+    ,"name_full":"model"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"model"
+      ,"slot":"model"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 0.599326,-1.047789, 1.479468]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.006"
+  }
+  ,{
+    "name":"music"
+    ,"name_full":"music"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"music"
+      ,"slot":"music"
+      ,"nla_tracks":[
+        {
+          "name":"musicアクション"
+          ,"strips":[
+          ]
+        }
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 1.083462,-0.431153, 1.479468]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.008"
+  }
+  ,{
     "name":"obi1"
     ,"name_full":"obi1"
     ,"type":"MESH"
@@ -1337,6 +1755,189 @@
     ,"rotation":[-0.000000, 0.000000,-0.000000]
     ,"scale":[ 1.800000, 2.400000, 1.000000]
     ,"data":"平面.038"
+  }
+  ,{
+    "name":"ono"
+    ,"name_full":"ono"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"model"
+      ,"slot":"model"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 0.762404,-1.317885, 1.479468]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.007"
+  }
+  ,{
+    "name":"ono.001"
+    ,"name_full":"ono.001"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"music"
+      ,"slot":"music"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.033047,-0.434550, 1.479468]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.009"
+  }
+  ,{
+    "name":"ono.002"
+    ,"name_full":"ono.002"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"illust"
+      ,"slot":"illust"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"hide_render": 1
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.562404,-1.317885, 1.479468]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.011"
+  }
+  ,{
+    "name":"ono.003"
+    ,"name_full":"ono.003"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"program"
+      ,"slot":"program"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 1.933047,-1.534550, 1.479469]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.013"
+  }
+  ,{
+    "name":"program"
+    ,"name_full":"program"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"program"
+      ,"slot":"program"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 0.983462,-1.531153, 1.479469]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.012"
+  }
+  ,{
+    "name":"ref1"
+    ,"name_full":"ref1"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"program"
+      ,"slot":"program"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 1.833047,-1.834550, 1.479469]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.320000, 1.000000, 0.080000]
+    ,"data":"平面.015"
+  }
+  ,{
+    "name":"ref2"
+    ,"name_full":"ref2"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"program"
+      ,"slot":"program"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.433047,-1.934550, 1.479469]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.017"
+  }
+  ,{
+    "name":"ref3"
+    ,"name_full":"ref3"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"program"
+      ,"slot":"program"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.079054,-2.134551, 1.479469]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.800000, 1.000000, 0.080000]
+    ,"data":"平面.016"
+  }
+  ,{
+    "name":"ref4"
+    ,"name_full":"ref4"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"program"
+      ,"slot":"program"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 2.579054,-2.234550, 1.479469]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.800000, 1.000000, 0.080000]
+    ,"data":"平面.018"
+  }
+  ,{
+    "name":"reference"
+    ,"name_full":"reference"
+    ,"type":"MESH"
+    ,"display_type":"TEXTURED"
+    ,"animation_data":{
+      "name":""
+      ,"action":"program"
+      ,"slot":"program"
+      ,"nla_tracks":[
+      ]
+    }
+    ,"material_slots":["sprite"]
+    ,"location":[ 0.983462,-1.831153, 1.479469]
+    ,"rotation":[ 1.570796, 0.000000,-0.000000]
+    ,"scale":[ 0.560000, 1.000000, 0.080000]
+    ,"data":"平面.014"
   }
   ,{
     "name":"tare.001"
@@ -1579,7 +2180,7 @@
     "name":"ending_hud"
     ,"frame_start":0
     ,"frame_end":2400
-    ,"objects":["dancemonitor","ed0","obi1","obi2","カメラ","ed1","ed2","ed3","ed4","filter","平面"]
+    ,"objects":["dancemonitor","ed0","obi1","obi2","カメラ","ed1","ed2","ed3","ed4","filter","平面","model","ono","music","ono.001","illust","ono.002","program","ono.003","reference","ref1","ref3","ref2","ref4"]
     ,"world":"World.001"  }
 ]
 ,"worlds":[
